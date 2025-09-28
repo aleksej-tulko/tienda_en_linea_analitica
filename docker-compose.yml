@@ -16,11 +16,11 @@ services:
       - vault_storage:/vault/storage
     entrypoint: vault server -config /vault/config/config.hcl
 
-  zookeeper:
+  zookeeper-1:
     image: confluentinc/cp-zookeeper:7.4.4
     restart: always
-    container_name: zookeeper
-    hostname: zookeeper
+    container_name: zookeeper-1
+    hostname: zookeeper-1
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_TICK_TIME: 2000
@@ -48,8 +48,8 @@ services:
         -Dzookeeper.allowSaslFailedClients=false
         -Dzookeeper.requireClientAuthScheme=sasl
     volumes:
-      - zookeeper_log:/var/lib/zookeeper/log
-      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log_1:/var/lib/zookeeper/log
+      - zookeeper_data_1:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
 
@@ -58,8 +58,12 @@ volumes:
   vault_certs:
   vault_secrets:
   vault_storage:
-  zookeeper_log:
-  zookeeper_data:
+  zookeeper_log_1:
+  zookeeper_data_1:
+  zookeeper_log_2:
+  zookeeper_data_2:
+  zookeeper_log_3:
+  zookeeper_data_3:
 
 networks:
   infra:

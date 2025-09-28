@@ -65,7 +65,7 @@ openssl pkcs12 -export \
 
 # Кейстор и трастстор
 
-keytool -import -alias root-ca -trustcacerts -file /vault/certs/root-ca.pem -keystore kafka-truststore.jks -storepass changeit -noprompt
+keytool -import -alias root-ca -trustcacerts -file /vault/certs/root-ca.pem -keystore /vault/certs/kafka-truststore.jks -storepass changeit -noprompt
 
 
-keytool -import -alias kafka-int-ca -trustcacerts -file /vault/certs/kafka-int-ca.pem -keystore kafka-truststore.jks -storepass changeit -noprompt
+keytool -import -alias kafka-int-ca -trustcacerts -file /vault/certs/kafka-int-ca.pem -keystore /vault/certs/kafka-truststore.jks -storepass changeit -noprompt

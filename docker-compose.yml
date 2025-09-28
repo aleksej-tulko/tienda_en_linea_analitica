@@ -34,8 +34,8 @@ services:
       ZOOKEEPER_SSL_KEYSTORE_TYPE: PKCS12
       ZOOKEEPER_SSL_KEYSTORE_ALIAS: zookeeper
 
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/secrets/zookeeper.p12
-      ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/secrets/kafka-truststore.jks
+      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper.p12
+      ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/kafka-truststore.jks
 
       ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
       ZOOKEEPER_SSL_KEY_PASSWORD: changeit
@@ -52,6 +52,7 @@ services:
     volumes:
       - zookeeper_log:/var/lib/zookeeper/log
       - zookeeper_data:/var/lib/zookeeper/data
+      - vault_certs:/etc/zookeeper/certs
       - vault_secrets:/etc/zookeeper/secrets
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/secrets/zookeeper.sasl.jaas.conf
 

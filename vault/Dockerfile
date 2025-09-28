@@ -1,6 +1,6 @@
 FROM hashicorp/vault
 
-RUN apk add jq openssl
+RUN apk add jq openssl openjdk17
 
 RUN mkdir /vault/certs
 

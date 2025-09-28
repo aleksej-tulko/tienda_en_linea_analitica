@@ -53,8 +53,8 @@ services:
       - zookeeper_log:/var/lib/zookeeper/log
       - zookeeper_data:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
-      - vault_secrets:/etc/zookeeper/secrets
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/secrets/zookeeper.sasl.jaas.conf
+    command: [ "sh", "-c", "chown 1000:1000 /etc/zookeeper/certs/zookeeper.p12 && exec /docker-entrypoint.sh" ]
 
 volumes:
   vault_config:

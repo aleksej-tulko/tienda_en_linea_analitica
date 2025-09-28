@@ -45,7 +45,7 @@ services:
       ZOOKEEPER_SSL_CLIENT_AUTH: need
 
       KAFKA_OPTS: >-
-        -Djava.security.auth.login.config=/etc/zookeeper/secrets/zookeeper.sasl.jaas.conf
+        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
         -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
         -Dzookeeper.allowSaslFailedClients=false
         -Dzookeeper.requireClientAuthScheme=sasl
@@ -53,7 +53,7 @@ services:
       - zookeeper_log:/var/lib/zookeeper/log
       - zookeeper_data:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
-      - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/secrets/zookeeper.sasl.jaas.conf
+      - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
 
 volumes:
   vault_config:

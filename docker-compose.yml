@@ -1,0 +1,26 @@
+services:
+  vault:
+    build:
+        context: ./vault
+        dockerfile: Dockerfile
+    container_name: vault_certs_generator
+    hostname: vault
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault_config:/vault/config
+      - vault_certs:/vault/certs
+      - vault_secrets:/vault/secrets
+      - vault_storage:/vault/storage
+    entrypoint: vault server -config /vault/config/config.hcl
+
+volumes:
+  vault_config:
+  vault_certs:
+  vault_secrets:
+  vault_storage:
+
+networks:
+  infra:

@@ -138,6 +138,16 @@ services:
       - zookeeper_data_3:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
+  
+  zoonavigator:
+    image: elkozmon/zoonavigator
+    restart: always
+    container_name: zoonavigator
+    hostname: zoonavigator
+    ports:
+      - 9000:9000
+    environment:
+      HTTP_PORT: 9000
 
 volumes:
   vault_config:

@@ -7,6 +7,37 @@ x-zookeeper-base: &zookeeper-base
   <<: *app-base
   image: confluentinc/cp-zookeeper:7.4.4
 
+x-zookeeper-environment: &zookeeper-environment
+  ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
+  ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
+  ZOOKEEPER_SERVER_3: zookeeper-3:2888:3888
+
+  ZOOKEEPER_TICK_TIME: 2000
+  ZOOKEEPER_INIT_LIMIT: 5
+  ZOOKEEPER_SYNC_LIMIT: 2
+  ZOOKEEPER_CLIENT_PORT: 2181
+  ZOOKEEPER_SECURE_CLIENT_PORT: 2281
+  ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
+
+  ZOOKEEPER_SSL_KEYSTORE_TYPE: PKCS12
+  ZOOKEEPER_SSL_KEYSTORE_ALIAS: zookeeper
+
+  ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper.p12
+  ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/kafka-truststore.jks
+
+  ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
+  ZOOKEEPER_SSL_KEY_PASSWORD: changeit
+  ZOOKEEPER_SSL_TRUSTSTORE_PASSWORD: changeit
+
+  ZOOKEEPER_SSL_CLIENT_ENABLE: true
+  ZOOKEEPER_SSL_CLIENT_AUTH: need
+
+  KAFKA_OPTS: >-
+    -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
+    -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
+    -Dzookeeper.allowSaslFailedClients=false
+    -Dzookeeper.requireClientAuthScheme=sasl
+
 services:
   vault:
     <<: *app-base
@@ -31,36 +62,8 @@ services:
     container_name: zookeeper-1
     hostname: zookeeper-1
     environment:
+      <<: *zookeeper-environment
       ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
-      ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
-      ZOOKEEPER_SERVER_3: zookeeper-3:2888:3888
-
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_SECURE_CLIENT_PORT: 2281
-      ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
-
-      ZOOKEEPER_SSL_KEYSTORE_TYPE: PKCS12
-      ZOOKEEPER_SSL_KEYSTORE_ALIAS: zookeeper
-
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper.p12
-      ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/kafka-truststore.jks
-
-      ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
-      ZOOKEEPER_SSL_KEY_PASSWORD: changeit
-      ZOOKEEPER_SSL_TRUSTSTORE_PASSWORD: changeit
-
-      ZOOKEEPER_SSL_CLIENT_ENABLE: true
-      ZOOKEEPER_SSL_CLIENT_AUTH: need
-
-      KAFKA_OPTS: >-
-        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
-        -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
-        -Dzookeeper.allowSaslFailedClients=false
-        -Dzookeeper.requireClientAuthScheme=sasl
     volumes:
       - zookeeper_log_1:/var/lib/zookeeper/log
       - zookeeper_data_1:/var/lib/zookeeper/data
@@ -72,36 +75,8 @@ services:
     container_name: zookeeper-2
     hostname: zookeeper-2
     environment:
+      <<: *zookeeper-environment
       ZOOKEEPER_SERVER_ID: 2
-      ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
-      ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
-      ZOOKEEPER_SERVER_3: zookeeper-3:2888:3888
-
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_SECURE_CLIENT_PORT: 2281
-      ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
-
-      ZOOKEEPER_SSL_KEYSTORE_TYPE: PKCS12
-      ZOOKEEPER_SSL_KEYSTORE_ALIAS: zookeeper
-
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper.p12
-      ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/kafka-truststore.jks
-
-      ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
-      ZOOKEEPER_SSL_KEY_PASSWORD: changeit
-      ZOOKEEPER_SSL_TRUSTSTORE_PASSWORD: changeit
-
-      ZOOKEEPER_SSL_CLIENT_ENABLE: true
-      ZOOKEEPER_SSL_CLIENT_AUTH: need
-
-      KAFKA_OPTS: >-
-        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
-        -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
-        -Dzookeeper.allowSaslFailedClients=false
-        -Dzookeeper.requireClientAuthScheme=sasl
     volumes:
       - zookeeper_log_2:/var/lib/zookeeper/log
       - zookeeper_data_2:/var/lib/zookeeper/data
@@ -113,36 +88,8 @@ services:
     container_name: zookeeper-3
     hostname: zookeeper-3
     environment:
+      <<: *zookeeper-environment
       ZOOKEEPER_SERVER_ID: 3
-      ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
-      ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
-      ZOOKEEPER_SERVER_3: zookeeper-3:2888:3888
-
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_INIT_LIMIT: 5
-      ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_SECURE_CLIENT_PORT: 2281
-      ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
-
-      ZOOKEEPER_SSL_KEYSTORE_TYPE: PKCS12
-      ZOOKEEPER_SSL_KEYSTORE_ALIAS: zookeeper
-
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper.p12
-      ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/kafka-truststore.jks
-
-      ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
-      ZOOKEEPER_SSL_KEY_PASSWORD: changeit
-      ZOOKEEPER_SSL_TRUSTSTORE_PASSWORD: changeit
-
-      ZOOKEEPER_SSL_CLIENT_ENABLE: true
-      ZOOKEEPER_SSL_CLIENT_AUTH: need
-
-      KAFKA_OPTS: >-
-        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
-        -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
-        -Dzookeeper.allowSaslFailedClients=false
-        -Dzookeeper.requireClientAuthScheme=sasl
     volumes:
       - zookeeper_log_3:/var/lib/zookeeper/log
       - zookeeper_data_3:/var/lib/zookeeper/data

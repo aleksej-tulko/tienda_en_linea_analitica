@@ -107,12 +107,13 @@ services:
     environment:
       HTTP_PORT: disabled
       HTTPS_PORT: 9443
+      ZK_CLIENT_SECURE: "true"
       ZK_CLIENT_CNXN_SOCKET: "org.apache.zookeeper.ClientCnxnSocketNetty"
       ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/kafka-truststore.jks
       ZK_SSL_TRUSTSTORE_PASSWORD: changeit
-      ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
-      ZK_SSL_KEYSTORE_PASSWORD: changeit
-      ZK_SSL_KEYSTORE_TYPE: PKCS12
+      SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
+      SSL_KEYSTORE_PASSWORD: changeit
+      SSL_KEYSTORE_TYPE: PKCS12
       ZK_SASL_CLIENT: "true"
       ZK_SASL_CLIENT_CONFIG: "Client"
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf

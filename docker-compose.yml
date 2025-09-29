@@ -106,6 +106,8 @@ services:
       - 9000:9000
     environment:
       HTTP_PORT: 9000
+    volumes:
+      - vault_certs:/etc/zookeeper/certs
 
 volumes:
   vault_config:

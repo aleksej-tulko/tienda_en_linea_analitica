@@ -1,5 +1,15 @@
+x-app-base: &app-base
+  networks:
+    - infra
+  restart: unless-stopped
+
+x-zookeeper-base: &zookeeper-base
+  <<: *app-base
+  image: confluentinc/cp-zookeeper:7.4.4
+
 services:
   vault:
+    <<: *app-base
     build:
         context: ./vault
         dockerfile: Dockerfile
@@ -17,8 +27,7 @@ services:
     entrypoint: vault server -config /vault/config/config.hcl
 
   zookeeper-1:
-    image: confluentinc/cp-zookeeper:7.4.4
-    restart: always
+    <<: *zookeeper-base
     container_name: zookeeper-1
     hostname: zookeeper-1
     environment:
@@ -59,8 +68,7 @@ services:
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
 
   zookeeper-2:
-    image: confluentinc/cp-zookeeper:7.4.4
-    restart: always
+    <<: *zookeeper-base
     container_name: zookeeper-2
     hostname: zookeeper-2
     environment:
@@ -101,8 +109,7 @@ services:
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
 
   zookeeper-3:
-    image: confluentinc/cp-zookeeper:7.4.4
-    restart: always
+    <<: *zookeeper-base
     container_name: zookeeper-3
     hostname: zookeeper-3
     environment:

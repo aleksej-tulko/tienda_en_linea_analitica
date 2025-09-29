@@ -105,7 +105,7 @@ services:
     ports:
       - 9000:9000
     environment:
-      HTTP_PORT: 9000
+      HTTPS_PORT: 9000
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_TYPE: PKCS12

@@ -115,7 +115,10 @@ services:
       ZK_SASL_CLIENT: "true"
       ZK_SASL_CLIENT_CONFIG: "Client"
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
-      JAVA_TOOL_OPTIONS: "-Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf -Djava.security.auth.debug=all, -Djavax.net.debug=ssl,handshake"
+      JAVA_TOOL_OPTIONS: >- 
+        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
+        -Djdk.sasl.disabledMechanisms=
+        -Djavax.net.debug=ssl,handshake
     volumes:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf

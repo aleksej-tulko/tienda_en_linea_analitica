@@ -97,6 +97,7 @@ services:
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
   
   zoonavigator:
+    <<: *app-base
     image: elkozmon/zoonavigator
     restart: always
     container_name: zoonavigator

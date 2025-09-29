@@ -103,8 +103,9 @@ services:
     container_name: zoonavigator
     hostname: zoonavigator
     ports:
-      - 9000:9443
+      - 9443:9443
     environment:
+      HTTP_PORT: disabled
       HTTPS_PORT: 9443
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       SSL_KEYSTORE_PASSWORD: changeit

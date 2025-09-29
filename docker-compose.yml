@@ -110,6 +110,7 @@ services:
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_TYPE: PKCS12
+      ZK_SASL_CLIENT: true
     volumes:
       - vault_certs:/etc/zookeeper/certs
 

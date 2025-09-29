@@ -111,8 +111,10 @@ services:
       SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_TYPE: PKCS12
       ZK_SASL_CLIENT: true
+      ZK_SASL_CLIENT_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
     volumes:
       - vault_certs:/etc/zookeeper/certs
+      - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
 
 volumes:
   vault_config:

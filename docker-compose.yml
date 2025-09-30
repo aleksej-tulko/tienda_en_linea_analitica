@@ -114,6 +114,7 @@ services:
       ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/zookeeper-1.p12
       ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/kafka-truststore.jks
       ZK_SSL_TRUSTSTORE_PASSWORD: changeit
+      ZK_SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_TYPE: PKCS12

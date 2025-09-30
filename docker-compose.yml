@@ -120,7 +120,7 @@ services:
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_TYPE: PKCS12
-      ZK_SASL_CLIENT: "false"
+      ZK_SASL_CLIENT: "true"
       ZK_SASL_CLIENT_CONFIG: "Client"
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
       JAVA_TOOL_OPTIONS: >- 

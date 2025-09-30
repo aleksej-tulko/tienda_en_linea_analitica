@@ -34,7 +34,7 @@ vault write kafka-int-ca/config/urls \
 # Серт зукипера
 
 vault write kafka-int-ca/roles/zookeeper \
-  allowed_domains="localhost,zookeeper" \
+  allowed_domains="localhost,zookeeper-1,zookeeper-2,zookeeper-3" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -45,21 +45,57 @@ vault write kafka-int-ca/roles/zookeeper \
 
 
 vault write -format=json kafka-int-ca/issue/zookeeper \
-  common_name="zookeeper" \
-  alt_names="zookeeper,localhost" \
+  common_name="zookeeper-1" \
+  alt_names="localhost" \
   ip_sans="127.0.0.1" \
-  > /vault/certs/zookeeper.json
+  > /vault/certs/zookeeper-1.json
 
-jq -r ".data.private_key"  /vault/certs/zookeeper.json > /vault/certs/zookeeper.key
-jq -r ".data.certificate"  /vault/certs/zookeeper.json > /vault/certs/zookeeper.crt
-chmod 600 /vault/certs/zookeeper.key
+jq -r ".data.private_key"  /vault/certs/zookeeper-1.json > /vault/certs/zookeeper-1.key
+jq -r ".data.certificate"  /vault/certs/zookeeper-1.json > /vault/certs/zookeeper-1.crt
+chmod 644 /vault/certs/zookeeper-1.key
 
 openssl pkcs12 -export \
-  -inkey    /vault/certs/zookeeper.key \
-  -in       /vault/certs/zookeeper.crt \
+  -inkey    /vault/certs/zookeeper-1.key \
+  -in       /vault/certs/zookeeper-1.crt \
   -certfile /vault/certs/kafka-int-ca.pem \
-  -name zookeeper \
-  -out /vault/certs/zookeeper.p12 \
+  -name zookeeper-1 \
+  -out /vault/certs/zookeeper-1.p12 \
+  -passout pass:changeit
+
+vault write -format=json kafka-int-ca/issue/zookeeper \
+  common_name="zookeeper-2" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/zookeeper-2.json
+
+jq -r ".data.private_key"  /vault/certs/zookeeper-2.json > /vault/certs/zookeeper-2.key
+jq -r ".data.certificate"  /vault/certs/zookeeper-2.json > /vault/certs/zookeeper-2.crt
+chmod 644 /vault/certs/zookeeper-2.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/zookeeper-2.key \
+  -in       /vault/certs/zookeeper-2.crt \
+  -certfile /vault/certs/kafka-int-ca.pem \
+  -name zookeeper-2 \
+  -out /vault/certs/zookeeper-2.p12 \
+  -passout pass:changeit
+
+vault write -format=json kafka-int-ca/issue/zookeeper \
+  common_name="zookeeper-3" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/zookeeper-3.json
+
+jq -r ".data.private_key"  /vault/certs/zookeeper-3.json > /vault/certs/zookeeper-3.key
+jq -r ".data.certificate"  /vault/certs/zookeeper-3.json > /vault/certs/zookeeper-3.crt
+chmod 644 /vault/certs/zookeeper-3.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/zookeeper-3.key \
+  -in       /vault/certs/zookeeper-3.crt \
+  -certfile /vault/certs/kafka-int-ca.pem \
+  -name zookeeper-3 \
+  -out /vault/certs/zookeeper-3.p12 \
   -passout pass:changeit
 
 

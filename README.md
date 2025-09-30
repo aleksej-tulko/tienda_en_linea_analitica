@@ -99,6 +99,38 @@ openssl pkcs12 -export \
   -passout pass:changeit
 
 
+# Роль клиента
+
+vault write kafka-int-ca/roles/kafka-client \
+  allowed_domains="localhost,client" \
+  allow_subdomains=true allow_bare_domains=true \
+  allow_ip_sans=true allow_localhost=true \
+  enforce_hostnames=false \
+  server_flag=false client_flag=true \
+  key_type="rsa" key_bits=2048 ttl="720h" max_ttl="720h" \
+  key_usage="DigitalSignature,KeyEncipherment" \
+  ext_key_usage="ClientAuth"
+
+
+vault write -format=json kafka-int-ca/issue/kafka-client \
+  common_name="client" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-client.json
+
+jq -r ".data.private_key"   /vault/certs/kafka-client.json > /vault/certs/kafka-client.key
+jq -r ".data.certificate"   /vault/certs/kafka-client.json > /vault/certs/kafka-client.crt
+chmod 600 /vault/certs/kafka-client.key
+
+openssl pkcs12 -export \
+  -inkey /vault/certs/kafka-client.key \
+  -in /vault/certs/kafka-client.crt \
+  -certfile /vault/certs/kafka-int-ca.pem \
+  -name client \
+  -passout pass:changeit \
+  -out /vault/certs/kafka-client.p12
+
+
 # Кейстор и трастстор
 
 keytool -import -alias root-ca -trustcacerts -file /vault/certs/root-ca.pem -keystore /vault/certs/kafka-truststore.jks -storepass changeit -noprompt

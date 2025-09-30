@@ -102,7 +102,7 @@ openssl pkcs12 -export \
 # Роль клиента
 
 vault write kafka-int-ca/roles/kafka-client \
-  allowed_domains="localhost,client" \
+  allowed_domains="localhost,client,zoonavigator" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -114,7 +114,7 @@ vault write kafka-int-ca/roles/kafka-client \
 
 vault write -format=json kafka-int-ca/issue/kafka-client \
   common_name="client" \
-  alt_names="localhost" \
+  alt_names="localhost,zoonavigator" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-client.json
 
@@ -133,7 +133,16 @@ openssl pkcs12 -export \
 
 # Кейстор и трастстор
 
-keytool -import -alias root-ca -trustcacerts -file /vault/certs/root-ca.pem -keystore /vault/certs/kafka-truststore.jks -storepass changeit -noprompt
+keytool -importcert -alias root-ca \
+  -file /vault/certs/root-ca.pem \
+  -keystore /vault/certs/kafka-truststore.jks \
+  -storepass changeit \
+  -trustcacerts -noprompt \
+  -storetype JKS
 
-
-keytool -import -alias kafka-int-ca -trustcacerts -file /vault/certs/kafka-int-ca.pem -keystore /vault/certs/kafka-truststore.jks -storepass changeit -noprompt
+keytool -importcert -alias kafka-int-ca \
+  -file /vault/certs/kafka-int-ca.pem \
+  -keystore /vault/certs/kafka-truststore.jks \
+  -storepass changeit \
+  -trustcacerts -noprompt \
+  -storetype JKS

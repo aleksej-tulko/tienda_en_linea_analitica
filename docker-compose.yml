@@ -35,7 +35,7 @@ x-zookeeper-environment: &zookeeper-environment
   KAFKA_OPTS: >-
     -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
     -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
-    -Dzookeeper.allowSaslFailedClients=false
+    -Dzookeeper.allowSaslFailedClients=true
     -Dzookeeper.requireClientAuthScheme=sasl
 
 services:
@@ -123,17 +123,10 @@ services:
       ZK_SASL_CLIENT: "true"
       ZK_SASL_CLIENT_CONFIG: "Client"
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
-      JAVA_TOOL_OPTIONS: >-
+      JAVA_TOOL_OPTIONS: >- 
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
         -Djdk.sasl.disabledMechanisms=
-        -Djavax.net.debug=ssl,handshake
-        -Dzookeeper.ssl.keyStore.location=/etc/zookeeper/certs/kafka-client.p12
-        -Dzookeeper.ssl.keyStore.password=changeit
-        -Dzookeeper.ssl.keyStore.type=PKCS12
-        -Dzookeeper.ssl.keyStore.alias=client
-        -Dzookeeper.ssl.trustStore.location=/etc/zookeeper/certs/kafka-truststore.jks
-        -Dzookeeper.ssl.trustStore.password=changeit
-        -Dzookeeper.ssl.trustStore.type=JKS
+        -Djavax.net.debug=ssl
     volumes:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf

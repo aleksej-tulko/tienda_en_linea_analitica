@@ -1,4 +1,5 @@
 x-app-base: &app-base
+  user: "0:0"
   networks:
     - infra
   restart: unless-stopped

@@ -126,7 +126,6 @@ services:
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
       JAVA_TOOL_OPTIONS: >- 
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
-        -Djdk.sasl.disabledMechanisms=
         -Djavax.net.debug=ssl
     volumes:
       - vault_certs:/etc/zookeeper/certs

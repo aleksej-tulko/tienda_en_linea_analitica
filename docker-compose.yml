@@ -112,7 +112,7 @@ services:
       HTTPS_PORT: 9443
       ZK_CLIENT_SECURE: true
       ZK_SASL_CLIENT: true
-      ZK_SASL_CLIENT_CONFIG: "Client"
+      ZK_SASL_CLIENT_CONFIG: Client
       ZK_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty
       ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/kafka-truststore.jks

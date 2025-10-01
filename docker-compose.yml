@@ -1,5 +1,5 @@
 x-app-base: &app-base
-  user: "0:0"
+  user: 0:0
   networks:
     - infra
   restart: unless-stopped
@@ -16,7 +16,7 @@ x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_TICK_TIME: 2000
   ZOOKEEPER_INIT_LIMIT: 5
   ZOOKEEPER_SYNC_LIMIT: 2
-  ZOOKEEPER_CLIENT_PORT: 2181
+  # ZOOKEEPER_CLIENT_PORT: 2181
   ZOOKEEPER_SECURE_CLIENT_PORT: 2281
   ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
 
@@ -105,23 +105,24 @@ services:
     restart: always
     container_name: zoonavigator
     hostname: zoonavigator
-    user: "0:0"
     ports:
       - 9443:9443
     environment:
       HTTP_PORT: disabled
       HTTPS_PORT: 9443
-      ZK_CLIENT_SECURE: "true"
-      ZK_CLIENT_CNXN_SOCKET: "org.apache.zookeeper.ClientCnxnSocketNetty"
+      ZK_CLIENT_SECURE: true
+      ZK_SASL_CLIENT: true
+      ZK_SASL_CLIENT_CONFIG: "Client"
+      ZK_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty
       ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
       ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/kafka-truststore.jks
       ZK_SSL_TRUSTSTORE_PASSWORD: changeit
       ZK_SSL_KEYSTORE_PASSWORD: changeit
+
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
-      SSL_KEYSTORE_PASSWORD: changeit
       SSL_KEYSTORE_TYPE: PKCS12
-      ZK_SASL_CLIENT: "true"
-      ZK_SASL_CLIENT_CONFIG: "Client"
+      SSL_KEYSTORE_PASSWORD: changeit
+
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
       JAVA_TOOL_OPTIONS: >- 
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf

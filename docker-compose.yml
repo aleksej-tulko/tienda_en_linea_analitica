@@ -112,12 +112,12 @@ services:
       ZK_SASL_CLIENT: true
       ZK_SASL_CLIENT_CONFIG: Client
       ZK_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty
-      ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
+      ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/client.p12
       ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/kafka-truststore.jks
       ZK_SSL_TRUSTSTORE_PASSWORD: changeit
       ZK_SSL_KEYSTORE_PASSWORD: changeit
 
-      SSL_KEYSTORE_PATH: /etc/zookeeper/certs/kafka-client.p12
+      SSL_KEYSTORE_PATH: /etc/zookeeper/certs/zoonavigator.p12
       SSL_KEYSTORE_TYPE: PKCS12
       SSL_KEYSTORE_PASSWORD: changeit
 

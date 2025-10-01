@@ -31,7 +31,7 @@ vault write kafka-int-ca/config/urls \
   issuing_certificates="$VAULT_ADDR/v1/kafka-int-ca/ca" \
   crl_distribution_points="$VAULT_ADDR/v1/kafka-int-ca/crl"
 
-# Серт зукипера
+# Роль зукипера
 
 vault write kafka-int-ca/roles/zookeeper \
   allowed_domains="localhost,zookeeper-1,zookeeper-2,zookeeper-3" \
@@ -52,7 +52,8 @@ vault write -format=json kafka-int-ca/issue/zookeeper \
 
 jq -r ".data.private_key"  /vault/certs/zookeeper-1.json > /vault/certs/zookeeper-1.key
 jq -r ".data.certificate"  /vault/certs/zookeeper-1.json > /vault/certs/zookeeper-1.crt
-chmod 644 /vault/certs/zookeeper-1.key
+chmod 600 /vault/certs/zookeeper-1.key
+chmod 600 /vault/certs/zookeeper-1.crt
 
 openssl pkcs12 -export \
   -inkey    /vault/certs/zookeeper-1.key \
@@ -61,6 +62,7 @@ openssl pkcs12 -export \
   -name zookeeper-1 \
   -out /vault/certs/zookeeper-1.p12 \
   -passout pass:changeit
+chmod 644 /vault/certs/zookeeper-1.p12
 
 vault write -format=json kafka-int-ca/issue/zookeeper \
   common_name="zookeeper-2" \
@@ -70,7 +72,8 @@ vault write -format=json kafka-int-ca/issue/zookeeper \
 
 jq -r ".data.private_key"  /vault/certs/zookeeper-2.json > /vault/certs/zookeeper-2.key
 jq -r ".data.certificate"  /vault/certs/zookeeper-2.json > /vault/certs/zookeeper-2.crt
-chmod 644 /vault/certs/zookeeper-2.key
+chmod 600 /vault/certs/zookeeper-2.key
+chmod 600 /vault/certs/zookeeper-2.crt
 
 openssl pkcs12 -export \
   -inkey    /vault/certs/zookeeper-2.key \
@@ -79,6 +82,7 @@ openssl pkcs12 -export \
   -name zookeeper-2 \
   -out /vault/certs/zookeeper-2.p12 \
   -passout pass:changeit
+chmod 644 /vault/certs/zookeeper-2.p12
 
 vault write -format=json kafka-int-ca/issue/zookeeper \
   common_name="zookeeper-3" \
@@ -88,7 +92,8 @@ vault write -format=json kafka-int-ca/issue/zookeeper \
 
 jq -r ".data.private_key"  /vault/certs/zookeeper-3.json > /vault/certs/zookeeper-3.key
 jq -r ".data.certificate"  /vault/certs/zookeeper-3.json > /vault/certs/zookeeper-3.crt
-chmod 644 /vault/certs/zookeeper-3.key
+chmod 600 /vault/certs/zookeeper-3.key
+chmod 600 /vault/certs/zookeeper-3.crt
 
 openssl pkcs12 -export \
   -inkey    /vault/certs/zookeeper-3.key \
@@ -97,11 +102,12 @@ openssl pkcs12 -export \
   -name zookeeper-3 \
   -out /vault/certs/zookeeper-3.p12 \
   -passout pass:changeit
+chmod 644 /vault/certs/zookeeper-3.p12
 
 
 # Роль клиента
 
-vault write kafka-int-ca/roles/kafka-client \
+vault write kafka-int-ca/roles/client \
   allowed_domains="localhost,client,zoonavigator" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
@@ -112,23 +118,58 @@ vault write kafka-int-ca/roles/kafka-client \
   ext_key_usage="ClientAuth"
 
 
-vault write -format=json kafka-int-ca/issue/kafka-client \
+vault write -format=json kafka-int-ca/issue/client \
   common_name="client" \
-  alt_names="localhost,zoonavigator" \
+  alt_names="localhost" \
   ip_sans="127.0.0.1" \
-  > /vault/certs/kafka-client.json
+  > /vault/certs/client.json
 
-jq -r ".data.private_key"   /vault/certs/kafka-client.json > /vault/certs/kafka-client.key
-jq -r ".data.certificate"   /vault/certs/kafka-client.json > /vault/certs/kafka-client.crt
-chmod 600 /vault/certs/kafka-client.key
+jq -r ".data.private_key"   /vault/certs/client.json > /vault/certs/client.key
+jq -r ".data.certificate"   /vault/certs/client.json > /vault/certs/client.crt
+chmod 600 /vault/certs/client.key
+chmod 600 /vault/certs/client.crt
 
 openssl pkcs12 -export \
-  -inkey /vault/certs/kafka-client.key \
-  -in /vault/certs/kafka-client.crt \
+  -inkey /vault/certs/client.key \
+  -in /vault/certs/client.crt \
   -certfile /vault/certs/kafka-int-ca.pem \
   -name client \
   -passout pass:changeit \
-  -out /vault/certs/kafka-client.p12
+  -out /vault/certs/client.p12
+chmod 644 /vault/certs/client.p12
+
+
+# Роль Zoonavigator
+
+vault write kafka-int-ca/roles/zoonavigator \
+  allowed_domains="localhost,zoonavigator" \
+  allow_subdomains=true allow_bare_domains=true \
+  allow_ip_sans=true allow_localhost=true \
+  enforce_hostnames=false \
+  server_flag=false client_flag=true \
+  key_type="rsa" key_bits=2048 ttl="720h" max_ttl="720h" \
+  key_usage="DigitalSignature,KeyEncipherment" \
+  ext_key_usage="ServerAuth"
+
+vault write -format=json kafka-int-ca/issue/zoonavigator \
+  common_name="zoonavigator" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/zoonavigator.json
+
+jq -r ".data.private_key"   /vault/certs/zoonavigator.json > /vault/certs/zoonavigator.key
+jq -r ".data.certificate"   /vault/certs/zoonavigator.json > /vault/certs/zoonavigator.crt
+chmod 600 /vault/certs/zoonavigator.key
+chmod 600 /vault/certs/zoonavigator.crt
+
+openssl pkcs12 -export \
+  -inkey /vault/certs/zoonavigator.key \
+  -in /vault/certs/zoonavigator.crt \
+  -certfile /vault/certs/kafka-int-ca.pem \
+  -name zoonavigator \
+  -passout pass:changeit \
+  -out /vault/certs/zoonavigator.p12
+chmod 644 /vault/certs/zoonavigator.p12
 
 
 # Кейстор и трастстор

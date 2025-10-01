@@ -16,7 +16,6 @@ x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_TICK_TIME: 2000
   ZOOKEEPER_INIT_LIMIT: 5
   ZOOKEEPER_SYNC_LIMIT: 2
-  # ZOOKEEPER_CLIENT_PORT: 2181
   ZOOKEEPER_SECURE_CLIENT_PORT: 2281
   ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
 
@@ -102,7 +101,6 @@ services:
   zoonavigator:
     <<: *app-base
     image: elkozmon/zoonavigator
-    restart: always
     container_name: zoonavigator
     hostname: zoonavigator
     ports:
@@ -126,7 +124,6 @@ services:
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
       JAVA_TOOL_OPTIONS: >- 
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
-        -Djavax.net.debug=ssl
     volumes:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf

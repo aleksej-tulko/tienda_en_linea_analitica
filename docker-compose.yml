@@ -2,7 +2,7 @@ x-app-base: &app-base
   user: 0:0
   networks:
     - infra
-  restart: always
+  restart: unless-stopped
 
 x-zookeeper-base: &zookeeper-base
   <<: *app-base

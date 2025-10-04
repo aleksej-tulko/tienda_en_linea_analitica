@@ -275,4 +275,6 @@ keytool -importcert -alias int-ca \
   -storepass changeit \
   -trustcacerts -noprompt \
   -storetype JKS
+
+cp /vault/certs/truststore.jks /vault/secrets
 ```

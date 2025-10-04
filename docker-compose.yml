@@ -22,7 +22,7 @@ x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_SSL_KEYSTORE_TYPE: PKCS12
   ZOOKEEPER_SSL_KEYSTORE_ALIAS: zookeeper
 
-  ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/kafka-truststore.jks
+  ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/zookeeper/certs/truststore.jks
 
   ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
   ZOOKEEPER_SSL_KEY_PASSWORD: changeit
@@ -113,7 +113,7 @@ services:
       ZK_SASL_CLIENT_CONFIG: Client
       ZK_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty
       ZK_SSL_KEYSTORE_PATH: /etc/zookeeper/certs/client.p12
-      ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/kafka-truststore.jks
+      ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/truststore.jks
       ZK_SSL_TRUSTSTORE_PASSWORD: changeit
       ZK_SSL_KEYSTORE_PASSWORD: changeit
 

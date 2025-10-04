@@ -8,7 +8,7 @@ x-zookeeper-base: &zookeeper-base
   <<: *app-base
   image: confluentinc/cp-zookeeper:7.4.4
   healthcheck:
-    test: ["CMD", "bash", "-c", "zookeeper-shell localhost:2181 ls /"]
+    test: ["CMD", "bash", "-c", "zookeeper-shell localhost:2281 ls /"]
     interval: 10s
     timeout: 5s
     retries: 5

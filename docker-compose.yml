@@ -193,7 +193,7 @@ services:
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-conigs.conf:/etc/kafka/secrets/adminclient-conigs.conf
+      - ./kafka/configs/adminclient-conigs.conf:/etc/kafka/secrets/adminclient-configs.conf
 
   kafka-2:
     <<: *kafka-base
@@ -211,7 +211,7 @@ services:
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-conigs.conf:/etc/kafka/secrets/adminclient-conigs.conf
+      - ./kafka/configs/adminclient-conigs.conf:/etc/kafka/secrets/adminclient-configs.conf
 
   kafka-3:
     <<: *kafka-base
@@ -229,7 +229,7 @@ services:
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-conigs.conf:/etc/kafka/secrets/adminclient-conigs.conf
+      - ./kafka/configs/adminclient-conigs.conf:/etc/kafka/secrets/adminclient-configs.conf
 
   ui:
     <<: *app-base

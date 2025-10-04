@@ -56,7 +56,7 @@ x-kafka-environment: &kafka-environment
   KAFKA_ZOOKEEPER_SSL_CLIENT_ENABLE: true
   KAFKA_ZOOKEEPER_SECURITY_PROTOCOL: SASL_SSL
   KAFKA_ZOOKEEPER_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty
-  KAFKA_ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/truststore.jks
+  KAFKA_ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/kafka/certs/truststore.jks
   KAFKA_ZOOKEEPER_SSL_TRUSTSTORE_PASSWORD: changeit
   KAFKA_ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
 

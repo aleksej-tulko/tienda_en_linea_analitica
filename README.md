@@ -285,5 +285,22 @@ sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 
 
 8. Раздать права в Kafka
 ```bash
+sudo docker compose exec -it kafka-1 kafka-acls \
+  --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:ui \
+  --operation Describe \
+  --cluster \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+sudo docker compose exec -it kafka-1 kafka-acls \
+  --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:ui \
+  --operation Read --topic '*' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+sudo docker compose exec -it kafka-1 kafka-acls \
+  --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:ui \
+  --operation Describe --group '*' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 ```

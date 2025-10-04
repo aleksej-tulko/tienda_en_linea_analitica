@@ -189,7 +189,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-1:9093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-1.p12
     volumes:
-      - kafka_1:/var/lib/kafka/data
+      - kafka_1:/var/lib/kafka/data-1
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
@@ -207,7 +207,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-2:9093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-2.p12
     volumes:
-      - kafka_2:/var/lib/kafka/data
+      - kafka_2:/var/lib/kafka/data-2
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
@@ -225,7 +225,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-3:9093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-3.p12
     volumes:
-      - kafka_3:/var/lib/kafka/data
+      - kafka_3:/var/lib/kafka/data-3
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf

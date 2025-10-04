@@ -292,12 +292,7 @@ sudo docker compose exec -it kafka-1 kafka-acls \
   --cluster \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
-sudo docker compose exec -it kafka-1 kafka-acls \
-  --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:ui \
-  --operation Describe --operation DescribeConfigs \
-  --broker '*' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
+sudo docker compose exec -it kafka-1 kafka-acls   --bootstrap-server kafka-1:9093   --add --allow-principal User:ui   --operation DescribeConfigs   --cluster   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 sudo docker compose exec -it kafka-1 kafka-acls \
   --bootstrap-server kafka-1:9093 \

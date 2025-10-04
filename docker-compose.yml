@@ -6,11 +6,11 @@ x-app-base: &app-base
 
 x-zookeeper-base: &zookeeper-base
   <<: *app-base
-  image: confluentinc/cp-zookeeper:7.4.4
+  image: confluentinc/cp-zookeeper:7.0.10
 
 x-kafka-base: &kafka-base
   <<: *app-base
-  image: confluentinc/cp-kafka:7.4.4
+  image: confluentinc/cp-kafka:7.0.10
   depends_on:
     - zookeeper-1
     - zookeeper-2

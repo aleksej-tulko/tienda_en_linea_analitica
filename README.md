@@ -129,7 +129,7 @@ openssl pkcs12 -export \
 chmod 644 /vault/certs/zookeeper-3.p12
 
 vault write int-ca/roles/client \
-  allowed_domains="localhost,client,zoonavigator" \
+  allowed_domains="localhost,client,ui,zoonavigator" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -260,7 +260,6 @@ chmod 644 /vault/secrets/kafka-3.p12
 ```
 
 6. Собрать truststore:
-
 ```bash
 keytool -importcert -alias root-ca \
   -file /vault/certs/root-ca.pem \
@@ -277,4 +276,14 @@ keytool -importcert -alias int-ca \
   -storetype JKS
 
 cp /vault/certs/truststore.jks /vault/secrets
+```
+
+7. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI
+```bash
+sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 ui
+```
+
+8. Раздать права в Kafka
+```bash
+
 ```

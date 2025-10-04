@@ -241,10 +241,15 @@ services:
     <<: *app-base
     image: provectuslabs/kafka-ui:v0.7.0
     container_name: ui
+    hostname: ui
     volumes:
       - vault_certs:/etc/ui/certs
     ports:
       - 8080:8080
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
     environment:
       KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
       KAFKA_CLUSTERS_0_NAME: kafka
@@ -265,8 +270,6 @@ services:
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: >
         org.apache.kafka.common.security.plain.PlainLoginModule required
         username="ui" password="ui_password";
-
-
 
 volumes:
   vault_config:

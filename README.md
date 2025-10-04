@@ -1,39 +1,63 @@
 # tienda_en_linea_analitica
 
+# Подготовка рабочей среды
 
+1. Склонировать репозиторий и перейти в него:
+```bash
+cd ~
+git clone https://github.com/aleksej-tulko/tienda_en_linea_analitica.git
+cd tienda_en_linea_analitica
+```
+
+2. Поднять Vault и подоготовить к работе:
+
+```bash
+sudo docker compose up vault -d
+sudo docker compose exec -it vault vault operator init -key-shares=1 -key-threshold=1 > init.txt
+cat init.txt
+sudo docker compose exec -it vault sh
+vault operator unseal # Запросит ввести Unseal Key 1 из файла init.txt
+export VAULT_TOKEN=XXXX # Подставить Initial Root Token из файла init.txt
+
+# ПУНКТЫ 3-12 ВЫПОЛНЯТЬ В ШЕЛЛЕ VAULT!!!!
+```
+
+3. Настроить Vault для создания корневого сертификата:
+
+```bash
 vault secrets enable -path=root-ca pki
-
 vault secrets tune -max-lease-ttl=87600h root-ca
-
 vault write -field=certificate root-ca/root/generate/internal \
   common_name="Acme Root CA" ttl=87600h > /vault/certs/root-ca.pem
-
 vault write root-ca/config/urls \
   issuing_certificates="$VAULT_ADDR/v1/root-ca/ca" \
   crl_distribution_points="$VAULT_ADDR/v1/root-ca/crl"
+```
 
+4. Настроить Vault для создания промежуточного сертификата:
 
-# Корневой и промежеточкный серт
+```bash
+vault secrets enable -path=int-ca pki
+vault secrets tune -max-lease-ttl=43800h int-ca
 
-vault secrets enable -path=kafka-int-ca pki
-vault secrets tune -max-lease-ttl=43800h kafka-int-ca
-
-vault write -field=csr kafka-int-ca/intermediate/generate/internal \
-  common_name="Acme Kafka Intermediate CA" ttl=43800h > /vault/certs/kafka-int-ca.csr
+vault write -field=csr int-ca/intermediate/generate/internal \
+  common_name="Acme Intermediate CA" ttl=43800h > /vault/certs/int-ca.csr
 
 vault write -field=certificate root-ca/root/sign-intermediate \
-  csr=@/vault/certs/kafka-int-ca.csr format=pem_bundle ttl=43800h > /vault/certs/kafka-int-ca.pem
+  csr=@/vault/certs/int-ca.csr format=pem_bundle ttl=43800h > /vault/certs/int-ca.pem
 
-vault write kafka-int-ca/intermediate/set-signed \
-  certificate=@/vault/certs/kafka-int-ca.pem
+vault write int-ca/intermediate/set-signed \
+  certificate=@/vault/certs/int-ca.pem
 
-vault write kafka-int-ca/config/urls \
-  issuing_certificates="$VAULT_ADDR/v1/kafka-int-ca/ca" \
-  crl_distribution_points="$VAULT_ADDR/v1/kafka-int-ca/crl"
+vault write int-ca/config/urls \
+  issuing_certificates="$VAULT_ADDR/v1/int-ca/ca" \
+  crl_distribution_points="$VAULT_ADDR/v1/int-ca/crl"
+```
 
-# Роль зукипера
+5. Создать роли для выпуска конечных сертификатов,сгенерировать сами сертификаты и собрать keystore для сервисов:
 
-vault write kafka-int-ca/roles/zookeeper \
+```bash
+vault write int-ca/roles/zookeeper \
   allowed_domains="localhost,zookeeper-1,zookeeper-2,zookeeper-3" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
@@ -43,8 +67,7 @@ vault write kafka-int-ca/roles/zookeeper \
   key_usage="DigitalSignature,KeyEncipherment" \
   ext_key_usage="ServerAuth"
 
-
-vault write -format=json kafka-int-ca/issue/zookeeper \
+vault write -format=json int-ca/issue/zookeeper \
   common_name="zookeeper-1" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -58,13 +81,13 @@ chmod 600 /vault/certs/zookeeper-1.crt
 openssl pkcs12 -export \
   -inkey    /vault/certs/zookeeper-1.key \
   -in       /vault/certs/zookeeper-1.crt \
-  -certfile /vault/certs/kafka-int-ca.pem \
+  -certfile /vault/certs/int-ca.pem \
   -name zookeeper-1 \
   -out /vault/certs/zookeeper-1.p12 \
   -passout pass:changeit
 chmod 644 /vault/certs/zookeeper-1.p12
 
-vault write -format=json kafka-int-ca/issue/zookeeper \
+vault write -format=json int-ca/issue/zookeeper \
   common_name="zookeeper-2" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -78,13 +101,13 @@ chmod 600 /vault/certs/zookeeper-2.crt
 openssl pkcs12 -export \
   -inkey    /vault/certs/zookeeper-2.key \
   -in       /vault/certs/zookeeper-2.crt \
-  -certfile /vault/certs/kafka-int-ca.pem \
+  -certfile /vault/certs/int-ca.pem \
   -name zookeeper-2 \
   -out /vault/certs/zookeeper-2.p12 \
   -passout pass:changeit
 chmod 644 /vault/certs/zookeeper-2.p12
 
-vault write -format=json kafka-int-ca/issue/zookeeper \
+vault write -format=json int-ca/issue/zookeeper \
   common_name="zookeeper-3" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -98,16 +121,13 @@ chmod 600 /vault/certs/zookeeper-3.crt
 openssl pkcs12 -export \
   -inkey    /vault/certs/zookeeper-3.key \
   -in       /vault/certs/zookeeper-3.crt \
-  -certfile /vault/certs/kafka-int-ca.pem \
+  -certfile /vault/certs/int-ca.pem \
   -name zookeeper-3 \
   -out /vault/certs/zookeeper-3.p12 \
   -passout pass:changeit
 chmod 644 /vault/certs/zookeeper-3.p12
 
-
-# Роль клиента
-
-vault write kafka-int-ca/roles/client \
+vault write int-ca/roles/client \
   allowed_domains="localhost,client,zoonavigator" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
@@ -117,8 +137,7 @@ vault write kafka-int-ca/roles/client \
   key_usage="DigitalSignature,KeyEncipherment" \
   ext_key_usage="ClientAuth"
 
-
-vault write -format=json kafka-int-ca/issue/client \
+vault write -format=json int-ca/issue/client \
   common_name="client" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -132,16 +151,13 @@ chmod 600 /vault/certs/client.crt
 openssl pkcs12 -export \
   -inkey /vault/certs/client.key \
   -in /vault/certs/client.crt \
-  -certfile /vault/certs/kafka-int-ca.pem \
+  -certfile /vault/certs/int-ca.pem \
   -name client \
   -passout pass:changeit \
   -out /vault/certs/client.p12
 chmod 644 /vault/certs/client.p12
 
-
-# Роль Zoonavigator
-
-vault write kafka-int-ca/roles/zoonavigator \
+vault write int-ca/roles/zoonavigator \
   allowed_domains="localhost,zoonavigator" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
@@ -151,7 +167,7 @@ vault write kafka-int-ca/roles/zoonavigator \
   key_usage="DigitalSignature,KeyEncipherment" \
   ext_key_usage="ServerAuth"
 
-vault write -format=json kafka-int-ca/issue/zoonavigator \
+vault write -format=json int-ca/issue/zoonavigator \
   common_name="zoonavigator" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -165,25 +181,27 @@ chmod 600 /vault/certs/zoonavigator.crt
 openssl pkcs12 -export \
   -inkey /vault/certs/zoonavigator.key \
   -in /vault/certs/zoonavigator.crt \
-  -certfile /vault/certs/kafka-int-ca.pem \
+  -certfile /vault/certs/int-ca.pem \
   -name zoonavigator \
   -passout pass:changeit \
   -out /vault/certs/zoonavigator.p12
 chmod 644 /vault/certs/zoonavigator.p12
+```
 
+6. Собрать truststore:
 
-# Кейстор и трастстор
-
+```bash
 keytool -importcert -alias root-ca \
   -file /vault/certs/root-ca.pem \
-  -keystore /vault/certs/kafka-truststore.jks \
+  -keystore /vault/certs/truststore.jks \
   -storepass changeit \
   -trustcacerts -noprompt \
   -storetype JKS
 
-keytool -importcert -alias kafka-int-ca \
-  -file /vault/certs/kafka-int-ca.pem \
-  -keystore /vault/certs/kafka-truststore.jks \
+keytool -importcert -alias int-ca \
+  -file /vault/certs/int-ca.pem \
+  -keystore /vault/certs/truststore.jks \
   -storepass changeit \
   -trustcacerts -noprompt \
   -storetype JKS
+```

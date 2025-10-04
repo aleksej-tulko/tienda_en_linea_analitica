@@ -7,6 +7,12 @@ x-app-base: &app-base
 x-zookeeper-base: &zookeeper-base
   <<: *app-base
   image: confluentinc/cp-zookeeper:7.4.4
+  healthcheck:
+    test: ["CMD", "bash", "-c", "zookeeper-shell localhost:2181 ls /"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+    start_period: 10s
 
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
@@ -105,6 +111,13 @@ services:
     hostname: zoonavigator
     ports:
       - 9443:9443
+    depends_on:
+      zookeeper-1:
+        condition: service_healthy
+      zookeeper-2:
+        condition: service_healthy
+      zookeeper-3:
+        condition: service_healthy
     environment:
       HTTP_PORT: disabled
       HTTPS_PORT: 9443

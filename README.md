@@ -13,7 +13,8 @@ cd tienda_en_linea_analitica
 
 ```bash
 sudo docker compose up vault -d
-sudo docker compose exec -it vault vault operator init -key-shares=1 -key-threshold=1 > init.txt
+sudo docker compose exec vault vault operator init -key-shares=1 -key-threshold=1 > init.txt
+sudo docker compose exec vault sh -c 'echo "changeit" > /vault/secrets/kafka_creds'
 cat init.txt
 sudo docker compose exec -it vault sh
 vault operator unseal # Запросит ввести Unseal Key 1 из файла init.txt
@@ -186,6 +187,76 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/zoonavigator.p12
 chmod 644 /vault/certs/zoonavigator.p12
+
+vault write int-ca/roles/kafka-broker \
+  allowed_domains="localhost,kafka-1,kafka-2,kafka-3" \
+  allow_subdomains=true allow_bare_domains=true \
+  allow_ip_sans=true allow_localhost=true \
+  enforce_hostnames=false \
+  server_flag=true client_flag=false \
+  key_type="rsa" key_bits=2048 ttl="720h" max_ttl="720h" \
+  key_usage="DigitalSignature,KeyEncipherment" \
+  ext_key_usage="ServerAuth,ClientAuth"
+
+vault write -format=json int-ca/issue/kafka-broker \
+  common_name="kafka-1" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-1.json
+
+jq -r ".data.private_key"  /vault/certs/kafka-1.json > /vault/certs/kafka-1.key
+jq -r ".data.certificate"  /vault/certs/kafka-1.json > /vault/certs/kafka-1.crt
+chmod 600 /vault/certs/kafka-1.crt
+chmod 600 /vault/certs/kafka-1.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/kafka-1.key \
+  -in       /vault/certs/kafka-1.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name kafka-1 \
+  -passout pass:changeit \
+  -out /vault/certs/kafka-1.p12
+chmod 644 /vault/certs/kafka-1.p12
+
+vault write -format=json int-ca/issue/kafka-broker \
+  common_name="kafka-2" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-2.json
+
+jq -r ".data.private_key"  /vault/certs/kafka-2.json > /vault/certs/kafka-2.key
+jq -r ".data.certificate"  /vault/certs/kafka-2.json > /vault/certs/kafka-2.crt
+chmod 600 /vault/certs/kafka-2.crt
+chmod 600 /vault/certs/kafka-2.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/kafka-2.key \
+  -in       /vault/certs/kafka-2.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name kafka-2 \
+  -passout pass:changeit \
+  -out /vault/certs/kafka-2.p12
+chmod 644 /vault/certs/kafka-2.p12
+
+vault write -format=json int-ca/issue/kafka-broker \
+  common_name="kafka-3" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-3.json
+
+jq -r ".data.private_key"  /vault/certs/kafka-3.json > /vault/certs/kafka-3.key
+jq -r ".data.certificate"  /vault/certs/kafka-3.json > /vault/certs/kafka-3.crt
+chmod 600 /vault/certs/kafka-3.crt
+chmod 600 /vault/certs/kafka-3.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/kafka-3.key \
+  -in       /vault/certs/kafka-3.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name kafka-3 \
+  -passout pass:changeit \
+  -out /vault/certs/kafka-3.p12
+chmod 644 /vault/certs/kafka-3.p12
 ```
 
 6. Собрать truststore:

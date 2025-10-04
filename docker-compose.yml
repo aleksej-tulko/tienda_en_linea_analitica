@@ -8,6 +8,14 @@ x-zookeeper-base: &zookeeper-base
   <<: *app-base
   image: confluentinc/cp-zookeeper:7.4.4
 
+x-kafka-base: &kafka-base
+  <<: *app-base
+  image: confluentinc/cp-kafka:7.4.4
+  depends_on:
+    - zookeeper-1
+    - zookeeper-2
+    - zookeeper-3
+
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
   ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
@@ -36,6 +44,43 @@ x-zookeeper-environment: &zookeeper-environment
     -Dzookeeper.authProvider.sasl=org.apache.zookeeper.server.auth.SASLAuthenticationProvider
     -Dzookeeper.allowSaslFailedClients=false
     -Dzookeeper.requireClientAuthScheme=sasl
+
+x-kafka-environment: &kafka-environment
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+  KAFKA_DELETE_TOPIC_ENABLE: false
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+
+  KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281
+  KAFKA_ZOOKEEPER_SASL_CLIENT: 'true'
+  KAFKA_ZOOKEEPER_SET_ACL: 'true'
+  KAFKA_ZOOKEEPER_SSL_CLIENT_ENABLE: true
+  KAFKA_ZOOKEEPER_SECURITY_PROTOCOL: SASL_SSL
+  KAFKA_ZOOKEEPER_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty
+  KAFKA_ZOOKEEPER_SSL_TRUSTSTORE_LOCATION: /etc/kafka/secrets/truststore.jks
+  KAFKA_ZOOKEEPER_SSL_TRUSTSTORE_PASSWORD: changeit
+  KAFKA_ZOOKEEPER_SSL_KEYSTORE_PASSWORD: changeit
+
+  KAFKA_SSL_CLIENT_AUTH: required
+  KAFKA_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: https
+  KAFKA_SSL_KEYSTORE_TYPE: PKCS12
+  KAFKA_SSL_TRUSTSTORE_TYPE: JKS
+  KAFKA_SSL_TRUSTSTORE_FILENAME: truststore.jks
+
+  KAFKA_SSL_KEYSTORE_CREDENTIALS: /etc/kafka/secrets/kafka_creds
+  KAFKA_SSL_KEY_CREDENTIALS: /etc/kafka/secrets/kafka_creds
+  KAFKA_SSL_TRUSTSTORE_CREDENTIALS: /etc/kafka/secrets/kafka_creds
+
+  KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+  KAFKA_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+  KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+  KAFKA_LISTENER_NAME_SASL_SSL_SSL_CLIENT_AUTH: need
+  KAFKA_LISTENER_NAME_EXTERNAL_SSL_CLIENT_AUTH: required
+
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_SSL:SASL_SSL,EXTERNAL:SASL_SSL
+  KAFKA_INTER_BROKER_LISTENER_NAME: SASL_SSL
+  KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
+  KAFKA_SUPER_USERS: User:kafka_server_admin
+  KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf"
 
 services:
   vault:
@@ -131,6 +176,27 @@ services:
     volumes:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
+  
+  kafka-1:
+    <<: *kafka-base
+    container_name: kafka-1
+    hostname: kafka-1
+    ports:
+      - 9093:9093
+      - 9094:9094
+    environment:
+      <<: *kafka-environment
+      KAFKA_BROKER_ID: 1
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka-1.p12
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-1:9093,EXTERNAL://localhost:9094
+      KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/kafka-1.p12
+    volumes:
+      - kafka_1:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+
+
 
 volumes:
   vault_config:
@@ -143,6 +209,9 @@ volumes:
   zookeeper_data_2:
   zookeeper_log_3:
   zookeeper_data_3:
+  kafka_1:
+  kafka_2:
+  kafka_3:
 
 networks:
   infra:

@@ -215,8 +215,8 @@ openssl pkcs12 -export \
   -certfile /vault/certs/int-ca.pem \
   -name kafka-1 \
   -passout pass:changeit \
-  -out /vault/certs/kafka-1.p12
-chmod 644 /vault/certs/kafka-1.p12
+  -out /vault/secrets/kafka-1.p12
+chmod 644 /vault/secrets/kafka-1.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-2" \
@@ -235,8 +235,8 @@ openssl pkcs12 -export \
   -certfile /vault/certs/int-ca.pem \
   -name kafka-2 \
   -passout pass:changeit \
-  -out /vault/certs/kafka-2.p12
-chmod 644 /vault/certs/kafka-2.p12
+  -out /vault/secrets/kafka-2.p12
+chmod 644 /vault/secrets/kafka-2.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-3" \
@@ -255,8 +255,8 @@ openssl pkcs12 -export \
   -certfile /vault/certs/int-ca.pem \
   -name kafka-3 \
   -passout pass:changeit \
-  -out /vault/certs/kafka-3.p12
-chmod 644 /vault/certs/kafka-3.p12
+  -out /vault/secrets/kafka-3.p12
+chmod 644 /vault/secrets/kafka-3.p12
 ```
 
 6. Собрать truststore:

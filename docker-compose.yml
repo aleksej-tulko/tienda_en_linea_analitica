@@ -24,6 +24,7 @@ x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_TICK_TIME: 2000
   ZOOKEEPER_INIT_LIMIT: 5
   ZOOKEEPER_SYNC_LIMIT: 2
+  ZOOKEEPER_CLIENT_PORT: 2181
   ZOOKEEPER_SECURE_CLIENT_PORT: 2281
   ZOOKEEPER_SERVER_CNXN_FACTORY: org.apache.zookeeper.server.NettyServerCnxnFactory
 

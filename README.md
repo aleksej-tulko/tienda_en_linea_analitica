@@ -23,22 +23,22 @@ export VAULT_TOKEN=XXXX # Подставить Initial Root Token из файл�
 # ПУНКТЫ 3-12 ВЫПОЛНЯТЬ В ШЕЛЛЕ VAULT!!!!
 ```
 
-3. Настроить Vault для создания корневого сертификата:
+3. Настроить Vault для создания корневого и промежуточных сертификатов и собрать truststore:
 
 ```bash
 vault secrets enable -path=root-ca pki
+
 vault secrets tune -max-lease-ttl=87600h root-ca
+
 vault write -field=certificate root-ca/root/generate/internal \
   common_name="Acme Root CA" ttl=87600h > /vault/certs/root-ca.pem
+
 vault write root-ca/config/urls \
   issuing_certificates="$VAULT_ADDR/v1/root-ca/ca" \
   crl_distribution_points="$VAULT_ADDR/v1/root-ca/crl"
-```
 
-4. Настроить Vault для создания промежуточного сертификата:
-
-```bash
 vault secrets enable -path=int-ca pki
+
 vault secrets tune -max-lease-ttl=43800h int-ca
 
 vault write -field=csr int-ca/intermediate/generate/internal \
@@ -53,9 +53,25 @@ vault write int-ca/intermediate/set-signed \
 vault write int-ca/config/urls \
   issuing_certificates="$VAULT_ADDR/v1/int-ca/ca" \
   crl_distribution_points="$VAULT_ADDR/v1/int-ca/crl"
+
+keytool -importcert -alias root-ca \
+  -file /vault/certs/root-ca.pem \
+  -keystore /vault/certs/truststore.jks \
+  -storepass changeit \
+  -trustcacerts -noprompt \
+  -storetype JKS
+
+keytool -importcert -alias int-ca \
+  -file /vault/certs/int-ca.pem \
+  -keystore /vault/certs/truststore.jks \
+  -storepass changeit \
+  -trustcacerts -noprompt \
+  -storetype JKS
+
+cp /vault/certs/truststore.jks /vault/secrets
 ```
 
-5. Создать роли для выпуска конечных сертификатов,сгенерировать сами сертификаты и собрать keystore для сервисов:
+4. Создать роли для выпуска конечных сертификатов,сгенерировать сами сертификаты и собрать keystore для сервисов:
 
 ```bash
 vault write int-ca/roles/zookeeper \
@@ -259,31 +275,16 @@ openssl pkcs12 -export \
 chmod 644 /vault/secrets/kafka-3.p12
 ```
 
-6. Собрать truststore:
+5. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI
 ```bash
-keytool -importcert -alias root-ca \
-  -file /vault/certs/root-ca.pem \
-  -keystore /vault/certs/truststore.jks \
-  -storepass changeit \
-  -trustcacerts -noprompt \
-  -storetype JKS
+sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 ui -d
 
-keytool -importcert -alias int-ca \
-  -file /vault/certs/int-ca.pem \
-  -keystore /vault/certs/truststore.jks \
-  -storepass changeit \
-  -trustcacerts -noprompt \
-  -storetype JKS
-
-cp /vault/certs/truststore.jks /vault/secrets
+# Zoonavigator будет доступен по адресу https://<your_host_ip>:9443. Мой адрес https://192.168.1.128:9443
+# Connection string 'zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka'
+# Юзер и пароль для входа -  navigator:navigator_pass
 ```
 
-7. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI
-```bash
-sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 ui
-```
-
-8. Раздать права в Kafka
+6. Раздать права в Kafka
 ```bash
 sudo docker compose exec -it kafka-1 kafka-acls \
   --bootstrap-server kafka-1:9093 \

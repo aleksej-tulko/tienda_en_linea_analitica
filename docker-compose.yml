@@ -83,7 +83,10 @@ x-kafka-environment: &kafka-environment
   KAFKA_INTER_BROKER_LISTENER_NAME: SASL_SSL
   KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
   KAFKA_SUPER_USERS: User:kafka_server_admin
-  KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf"
+
+  KAFKA_OPTS: >-
+    -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
+    -javaagent:/opt/jmx_prometheus_javaagent.jar=7071:/etc/kafka/kafka-2_0_0.yml
 
 services:
   vault:
@@ -309,7 +312,7 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
-  jmx-kafka:
+  jmx-kafka-1:
     <<: *app-base
     image: jmx-prometheus-exporter:0.3.0
     container_name: jmx-kafka
@@ -319,10 +322,11 @@ services:
     depends_on:
       - kafka101
     environment:
-      CONFIG_YML: "/etc/jmx_exporter/config.yml"
-      JVM_OPTS: ${PROMETHEUS_JMX_AGENT_JVM_OPTS}
+      CONFIG_YML: /etc/jmx_exporter/config.yml
+      JVM_OPTS: java -javaagent:/opt/jmx_prometheus_javaagent-0.15.0.jar=6969:/etc/jmx_exporter/config.yml
     volumes:
-      - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
+      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/jmx_exporter/config.yml
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent-0.15.0.jar
 
 
 volumes:

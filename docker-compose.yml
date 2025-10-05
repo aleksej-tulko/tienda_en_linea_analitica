@@ -16,17 +16,6 @@ x-kafka-base: &kafka-base
     - zookeeper-2
     - zookeeper-3
 
-x-jmx-kafka-base: &jmx-kafka-base
-  <<: *app-base
-  image: cachengo/jmx-prometheus-exporter:0.3.0
-  environment:
-    SERVICE_PORT: 6969
-    CONFIG_YML: /etc/jmx_exporter/config.yml
-  depends_on:
-    - kafka-1
-    - kafka-2
-    - kafka-3
-
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_QUORUM_LISTEN_ON_ALL_IPS: true
   ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
@@ -201,7 +190,7 @@ services:
     container_name: kafka-1
     hostname: kafka-1
     ports:
-      - 6969:6969
+      - 7000:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 1
@@ -222,6 +211,8 @@ services:
     <<: *kafka-base
     container_name: kafka-2
     hostname: kafka-2
+    ports:
+      - 7001:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 2
@@ -242,6 +233,8 @@ services:
     <<: *kafka-base
     container_name: kafka-3
     hostname: kafka-3
+    ports:
+      - 7002:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 3
@@ -332,34 +325,6 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
-
-  jmx-kafka-1:
-    <<: *jmx-kafka-base
-    container_name: jmx-kafka-1
-    hostname: jmx-kafka-1
-    ports:
-      - 7000:6969
-    volumes:
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/jmx_exporter/config.yml
-  
-  jmx-kafka-2:
-    <<: *jmx-kafka-base
-    container_name: jmx-kafka-2
-    hostname: jmx-kafka-2
-    ports:
-      - 7001:6969
-    volumes:
-      - ./etc/jmx_exporter/config_kafka-2.yml:/etc/jmx_exporter/config.yml
-  
-  jmx-kafka-3:
-    <<: *jmx-kafka-base
-    container_name: jmx-kafka-3
-    hostname: jmx-kafka-3
-    ports:
-      - 7002:6969
-    volumes:
-      - ./etc/jmx_exporter/config_kafka-3.yml:/etc/jmx_exporter/config.yml:ro
-
 
 volumes:
   vault_config:

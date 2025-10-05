@@ -200,6 +200,8 @@ services:
     <<: *kafka-base
     container_name: kafka-1
     hostname: kafka-1
+    ports:
+      - 6969:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 1

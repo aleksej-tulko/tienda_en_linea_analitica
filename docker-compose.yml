@@ -314,7 +314,7 @@ services:
 
   jmx-kafka-1:
     <<: *app-base
-    image: jmx-prometheus-exporter:0.3.0
+    image: cachengo/jmx-prometheus-exporter:0.3.0
     container_name: jmx-kafka
     hostname: jmx-kafka
     ports:

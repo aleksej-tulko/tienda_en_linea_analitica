@@ -19,11 +19,9 @@ cat init.txt
 sudo docker compose exec -it vault sh
 vault operator unseal # Запросит ввести Unseal Key 1 из файла init.txt
 export VAULT_TOKEN=XXXX # Подставить Initial Root Token из файла init.txt
-
-# ПУНКТЫ 3-12 ВЫПОЛНЯТЬ В ШЕЛЛЕ VAULT!!!!
 ```
 
-3. Настроить Vault для создания корневого и промежуточных сертификатов и собрать truststore:
+3. Настроить Vault для создания корневого и промежуточных сертификатов. Cобрать truststore и keystore'ы для сервисов:
 
 ```bash
 vault secrets enable -path=root-ca pki
@@ -68,12 +66,6 @@ keytool -importcert -alias int-ca \
   -trustcacerts -noprompt \
   -storetype JKS
 
-cp /vault/certs/truststore.jks /vault/secrets
-```
-
-4. Создать роли для выпуска конечных сертификатов,сгенерировать сами сертификаты и собрать keystore для сервисов:
-
-```bash
 vault write int-ca/roles/zookeeper \
   allowed_domains="localhost,zookeeper-1,zookeeper-2,zookeeper-3" \
   allow_subdomains=true allow_bare_domains=true \
@@ -275,42 +267,38 @@ openssl pkcs12 -export \
 chmod 644 /vault/secrets/kafka-3.p12
 ```
 
-5. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI
+4. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:
 ```bash
-sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 ui -d
+sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 ui prometheus grafana alertmanager -d
 
 # Zoonavigator будет доступен по адресу https://<your_host_ip>:9443. Мой адрес https://192.168.1.128:9443
 # Connection string 'zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka'
 # Юзер и пароль для входа -  navigator:navigator_pass
 ```
 
-6. Раздать права в Kafka
+5. Создать топики и раздать права в Kafka.
 ```bash
-sudo docker compose exec -it kafka-1 kafka-acls \
-  --bootstrap-server kafka-1:9093 \
+sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" kafka-1 bash -lc "
+kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Describe --operation DescribeConfigs \
   --cluster \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
+  --command-config /etc/kafka/secrets/adminclient-configs.conf &&
 
-sudo docker compose exec -it kafka-1 \
-  kafka-acls --bootstrap-server kafka-1:9093 \
+kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation DescribeConfigs \
   --cluster \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
+  --command-config /etc/kafka/secrets/adminclient-configs.conf &&
 
-sudo docker compose exec -it kafka-1 kafka-acls \
-  --bootstrap-server kafka-1:9093 \
+kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Read --topic '*' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
+  --command-config /etc/kafka/secrets/adminclient-configs.conf &&
 
-sudo docker compose exec -it kafka-1 kafka-acls \
-  --bootstrap-server kafka-1:9093 \
+kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Describe --group '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
+"
 ```
-
-zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka

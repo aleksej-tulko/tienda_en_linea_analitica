@@ -309,6 +309,21 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
+  jmx-kafka:
+    <<: *app-base
+    image: jmx-prometheus-exporter:0.3.0
+    container_name: jmx-kafka
+    hostname: jmx-kafka
+    ports:
+      - 5556:5556
+    depends_on:
+      - kafka101
+    environment:
+      CONFIG_YML: "/etc/jmx_exporter/config.yml"
+      JVM_OPTS: ${PROMETHEUS_JMX_AGENT_JVM_OPTS}
+    volumes:
+      - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
+
 
 volumes:
   vault_config:

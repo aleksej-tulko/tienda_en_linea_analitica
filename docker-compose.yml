@@ -86,7 +86,7 @@ x-kafka-environment: &kafka-environment
 
   KAFKA_OPTS: >-
     -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-    -javaagent:/opt/jmx_prometheus_javaagent.jar=7071:/etc/kafka/kafka-2_0_0.yml
+    -javaagent:/opt/jmx_prometheus_javaagent.jar=7071:/etc/kafka/config_kafka-1.yml
 
 services:
   vault:

@@ -336,7 +336,7 @@ services:
     container_name: jmx-kafka-1
     hostname: jmx-kafka-1
     ports:
-      - 7000:7000
+      - 7000:6969
     volumes:
       - ./etc/jmx_exporter/config_kafka-1.yml:/etc/jmx_exporter/config.yml
   
@@ -345,7 +345,7 @@ services:
     container_name: jmx-kafka-2
     hostname: jmx-kafka-2
     ports:
-      - 7001:7001
+      - 7001:6969
     volumes:
       - ./etc/jmx_exporter/config_kafka-2.yml:/etc/jmx_exporter/config.yml
   
@@ -354,7 +354,7 @@ services:
     container_name: jmx-kafka-3
     hostname: jmx-kafka-3
     ports:
-      - 7002:7002
+      - 7002:6969
     volumes:
       - ./etc/jmx_exporter/config_kafka-3.yml:/etc/jmx_exporter/config.yml:ro
 

@@ -201,6 +201,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
 
   kafka-2:
     <<: *kafka-base

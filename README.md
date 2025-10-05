@@ -66,6 +66,8 @@ keytool -importcert -alias int-ca \
   -trustcacerts -noprompt \
   -storetype JKS
 
+cp /vault/certs/truststore.jks /vault/secrets/
+
 vault write int-ca/roles/zookeeper \
   allowed_domains="localhost,zookeeper-1,zookeeper-2,zookeeper-3" \
   allow_subdomains=true allow_bare_domains=true \

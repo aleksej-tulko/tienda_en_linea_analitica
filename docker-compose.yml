@@ -17,10 +17,10 @@ x-kafka-base: &kafka-base
     - zookeeper-3
 
 x-zookeeper-environment: &zookeeper-environment
-  ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
-  ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
-  ZOOKEEPER_SERVER_3: zookeeper-3:2888:3888
-  #ZOOKEEPER_SERVERS: zookeeper-1:2888:3888,zookeeper-2:2888:3888,zookeeper-3:2888:3888
+  # ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
+  # ZOOKEEPER_SERVER_2: zookeeper-2:2888:3888
+  # ZOOKEEPER_SERVER_3: zookeeper-3:2888:3888
+  # ZOOKEEPER_SERVERS: zookeeper-1:2888:3888,zookeeper-2:2888:3888,zookeeper-3:2888:3888
 
   ZOOKEEPER_TICK_TIME: 2000
   ZOOKEEPER_INIT_LIMIT: 5
@@ -111,6 +111,7 @@ services:
       <<: *zookeeper-environment
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-1.p12
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888,zookeeper-2:2888:3888,zookeeper-3:2888:3888
     volumes:
       - zookeeper_log_1:/var/lib/zookeeper/log
       - zookeeper_data_1:/var/lib/zookeeper/data
@@ -125,6 +126,7 @@ services:
       <<: *zookeeper-environment
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-2.p12
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888,zookeeper-2:2888:3888,zookeeper-3:2888:3888
     volumes:
       - zookeeper_log_2:/var/lib/zookeeper/log
       - zookeeper_data_2:/var/lib/zookeeper/data
@@ -139,6 +141,7 @@ services:
       <<: *zookeeper-environment
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-3.p12
+      ZOOKEEPER_SERVERS: zookeeper-1:2888:3888,zookeeper-2:2888:3888,zookeeper-3:2888:3888
     volumes:
       - zookeeper_log_3:/var/lib/zookeeper/log
       - zookeeper_data_3:/var/lib/zookeeper/data

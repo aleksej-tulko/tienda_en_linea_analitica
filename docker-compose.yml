@@ -19,8 +19,6 @@ x-kafka-base: &kafka-base
 x-jmx-kafka-base: &jmx-kafka-base
   <<: *app-base
   image: cachengo/jmx-prometheus-exporter:0.3.0
-  ports:
-    - 6969:6969
   environment:
     SERVICE_PORT: 6969
     CONFIG_YML: /etc/jmx_exporter/config.yml
@@ -331,6 +329,8 @@ services:
     <<: *jmx-kafka-base
     container_name: jmx-kafka-1
     hostname: jmx-kafka-1
+    ports:
+      - 7000:6969
     volumes:
       - ./etc/jmx_exporter/config_kafka-1.yml:/etc/jmx_exporter/config.yml
   
@@ -338,6 +338,8 @@ services:
     <<: *jmx-kafka-base
     container_name: jmx-kafka-2
     hostname: jmx-kafka-2
+    ports:
+      - 7001:6969
     volumes:
       - ./etc/jmx_exporter/config_kafka-2.yml:/etc/jmx_exporter/config.yml
   
@@ -345,6 +347,8 @@ services:
     <<: *jmx-kafka-base
     container_name: jmx-kafka-3
     hostname: jmx-kafka-3
+    ports:
+      - 7002:6969
     volumes:
       - ./etc/jmx_exporter/config_kafka-3.yml:/etc/jmx_exporter/config.yml:ro
 

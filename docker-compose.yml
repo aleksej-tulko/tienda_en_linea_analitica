@@ -95,7 +95,7 @@ x-kafka-environment: &kafka-environment
   KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
   KAFKA_SUPER_USERS: User:kafka_server_admin
 
-  KAFKA_JMX_PORT: 6969
+  KAFKA_JMX_PORT: 8841
 
   KAFKA_OPTS: >-
     -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf

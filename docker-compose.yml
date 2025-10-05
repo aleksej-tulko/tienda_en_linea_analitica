@@ -13,8 +13,6 @@ x-kafka-base: &kafka-base
   image: confluentinc/cp-kafka:7.0.10
   depends_on:
     - zookeeper-1
-    - zookeeper-2
-    - zookeeper-3
 
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
@@ -51,7 +49,7 @@ x-kafka-environment: &kafka-environment
   KAFKA_DELETE_TOPIC_ENABLE: false
   KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
-  KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
+  KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281/kafka
   KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 18000
   KAFKA_ZOOKEEPER_SASL_CLIENT: 'true'
   KAFKA_ZOOKEEPER_SET_ACL: 'true'

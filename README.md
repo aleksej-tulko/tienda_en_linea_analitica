@@ -306,3 +306,5 @@ sudo docker compose exec -it kafka-1 kafka-acls \
   --operation Describe --group '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 ```
+
+zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka

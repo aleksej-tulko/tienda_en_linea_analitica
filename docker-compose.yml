@@ -320,7 +320,7 @@ services:
     ports:
       - 5556:5556
     depends_on:
-      - kafka101
+      - kafka-1
     environment:
       CONFIG_YML: /etc/jmx_exporter/config.yml
       JVM_OPTS: java -javaagent:/opt/jmx_prometheus_javaagent-0.15.0.jar=6969:/etc/jmx_exporter/config.yml

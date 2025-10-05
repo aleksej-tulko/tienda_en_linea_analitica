@@ -16,7 +16,7 @@
 # Kafka Broker JMX Metrics :
 # Compatible with version Apache Kafka v3.x.x / Confluent Plateform 7.x.x
 #---------------------------------------------------------------------------------------------------------
-hostPort: kafka-1:9093
+# hostPort: kafka-1:9093
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
 

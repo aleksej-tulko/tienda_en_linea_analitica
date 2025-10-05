@@ -315,20 +315,18 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
   jmx-kafka-1:
-    <<: *app-base
     image: cachengo/jmx-prometheus-exporter:0.3.0
     container_name: jmx-kafka
     hostname: jmx-kafka
-    ports:
-      - 5556:5556
     depends_on:
       - kafka-1
+    ports:
+      - 6969:6969
     environment:
+      SERVICE_PORT: 6969
       CONFIG_YML: /etc/jmx_exporter/config.yml
-      JVM_OPTS: java -javaagent:/opt/jmx_prometheus_javaagent-0.15.0.jar=6969:/etc/jmx_exporter/config.yml
     volumes:
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/jmx_exporter/config.yml
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent-0.15.0.jar
+      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/jmx_exporter/config.yml:ro
 
 
 volumes:

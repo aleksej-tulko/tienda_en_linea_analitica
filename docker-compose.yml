@@ -298,6 +298,7 @@ services:
     command: --config.file=/etc/prometheus/prometheus.yml
   
   alertmanager:
+    <<: *app-base
     image: prom/alertmanager:main
     container_name: alertmanager
     hostname: alertmanager

@@ -215,7 +215,7 @@ services:
       - 8000:6969
     environment:
       <<: *kafka-environment
-      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_ID: 4
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-replica-1.p12
       KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-replica-1:9093
@@ -261,7 +261,7 @@ services:
       - 8001:6969
     environment:
       <<: *kafka-environment
-      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_ID: 5
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-replica-2.p12
       KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-replica-2:9093
@@ -307,7 +307,7 @@ services:
       - 8002:6969
     environment:
       <<: *kafka-environment
-      KAFKA_BROKER_ID: 1
+      KAFKA_BROKER_ID: 6
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-replica-3.p12
       KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-replica-3:9093

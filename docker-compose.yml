@@ -52,7 +52,6 @@ x-kafka-environment: &kafka-environment
   KAFKA_DELETE_TOPIC_ENABLE: false
   KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
-  KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
   KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 30000
   KAFKA_ZOOKEEPER_SASL_CLIENT: 'true'
   KAFKA_ZOOKEEPER_SET_ACL: 'true'
@@ -198,6 +197,7 @@ services:
       KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-1:9093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-1.p12
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
     volumes:
       - kafka_1:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
@@ -206,6 +206,29 @@ services:
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
+
+  kafka-replica-1:
+    <<: *kafka-base
+    container_name: kafka-replica-1
+    hostname: kafka-replica-1
+    ports:
+      - 8000:6969
+    environment:
+      <<: *kafka-environment
+      KAFKA_BROKER_ID: 1
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka-replica-1.p12
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-replica-1:9093
+      KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-replica-1.p12
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka-replica
+    volumes:
+      - kafka_replica_1:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-replica-1.yml:/etc/kafka/config_kafka-replica-1.yml
 
   kafka-2:
     <<: *kafka-base
@@ -220,6 +243,7 @@ services:
       KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-2:9093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-2.p12
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
     volumes:
       - kafka_2:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
@@ -228,6 +252,29 @@ services:
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
+  
+  kafka-replica-2:
+    <<: *kafka-base
+    container_name: kafka-replica-2
+    hostname: kafka-replica-2
+    ports:
+      - 8001:6969
+    environment:
+      <<: *kafka-environment
+      KAFKA_BROKER_ID: 1
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka-replica-2.p12
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-replica-2:9093
+      KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-replica-2.p12
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka-replica
+    volumes:
+      - kafka_replica_2:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-replica-2.yml:/etc/kafka/config_kafka-replica-2.yml
 
   kafka-3:
     <<: *kafka-base
@@ -242,6 +289,7 @@ services:
       KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
       KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-3:9093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-3.p12
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
     volumes:
       - kafka_3:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
@@ -250,6 +298,29 @@ services:
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
+
+  kafka-replica-3:
+    <<: *kafka-base
+    container_name: kafka-replica-3
+    hostname: kafka-replica-3
+    ports:
+      - 8001:6969
+    environment:
+      <<: *kafka-environment
+      KAFKA_BROKER_ID: 1
+      KAFKA_SSL_KEYSTORE_FILENAME: kafka-replica-3.p12
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-replica-3:9093
+      KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-replica-3.p12
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka-replica
+    volumes:
+      - kafka_replica_3:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-replica-3.yml:/etc/kafka/config_kafka-replica-3.yml
 
   ui:
     <<: *app-base
@@ -438,6 +509,9 @@ volumes:
   kafka_1:
   kafka_2:
   kafka_3:
+  kafka_replica_1:
+  kafka_replica_2:
+  kafka_replica_3:
 
 networks:
   infra:

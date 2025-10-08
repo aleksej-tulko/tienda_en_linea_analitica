@@ -199,7 +199,7 @@ openssl pkcs12 -export \
 chmod 644 /vault/certs/zoonavigator.p12
 
 vault write int-ca/roles/kafka-broker \
-  allowed_domains="localhost,kafka-1,kafka-2,kafka-3" \
+  allowed_domains="localhost,kafka-1,kafka-2,kafka-3,kafka-replica-1,kafka-replica-2,kafka-replica-3" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -229,6 +229,26 @@ openssl pkcs12 -export \
 chmod 644 /vault/secrets/kafka-1.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
+  common_name="kafka-replica-1" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-replica-1.json
+
+jq -r ".data.private_key"  /vault/certs/kafka-replica-1.json > /vault/certs/kafka-replica-1.key
+jq -r ".data.certificate"  /vault/certs/kafka-replica-1.json > /vault/certs/kafka-replica-1.crt
+chmod 600 /vault/certs/kafka-replica-1.crt
+chmod 600 /vault/certs/kafka-replica-1.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/kafka-replica-1.key \
+  -in       /vault/certs/kafka-replica-1.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name kafka-replica-1 \
+  -passout pass:changeit \
+  -out /vault/secrets/kafka-replica-1.p12
+chmod 644 /vault/secrets/kafka-replica-1.p12
+
+vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-2" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -249,6 +269,26 @@ openssl pkcs12 -export \
 chmod 644 /vault/secrets/kafka-2.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
+  common_name="kafka-replica-2" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-replica-2.json
+
+jq -r ".data.private_key"  /vault/certs/kafka-replica-2.json > /vault/certs/kafka-replica-2.key
+jq -r ".data.certificate"  /vault/certs/kafka-replica-2.json > /vault/certs/kafka-replica-2.crt
+chmod 600 /vault/certs/kafka-replica-2.crt
+chmod 600 /vault/certs/kafka-replica-2.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/kafka-replica-2.key \
+  -in       /vault/certs/kafka-replica-2.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name kafka-replica-2 \
+  -passout pass:changeit \
+  -out /vault/secrets/kafka-replica-2.p12
+chmod 644 /vault/secrets/kafka-replica-2.p12
+
+vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-3" \
   alt_names="localhost" \
   ip_sans="127.0.0.1" \
@@ -267,6 +307,26 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/secrets/kafka-3.p12
 chmod 644 /vault/secrets/kafka-3.p12
+
+vault write -format=json int-ca/issue/kafka-broker \
+  common_name="kafka-replica-3" \
+  alt_names="localhost" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/kafka-replica-3.json
+
+jq -r ".data.private_key"  /vault/certs/kafka-replica-3.json > /vault/certs/kafka-replica-3.key
+jq -r ".data.certificate"  /vault/certs/kafka-replica-3.json > /vault/certs/kafka-replica-3.crt
+chmod 600 /vault/certs/kafka-replica-3.crt
+chmod 600 /vault/certs/kafka-replica-3.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/kafka-replica-3.key \
+  -in       /vault/certs/kafka-replica-3.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name kafka-replica-3 \
+  -passout pass:changeit \
+  -out /vault/secrets/kafka-replica-3.p12
+chmod 644 /vault/secrets/kafka-replica-3.p12
 ```
 
 4. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:

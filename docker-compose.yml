@@ -429,6 +429,7 @@ services:
   kafka-connect:
     build:
       context: ./kafka-connect
+      dockerfile: Dockerfile
     container_name: kafka_connect
     hostname: kafka_connect
     # ports:

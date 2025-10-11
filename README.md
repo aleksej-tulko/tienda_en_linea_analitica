@@ -367,8 +367,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
   --operation All --topic '*' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf \
-  --group '*'
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \

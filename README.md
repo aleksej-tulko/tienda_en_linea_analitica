@@ -342,15 +342,10 @@ sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 
 5. Создать топики и раздать права в Kafka.
 ```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" kafka-1 bash -lc "
+# UI
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Describe --operation DescribeConfigs \
-  --cluster \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf &&
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:ui \
-  --operation DescribeConfigs \
   --cluster \
   --command-config /etc/kafka/secrets/adminclient-configs.conf &&
 
@@ -364,9 +359,10 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Describe --group '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+# Schema
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation All --topic '*' \
+  --operation Read --operation Write --topic '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \

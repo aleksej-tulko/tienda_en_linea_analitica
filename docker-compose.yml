@@ -425,6 +425,41 @@ services:
       KAFKA_CLUSTERS_1_PROPERTIES_SASL_JAAS_CONFIG: >
         org.apache.kafka.common.security.plain.PlainLoginModule required
         username="ui" password="ui_password";
+
+  connect:
+    <<: *app-base
+    image: cnfldemos/cp-server-connect-datagen:0.5.3-7.1.0
+    hostname: connect
+    container_name: connect
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - kafka-replica-1
+      - kafka-replica-2
+      - kafka-replica-3
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: 'kafka-1:9093,kafka-2:9093,kafka-3:9093'
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_REST_PORT: '28082'
+      CONNECT_GROUP_ID: compose-connect-group
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
+      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.4.0.jar
+      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
+      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+
   
   prometheus:
     <<: *app-base

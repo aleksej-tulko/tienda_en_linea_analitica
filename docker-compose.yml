@@ -368,7 +368,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: changeit
       SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORYTHM: ''
     volumes:
-      - vault_certs:/etc/kafka/certs
+      - vault_certs:/etc/kafka/secrets
 
   ui:
     <<: *app-base

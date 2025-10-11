@@ -452,8 +452,7 @@ services:
       CONNECT_SASL_MECHANISM: PLAIN
       CONNECT_SASL_JAAS_CONFIG: >
         org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="connect"
-        password="connect_pass";
+        username="connect" password="connect_pass";
       CONNECT_SSL_TRUSTSTORE_LOCATION: /etc/kafka/certs/truststore.jks
       CONNECT_SSL_TRUSTSTORE_PASSWORD: changeit
       CONNECT_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12

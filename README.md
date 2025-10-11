@@ -167,6 +167,7 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/client.p12
 chmod 644 /vault/certs/client.p12
+cp /vault/certs/client.p12 /vault/secrets
 
 vault write int-ca/roles/zoonavigator \
   allowed_domains="localhost,zoonavigator" \

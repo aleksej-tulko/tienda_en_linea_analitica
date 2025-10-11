@@ -345,9 +345,10 @@ services:
       - ./etc/jmx_exporter/config_kafka-replica-3.yml:/etc/kafka/config_kafka-replica-3.yml
 
   schema-registry:
+    <<: *app-base
     image: confluentinc/cp-schema-registry:7.4.0
-    hostname: schema-registry
-    container_name: schema-registry
+    hostname: schema_registry
+    container_name: schema_registry
     depends_on:
       - kafka-1
       - kafka-2
@@ -368,6 +369,8 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: changeit
       SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORYTHM: ''
+    volumes:
+      - vault_certs:/etc/kafka/certs
 
   ui:
     <<: *app-base

@@ -364,7 +364,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG: >
         org.apache.kafka.common.security.plain.PlainLoginModule required
         username="schema" password="schema_pass";
-      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/client.p12
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: changeit
       SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORYTHM: ''
     volumes:

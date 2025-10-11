@@ -330,16 +330,26 @@ openssl pkcs12 -export \
 chmod 644 /vault/secrets/kafka-replica-3.p12
 ```
 
-4. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:
+4. Скачать коннекторы для Kafka Connect:
 ```bash
-sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 ui prometheus grafana alertmanager -d
+mkdir confluent-hub-components
+curl -O https://repo1.maven.org/maven2/io/debezium/debezium-connector-postgres/3.2.0.Final/debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
+tar -xvf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
+mv debezium-connector-postgres confluent-hub-components
+curl -O https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar
+mv jmx_prometheus_javaagent-0.15.0.jar kafka-connect
+```
+
+5. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:
+```bash
+sudo docker compose up -d
 
 # Zoonavigator будет доступен по адресу https://<your_host_ip>:9443. Мой адрес https://192.168.1.128:9443
 # Connection string 'zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka'
 # Юзер и пароль для входа -  navigator:navigator_pass
 ```
 
-5. Создать топики и раздать права в Kafka.
+6. Создать топики и раздать права в Kafka.
 ```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" kafka-1 bash -lc "
 # UI

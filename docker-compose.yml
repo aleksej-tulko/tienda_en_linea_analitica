@@ -433,10 +433,6 @@ services:
       dockerfile: Dockerfile
     container_name: kafka_connect
     hostname: kafka_connect
-    # ports:
-    #   - 8083:8083
-    #   - 9875:9875
-    #   - 9876:9876
     depends_on:
       - kafka-1
       - kafka-2
@@ -473,6 +469,7 @@ services:
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
     volumes:
       - vault_certs:/etc/kafka/certs
+      - ./confluent-hub-components/:/etc/kafka-connect/jars
   
   prometheus:
     <<: *app-base

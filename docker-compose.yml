@@ -50,7 +50,15 @@ x-zookeeper-environment: &zookeeper-environment
 x-kafka-environment: &kafka-environment
   KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
   KAFKA_DELETE_TOPIC_ENABLE: false
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+  KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+  KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+
   KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
 
   KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 30000
   KAFKA_ZOOKEEPER_SASL_CLIENT: 'true'
@@ -78,7 +86,7 @@ x-kafka-environment: &kafka-environment
   KAFKA_LISTENER_NAME_SASL_SSL_SSL_CLIENT_AUTH: need
   KAFKA_LISTENER_NAME_EXTERNAL_SSL_CLIENT_AUTH: required
 
-  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_SSL:SASL_SSL,EXTERNAL:SASL_SSL
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_SSL:SASL_SSL
   KAFKA_INTER_BROKER_LISTENER_NAME: SASL_SSL
   KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
   KAFKA_SUPER_USERS: User:kafka_server_admin
@@ -335,6 +343,31 @@ services:
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka-replica-3.yml:/etc/kafka/config_kafka-replica-3.yml
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.4.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - kafka-replica-1
+      - kafka-replica-2
+      - kafka-replica-3
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka-1:9093,kafka-2:9093,kafka-3:9093'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SASL_PLAINTEXT
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_MECHANISM: PLAIN
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG: >
+        org.apache.kafka.common.security.plain.PlainLoginModule required
+        username="schema" password="schema_pass";
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: changeit
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORYTHM: ''
 
   ui:
     <<: *app-base

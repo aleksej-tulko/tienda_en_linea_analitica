@@ -456,9 +456,9 @@ services:
         password="connect_pass";
       CONNECT_SSL_TRUSTSTORE_LOCATION: /etc/kafka/certs/truststore.jks
       CONNECT_SSL_TRUSTSTORE_PASSWORD: changeit
-      CONNECT_SSL_KEY_STORE_LOCATION: /etc/kafka/certs/client.p12
+      CONNECT_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
       CONNECT_SSL_KEYSTORE_PASSWORD: changeit
-      # CONNECT_SSL_KEY_PASSWORD: changeit
+      CONNECT_SSL_KEY_PASSWORD: changeit
 
       CONNECT_CONFIG_STORAGE_TOPIC: connect-config-storage
       CONNECT_OFFSET_STORAGE_TOPIC: connect-offset-storage

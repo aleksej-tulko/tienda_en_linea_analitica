@@ -443,20 +443,33 @@ services:
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
       CONNECT_REST_PORT: 8083
-      CONNECT_GROUP_ID: 'kafka_connect'
+      CONNECT_GROUP_ID: kafka_connect
+      CONNECT_REST_ADVERTISED_HOST_NAME: localhost
 
-      CONNECT_CONFIG_STORAGE_TOPIC: 'connect-config-storage'
-      CONNECT_OFFSET_STORAGE_TOPIC: 'connect-offset-storage'
-      CONNECT_STATUS_STORAGE_TOPIC: 'connect-status-storage'
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 2
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 2
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 2
+      CONNECT_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_SASL_MECHANISM: PLAIN
+      CONNECT_SASL_JAAS_CONFIG: >
+        org.apache.kafka.common.security.plain.PlainLoginModule required
+        username="connect"
+        password="connect_pass";
+      CONNECT_SSL_TRUSTSTORE_LOCATION: /etc/kafka/certs/truststore.jks
+      CONNECT_SSL_TRUSTSTORE_PASSWORD: changeit
+      CONNECT_SSL_KEY_STORE_LOCATION: /etc/kafka/certs/client.p12
+      CONNECT_SSL_KEYSTORE_PASSWORD: changeit
+      CONNECT_SSL_KEY_PASSWORD: changeit
 
-      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-config-storage
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offset-storage
+      CONNECT_STATUS_STORAGE_TOPIC: connect-status-storage
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
   
   prometheus:
     <<: *app-base

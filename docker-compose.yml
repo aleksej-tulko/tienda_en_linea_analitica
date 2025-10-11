@@ -427,6 +427,7 @@ services:
         username="ui" password="ui_password";
 
   kafka-connect:
+    <<: *app-base
     build:
       context: ./kafka-connect
       dockerfile: Dockerfile
@@ -471,6 +472,8 @@ services:
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+    volumes:
+      - vault_certs:/etc/kafka/certs
   
   prometheus:
     <<: *app-base

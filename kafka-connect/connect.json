@@ -7,7 +7,6 @@
     "topics":"mirroring",
     "source.cluster.bootstrap.servers":"kafka-1:9093,kafka-2:9093,kafka-3:9093",
     "target.cluster.bootstrap.servers":"kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
-    "producer.override.bootstrap.servers":"kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "offset-syncs.topic.replication.factor":"1",
     "offset-syncs.topic.location": "target",
     "enabled": true,

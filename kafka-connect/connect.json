@@ -52,7 +52,6 @@
     "target.sasl.mechanism": "PLAIN",
     "target.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";",
 
-    "target.producer.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "target.producer.security.protocol": "SASL_SSL",
     "target.producer.ssl.keystore.type": "PKCS12",
     "target.producer.ssl.truststore.type": "JKS",

@@ -515,7 +515,7 @@ services:
     container_name: nifi-1
     hostname: nifi-1
     volumes:
-      - vault_certs:/opt/certs
+      - vault_certs:/opt/nifi/certs
       - nifi-1_conf:/opt/nifi/nifi-current/conf
       - nifi-1_extensions:/opt/nifi/nifi-current/extensions
       - nifi-1_database_repository:/opt/nifi/nifi-current/database_repository
@@ -541,7 +541,7 @@ services:
     container_name: nifi-2
     hostname: nifi-2
     volumes:
-      - vault_certs:/opt/certs
+      - vault_certs:/opt/nifi/certs
       - nifi-2_conf:/opt/nifi/nifi-current/conf
       - nifi-2_extensions:/opt/nifi/nifi-current/extensions
       - nifi-2_database_repository:/opt/nifi/nifi-current/database_repository
@@ -567,7 +567,7 @@ services:
     container_name: nifi-3
     hostname: nifi-3
     volumes:
-      - vault_certs:/opt/certs
+      - vault_certs:/opt/nifi/certs
       - nifi-3_conf:/opt/nifi/nifi-current/conf
       - nifi-3_extensions:/opt/nifi/nifi-current/extensions
       - nifi-3_database_repository:/opt/nifi/nifi-current/database_repository

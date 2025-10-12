@@ -338,11 +338,12 @@ tar -xvf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 mv debezium-connector-postgres confluent-hub-components
 curl -O https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar
 mv jmx_prometheus_javaagent-0.15.0.jar kafka-connect
+rm -rf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 ```
 
 5. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:
 ```bash
-sudo docker compose up -d
+sudo docker compose up kafka-1 kafka-2 kafka-3 kafka-replica-1 kafka-replica-2 kafka-replica-3 -d
 
 # Zoonavigator будет доступен по адресу https://<your_host_ip>:9443. Мой адрес https://192.168.1.128:9443
 # Connection string 'zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka'
@@ -381,3 +382,9 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```
+
+7. Запустить остальные сервисы:
+```bash
+sudo docker compose up -d
+```
+

@@ -139,7 +139,7 @@ openssl pkcs12 -export \
 chmod 644 /vault/certs/zookeeper-3.p12
 
 vault write int-ca/roles/client \
-  allowed_domains="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect" \
+  allowed_domains="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect,nifi-1,nifi-2,nifi-3" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -150,7 +150,7 @@ vault write int-ca/roles/client \
 
 vault write -format=json int-ca/issue/client \
   common_name="client" \
-  alt_names="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect" \
+  alt_names="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect,nifi-1,nifi-2,nifi-3" \
   ip_sans="127.0.0.1" \
   > /vault/certs/client.json
 

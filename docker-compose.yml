@@ -16,6 +16,14 @@ x-kafka-base: &kafka-base
     - zookeeper-2
     - zookeeper-3
 
+x-nifi-base: &nifi-base
+  <<: *app-base
+  image: apache/nifi:1.21.0
+  depends_on:
+    - zookeeper-1
+    - zookeeper-2
+    - zookeeper-3
+
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_QUORUM_LISTEN_ON_ALL_IPS: true
   ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
@@ -89,6 +97,35 @@ x-kafka-environment: &kafka-environment
   KAFKA_SUPER_USERS: User:kafka_server_admin
 
   KAFKA_JMX_PORT: 8841
+
+x-nifi-environment: &nifi-environment
+  NIFI_WEB_HTTPS_PORT: 8443
+  NIFI_CLUSTER_IS_NODE: true
+  NIFI_ZK_CONNECT_STRING: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/nifi
+  NIFI_ELECTION_MAX_WAIT: 30 sec
+  NIFI_ELECTION_MAX_CANDIDATES: 1
+  NIFI_SENSITIVE_PROPS_KEY: 3e38a10eb5fb
+  NIFI_CLUSTER_NODE_PROTOCOL_PORT: 8082
+  NIFI_WEB_PROXY_HOST: 100.100.19.8:8443
+  SINGLE_USER_CREDENTIALS_USERNAME: nifi-user
+  SINGLE_USER_CREDENTIALS_PASSWORD: nifi-password
+  NIFI_SECURITY_USER_AUTHORIZER: single-user-authorizer
+  NIFI_SECURITY_USER_LOGIN_IDENTITY_PROVIDER: single-user-provider
+  INITIAL_ADMIN_IDENTITY: nifi-user
+  AUTH: tls
+  KEYSTORE_TYPE: PKCS12
+  KEYSTORE_PASSWORD: changeit
+  TRUSTSTORE_TYPE: JKS
+  TRUSTSTORE_PASSWORD: changeit
+  NIFI_ZOOKEEPER_AUTH_TYPE: sasl
+  JAVA_TOOL_OPTIONS: >-
+    -Djava.security.auth.login.config=/opt/nifi/conf/zookeeper-jaas.conf
+    -Dzookeeper.client.secure=true
+    -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
+    -Djavax.net.ssl.trustStore=/opt/nifi/certs/truststore.jks
+    -Djavax.net.ssl.trustStorePassword=changeit
+    -Djavax.net.ssl.keyStore=/opt/nifi/certs/client.p12
+    -Djavax.net.ssl.keyStorePassword=changeit
 
 services:
   vault:
@@ -472,6 +509,81 @@ services:
       - vault_certs:/etc/kafka/certs
       - ./confluent-hub-components/:/etc/kafka-connect/jars
       - ./kafka-connect/connect.json:/etc/kafka/connect.json
+
+  nifi-1:
+    <<: *nifi-base
+    container_name: nifi-1
+    hostname: nifi-1
+    volumes:
+      - vault_certs:/opt/certs
+      - nifi-1_conf:/opt/nifi/nifi-current/conf
+      - nifi-1_extensions:/opt/nifi/nifi-current/extensions
+      - nifi-1_database_repository:/opt/nifi/nifi-current/database_repository
+      - nifi-1_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - nifi-1_content_repository:/opt/nifi/nifi-current/content_repository
+      - nifi-1_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - nifi-1_state:/opt/nifi/nifi-current/state
+      - nifi-1_logs:/opt/nifi/nifi-current/logs
+    environment:
+      <<: *nifi-environment
+      NIFI_CLUSTER_ADDRESS: nifi-1
+      NIFI_WEB_HTTPS_HOST: nifi-1
+      KEYSTORE_PATH: /opt/certs/client.p12
+      TRUSTSTORE_PATH: /opt/certs/truststore.jks
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-1 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
+
+  nifi-2:
+    <<: *nifi-base
+    container_name: nifi-2
+    hostname: nifi-2
+    volumes:
+      - vault_certs:/opt/certs
+      - nifi-2_conf:/opt/nifi/nifi-current/conf
+      - nifi-2_extensions:/opt/nifi/nifi-current/extensions
+      - nifi-2_database_repository:/opt/nifi/nifi-current/database_repository
+      - nifi-2_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - nifi-2_content_repository:/opt/nifi/nifi-current/content_repository
+      - nifi-2_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - nifi-2_state:/opt/nifi/nifi-current/state
+      - nifi-2_logs:/opt/nifi/nifi-current/logs
+    environment:
+      <<: *nifi-environment
+      NIFI_CLUSTER_ADDRESS: nifi-2
+      NIFI_WEB_HTTPS_HOST: nifi-2
+      KEYSTORE_PATH: /opt/certs/client.p12
+      TRUSTSTORE_PATH: /opt/certs/truststore.jks
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-2 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
+  
+  nifi-3:
+    <<: *nifi-base
+    container_name: nifi-3
+    hostname: nifi-3
+    volumes:
+      - vault_certs:/opt/certs
+      - nifi-3_conf:/opt/nifi/nifi-current/conf
+      - nifi-3_extensions:/opt/nifi/nifi-current/extensions
+      - nifi-3_database_repository:/opt/nifi/nifi-current/database_repository
+      - nifi-3_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+      - nifi-3_content_repository:/opt/nifi/nifi-current/content_repository
+      - nifi-3_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+      - nifi-3_state:/opt/nifi/nifi-current/state
+      - nifi-3_logs:/opt/nifi/nifi-current/logs
+    environment:
+      <<: *nifi-environment
+      NIFI_CLUSTER_ADDRESS: nifi-3
+      NIFI_WEB_HTTPS_HOST: nifi-3
+      KEYSTORE_PATH: /opt/certs/client.p12
+      TRUSTSTORE_PATH: /opt/certs/truststore.jks
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-3 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
   
   prometheus:
     <<: *app-base

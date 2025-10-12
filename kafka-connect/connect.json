@@ -41,7 +41,7 @@
     "source.admin.ssl.truststore.password": "changeit",
     "source.admin.ssl.keystore.password": "changeit",
     "source.admin.sasl.mechanism": "PLAIN",
-    "source.admin.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"kafka_server_admin\" password=\"kafka_server_password\";",
+    "source.admin.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";",
 
     "target.producer.security.protocol": "SASL_SSL",
     "target.producer.ssl.keystore.type": "PKCS12",
@@ -61,6 +61,6 @@
     "target.admin.ssl.truststore.password": "changeit",
     "target.admin.ssl.keystore.password": "changeit",
     "target.admin.sasl.mechanism": "PLAIN",
-    "target.admin.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"kafka_server_admin\" password=\"kafka_server_password\";"
+    "target.admin.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";"
     }
 }

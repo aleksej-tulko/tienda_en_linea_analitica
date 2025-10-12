@@ -11,19 +11,7 @@
     "offset-syncs.topic.location": "target",
     "enabled": true,
     "tasks.max": 1,
-
-    "producer.override.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
-    "producer.override.security.protocol": "SASL_SSL",
-    "producer.override.ssl.keystore.type": "PKCS12",
-    "producer.override.ssl.truststore.type": "JKS",
-    "producer.override.ssl.keystore.location": "/etc/kafka/certs/client.p12",
-    "producer.override.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
-    "producer.override.ssl.truststore.password": "changeit",
-    "producer.override.ssl.keystore.password": "changeit",
-    "producer.override.sasl.mechanism": "PLAIN",
-    "producer.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";",
     
-
     "target.cluster.security.protocol": "SASL_SSL", 
     "target.cluster.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
     "target.cluster.ssl.truststore.password": "changeit",

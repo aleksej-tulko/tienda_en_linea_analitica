@@ -101,7 +101,7 @@ x-kafka-environment: &kafka-environment
 x-nifi-environment: &nifi-environment
   NIFI_WEB_HTTPS_PORT: 8443
   NIFI_CLUSTER_IS_NODE: true
-  NIFI_ZK_CONNECT_STRING: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/nifi
+  NIFI_ZK_CONNECT_STRING: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281
   NIFI_ELECTION_MAX_WAIT: 30 sec
   NIFI_ELECTION_MAX_CANDIDATES: 1
   NIFI_SENSITIVE_PROPS_KEY: 3e38a10eb5fb

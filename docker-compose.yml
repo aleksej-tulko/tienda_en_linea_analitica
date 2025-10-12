@@ -122,9 +122,9 @@ x-nifi-environment: &nifi-environment
     -Djava.security.auth.login.config=/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
     -Dzookeeper.client.secure=true
     -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
-    -Djavax.net.ssl.trustStore=/opt/nifi/certs/truststore.jks
+    -Djavax.net.ssl.trustStore=/opt/certs/truststore.jks
     -Djavax.net.ssl.trustStorePassword=changeit
-    -Djavax.net.ssl.keyStore=/opt/nifi/certs/client.p12
+    -Djavax.net.ssl.keyStore=/opt/certs/client.p12
     -Djavax.net.ssl.keyStorePassword=changeit
 
 services:
@@ -515,7 +515,7 @@ services:
     container_name: nifi-1
     hostname: nifi-1
     volumes:
-      - vault_certs:/opt/nifi/certs
+      - vault_certs:/opt/certs
       - nifi-1_conf:/opt/nifi/nifi-current/conf
       - nifi-1_extensions:/opt/nifi/nifi-current/extensions
       - nifi-1_database_repository:/opt/nifi/nifi-current/database_repository
@@ -529,8 +529,8 @@ services:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-1
       NIFI_WEB_HTTPS_HOST: nifi-1
-      KEYSTORE_PATH: /opt/nifi/certs/client.p12
-      TRUSTSTORE_PATH: /opt/nifi/certs/truststore.jks
+      KEYSTORE_PATH: /opt/certs/client.p12
+      TRUSTSTORE_PATH: /opt/certs/truststore.jks
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -541,7 +541,7 @@ services:
     container_name: nifi-2
     hostname: nifi-2
     volumes:
-      - vault_certs:/opt/nifi/certs
+      - vault_certs:/opt/certs
       - nifi-2_conf:/opt/nifi/nifi-current/conf
       - nifi-2_extensions:/opt/nifi/nifi-current/extensions
       - nifi-2_database_repository:/opt/nifi/nifi-current/database_repository
@@ -555,8 +555,8 @@ services:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-2
       NIFI_WEB_HTTPS_HOST: nifi-2
-      KEYSTORE_PATH: /opt/nifi/certs/client.p12
-      TRUSTSTORE_PATH: /opt/nifi/certs/truststore.jks
+      KEYSTORE_PATH: /opt/certs/client.p12
+      TRUSTSTORE_PATH: /opt/certs/truststore.jks
     entrypoint:
       - "/bin/bash"
       - "-c"
@@ -567,7 +567,7 @@ services:
     container_name: nifi-3
     hostname: nifi-3
     volumes:
-      - vault_certs:/opt/nifi/certs
+      - vault_certs:/opt/certs
       - nifi-3_conf:/opt/nifi/nifi-current/conf
       - nifi-3_extensions:/opt/nifi/nifi-current/extensions
       - nifi-3_database_repository:/opt/nifi/nifi-current/database_repository
@@ -581,8 +581,8 @@ services:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-3
       NIFI_WEB_HTTPS_HOST: nifi-3
-      KEYSTORE_PATH: /opt/nifi/certs/client.p12
-      TRUSTSTORE_PATH: /opt/nifi/certs/truststore.jks
+      KEYSTORE_PATH: /opt/certs/client.p12
+      TRUSTSTORE_PATH: /opt/certs/truststore.jks
     entrypoint:
       - "/bin/bash"
       - "-c"

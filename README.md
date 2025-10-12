@@ -354,45 +354,47 @@ sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 
 ```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" kafka-1 bash -lc "
 # UI
+# kafka-acls --bootstrap-server kafka-1:9093 \
+#   --add --allow-principal User:ui \
+#   --operation Describe --group '*' \
+#   --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Describe --operation DescribeConfigs \
   --cluster \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf &&
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Read --topic '*' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf &&
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:ui \
-  --operation Describe --group '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # Schema
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation All --topic '_schemas' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf \
-  --group 'schema-registry'
+  --operation Describe --operation Read --group 'schema_registry' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation Describe --group 'schema_registry' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
+  --operation Read --operation Write --operation Describe \
+  --topic '_schemas' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf \
+  --group 'schema-registry'
 
 # Connect
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:connect \
-  --operation Describe --group 'kafka_connect' \
+  --operation Describe --operation Read --group 'kafka_connect' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:connect \
-  --operation Read --operation Write --topic 'connect-offset-storage' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf \
-  --group 'kafka_connect'
+  --operation Read --operation Write --operation Describe --operation Create \
+  --topic 'connect-offset-storage' \
+  --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```
 

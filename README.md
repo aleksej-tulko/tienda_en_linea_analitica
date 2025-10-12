@@ -373,15 +373,14 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 # Schema
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation Describe --operation Read --group 'schema_registry' \
+  --operation Describe --operation Read --group 'schema-registry' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation Read --operation Write --operation Describe \
+  --operation All \
   --topic '_schemas' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf \
-  --group 'schema-registry'
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # Connect
 kafka-acls --bootstrap-server kafka-1:9093 \

@@ -438,14 +438,19 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
-  --operation All \
-  --topic '*' \
+  --operation Read \
+  --topic 'mirroring' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:mirror \
-  --operation All \
-  --topic '*' \
+  --operation Write \
+  --topic 'source.mirroring' --topic 'mm2-offset-syncs.source.internal' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic mirroring --partitions 3 \
+  --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```

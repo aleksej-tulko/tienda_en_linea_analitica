@@ -1,7 +1,6 @@
 {
-  "name": "my_mm2_connector",
+  "name": "mirror_connector",
   "config": {
-    "name": "mirror2",
     "connector.class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
     "source.cluster.alias":"source",
     "target.cluster.alias": "target",

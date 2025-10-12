@@ -119,7 +119,7 @@ x-nifi-environment: &nifi-environment
   TRUSTSTORE_PASSWORD: changeit
   NIFI_ZOOKEEPER_AUTH_TYPE: sasl
   JAVA_TOOL_OPTIONS: >-
-    -Djava.security.auth.login.config=/opt/nifi/conf/zookeeper-jaas.conf
+    -Djava.security.auth.login.config=/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
     -Dzookeeper.client.secure=true
     -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
     -Djavax.net.ssl.trustStore=/opt/nifi/certs/truststore.jks
@@ -524,6 +524,7 @@ services:
       - nifi-1_provenance_repository:/opt/nifi/nifi-current/provenance_repository
       - nifi-1_state:/opt/nifi/nifi-current/state
       - nifi-1_logs:/opt/nifi/nifi-current/logs
+      - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
     environment:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-1
@@ -549,6 +550,7 @@ services:
       - nifi-2_provenance_repository:/opt/nifi/nifi-current/provenance_repository
       - nifi-2_state:/opt/nifi/nifi-current/state
       - nifi-2_logs:/opt/nifi/nifi-current/logs
+      - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
     environment:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-2
@@ -574,6 +576,7 @@ services:
       - nifi-3_provenance_repository:/opt/nifi/nifi-current/provenance_repository
       - nifi-3_state:/opt/nifi/nifi-current/state
       - nifi-3_logs:/opt/nifi/nifi-current/logs
+      - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
     environment:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-3
@@ -741,6 +744,31 @@ volumes:
   kafka_replica_1:
   kafka_replica_2:
   kafka_replica_3:
+  nifi-1_conf:
+  nifi-1_extensions:
+  nifi-1_database_repository:
+  nifi-1_flowfile_repository:
+  nifi-1_content_repository:
+  nifi-1_provenance_repository:
+  nifi-1_state:
+  nifi-1_logs:
+  nifi-2_conf:
+  nifi-2_extensions:
+  nifi-2_database_repository:
+  nifi-2_flowfile_repository:
+  nifi-2_content_repository:
+  nifi-2_provenance_repository:
+  nifi-2_state:
+  nifi-2_logs:
+  nifi-3_conf:
+  nifi-3_extensions:
+  nifi-3_database_repository:
+  nifi-3_flowfile_repository:
+  nifi-3_content_repository:
+  nifi-3_provenance_repository:
+  nifi-3_state:
+  nifi-3_logs:
+
 
 networks:
   infra:

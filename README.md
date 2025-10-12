@@ -379,8 +379,20 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation Describe --group '*' \
+  --operation Describe --group 'schema_registry' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+# Connect
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Describe --group 'kafka_connect' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Read --operation Write --topic 'connect-offset-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf \
+  --group 'kafka_connect'
 "
 ```
 

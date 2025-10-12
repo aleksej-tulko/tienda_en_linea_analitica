@@ -12,10 +12,10 @@
     "enabled": true,
     "tasks.max": 1,
 
-    "target.cluster.security.protocol": "SSL", 
+    "target.cluster.security.protocol": "SASL_SSL", 
     "target.cluster.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
     "target.cluster.ssl.truststore.password": "changeit",
-    "source.cluster.security.protocol": "SSL",
+    "source.cluster.security.protocol": "SASL_SSL",
     "source.cluster.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
     "source.cluster.ssl.truststore.password": "changeit",
 

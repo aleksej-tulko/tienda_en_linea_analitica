@@ -472,6 +472,7 @@ services:
     volumes:
       - vault_certs:/etc/kafka/certs
       - ./confluent-hub-components/:/etc/kafka-connect/jars
+      - ./kafka-connect/connect.json:/etc/kafka/connect.json
   
   prometheus:
     <<: *app-base

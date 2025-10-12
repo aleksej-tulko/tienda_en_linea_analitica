@@ -399,42 +399,19 @@ kafka-topics --bootstrap-server kafka-replica-1:9093 \
   --create --topic mirroring --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-curl -X PUT \
-  -H "Content-Type: application/json" \
-  --data '{
-    "name": "mirror2",
-    "connector.class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
-    "source.cluster.alias":"source",
-    "topics":"mirroring",
-    "source.cluster.bootstrap.servers":"kafka-1:9093",
-    "target.cluster.bootstrap.servers":"kafka-replica-1:9093",
-    "producer.override.bootstrap.servers":"kafka-replica-1:9093",
-    "offset-syncs.topic.replication.factor":"1"
-  }' \
-  http://kafka-connect:8083/connectors/mirror2/config
 "
 ```
 
-7. Создать топики и раздать права в Kafka.
-```bash
-sudo docker compose exec -it kafka-connect bash -lc "
-curl -X PUT -H "Content-Type: application/json" \
---data '{
-"name": "mirror2",
-"connector.class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
-"source.cluster.alias":"source",
-"topics":"mirroring",
-"source.cluster.bootstrap.servers":"kafka-1:9093",
-"target.cluster.bootstrap.servers":"kafka-replica-1:9093",
-"producer.override.bootstrap.servers":"kafka-replica-1:9093",
-"offset-syncs.topic.replication.factor":"1"
-}' http://localhost:8083/connectors/mirror2/config
-"
-```
-
-8. Запустить остальные сервисы:
+7. Запустить остальные сервисы:
 ```bash
 sudo docker compose up -d
 ```
+
+8. Создать топики и раздать права в Kafka.
+```bash
+sudo docker compose exec -it kafka-connect bash -lc "
+curl -X POST -H 'Content-Type: application/json' --data @/opt/connector.json http://localhost:8083/connectors
+"
+```
+
 

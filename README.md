@@ -139,7 +139,7 @@ openssl pkcs12 -export \
 chmod 644 /vault/certs/zookeeper-3.p12
 
 vault write int-ca/roles/client \
-  allowed_domains="localhost,client,ui,zoonavigator" \
+  allowed_domains="localhost,client,ui,zoonavigator,kafka_connect" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -354,11 +354,6 @@ sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 
 ```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" kafka-1 bash -lc "
 # UI
-# kafka-acls --bootstrap-server kafka-1:9093 \
-#   --add --allow-principal User:ui \
-#   --operation Describe --group '*' \
-#   --command-config /etc/kafka/secrets/adminclient-configs.conf
-
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
   --operation Describe --operation DescribeConfigs \
@@ -394,10 +389,51 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --topic 'connect-offset-storage' \
   --topic 'connect-status-storage' --topic 'connect-config-storage' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic mirroring --partitions 1 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-replica-1:9093 \
+  --create --topic mirroring --partitions 1 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+curl -X PUT \
+  -H "Content-Type: application/json" \
+  --data '{
+    "name": "mirror2",
+    "connector.class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
+    "source.cluster.alias":"source",
+    "topics":"mirroring",
+    "source.cluster.bootstrap.servers":"kafka-1:9093",
+    "target.cluster.bootstrap.servers":"kafka-replica-1:9093",
+    "producer.override.bootstrap.servers":"kafka-replica-1:9093",
+    "offset-syncs.topic.replication.factor":"1"
+  }' \
+  http://kafka-connect:8083/connectors/mirror2/config
 "
 ```
 
-7. Запустить остальные сервисы:
+7. Создать топики и раздать права в Kafka.
+```bash
+sudo docker compose exec -it kafka-connect bash -lc "
+curl -X PUT -H "Content-Type: application/json" \
+--data '{
+"name": "mirror2",
+"connector.class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
+"source.cluster.alias":"source",
+"topics":"mirroring",
+"source.cluster.bootstrap.servers":"kafka-1:9093",
+"target.cluster.bootstrap.servers":"kafka-replica-1:9093",
+"producer.override.bootstrap.servers":"kafka-replica-1:9093",
+"offset-syncs.topic.replication.factor":"1"
+}' http://localhost:8083/connectors/mirror2/config
+"
+```
+
+8. Запустить остальные сервисы:
 ```bash
 sudo docker compose up -d
 ```

@@ -343,7 +343,7 @@ rm -rf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 
 5. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:
 ```bash
-sudo docker compose up kafka-1 kafka-2 kafka-3 kafka-replica-1 kafka-replica-2 kafka-replica-3 -d
+sudo docker compose up zookeeper zoonavigator kafka-1 kafka-2 kafka-3 kafka-replica-1 kafka-replica-2 kafka-replica-3 ui -d
 
 # Zoonavigator будет доступен по адресу https://<your_host_ip>:9443. Мой адрес https://192.168.1.128:9443
 # Connection string 'zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka'
@@ -373,7 +373,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 # Schema
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation Read --operation Write --topic '*' \
+  --operation All --topic '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \

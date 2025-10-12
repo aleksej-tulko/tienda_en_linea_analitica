@@ -360,7 +360,18 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --cluster \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
+  --add --allow-principal User:ui \
+  --operation Describe --operation DescribeConfigs \
+  --cluster \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:ui \
+  --operation Read --topic '*' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
   --add --allow-principal User:ui \
   --operation Read --topic '*' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
@@ -371,7 +382,18 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Describe --operation Read --group 'schema-registry' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
+  --add --allow-principal User:schema \
+  --operation Describe --operation Read --group 'schema-registry' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:schema \
+  --operation All \
+  --topic '_schemas' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
   --add --allow-principal User:schema \
   --operation All \
   --topic '_schemas' \
@@ -383,11 +405,35 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Describe --operation Read --group 'kafka_connect' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Describe --operation Read --group 'kafka_connect' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:connect \
   --operation Read --operation Write --operation Describe --operation Create \
   --topic 'connect-offset-storage' \
   --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Read --operation Write --operation Describe --operation Create \
+  --topic 'connect-offset-storage' \
+  --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+# Mirror
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:mirror \
+  --operation All --group 'mirroring' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replication-1:9093 \
+  --add --allow-principal User:mirror \
+  --operation All --group 'mirroring' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \

@@ -428,12 +428,24 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
-  --operation All --group 'mirroring' \
+  --operation Describe --operation Read --group 'mirroring' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:mirror \
-  --operation All --group 'mirroring' \
+  --operation Describe --operation Read --group 'mirroring' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:mirror \
+  --operation All \
+  --topic 'mirroring' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replica-1:9093 \
+  --add --allow-principal User:mirror \
+  --operation All \
+  --topic 'mirroring' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \

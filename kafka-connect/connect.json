@@ -65,7 +65,7 @@
     "target.admin.ssl.keystore.type": "PKCS12",
     "target.admin.ssl.truststore.type": "JKS",
     "target.admin.ssl.keystore.location": "/etc/kafka/certs/client.p12",
-    "targer.admin.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
+    "target.admin.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
     "target.admin.ssl.truststore.password": "changeit",
     "target.admin.ssl.keystore.password": "changeit",
     "target.admin.sasl.mechanism": "PLAIN",

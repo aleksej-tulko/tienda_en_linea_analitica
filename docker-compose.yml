@@ -48,7 +48,7 @@ x-zookeeper-environment: &zookeeper-environment
     -Dzookeeper.requireClientAuthScheme=sasl
 
 x-kafka-environment: &kafka-environment
-  KAFKA_AUTO_CREATE_TOPICS_ENABLE: false
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: true
   KAFKA_DELETE_TOPIC_ENABLE: false
   KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
@@ -59,8 +59,8 @@ x-kafka-environment: &kafka-environment
   KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
   KAFKA_ZOOKEEPER_SESSION_TIMEOUT_MS: 30000
-  KAFKA_ZOOKEEPER_SASL_CLIENT: 'true'
-  KAFKA_ZOOKEEPER_SET_ACL: 'true'
+  KAFKA_ZOOKEEPER_SASL_CLIENT: true
+  KAFKA_ZOOKEEPER_SET_ACL: true
   KAFKA_ZOOKEEPER_SSL_CLIENT_ENABLE: true
   KAFKA_ZOOKEEPER_SECURITY_PROTOCOL: SASL_SSL
   KAFKA_ZOOKEEPER_CLIENT_CNXN_SOCKET: org.apache.zookeeper.ClientCnxnSocketNetty

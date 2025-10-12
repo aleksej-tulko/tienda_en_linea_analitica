@@ -7,11 +7,11 @@
     "topics":"mirroring",
     "source.cluster.bootstrap.servers":"kafka-1:9093,kafka-2:9093,kafka-3:9093",
     "target.cluster.bootstrap.servers":"kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
-    "producer.override.bootstrap.servers":"kafka-replica-1:9093",
     "offset-syncs.topic.replication.factor":"1",
     "offset-syncs.topic.location": "target",
     "enabled": true,
     "tasks.max": 1,
+
     "source.security.protocol": "SASL_SSL",
     "source.ssl.keystore.type": "PKCS12",
     "source.ssl.truststore.type": "JKS",
@@ -21,6 +21,7 @@
     "source.ssl.keystore.password": "changeit",
     "source.sasl.mechanism": "PLAIN",
     "source.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\"",
+
     "source.consumer.security.protocol": "SASL_SSL",
     "source.consumer.ssl.keystore.type": "PKCS12",
     "source.consumer.ssl.truststore.type": "JKS",

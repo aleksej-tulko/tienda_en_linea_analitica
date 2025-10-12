@@ -211,7 +211,7 @@ vault write int-ca/roles/kafka-broker \
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-1" \
-  alt_names="localhost" \
+  alt_names="localhost,kafka-1" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-1.json
 
@@ -231,7 +231,7 @@ chmod 644 /vault/secrets/kafka-1.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-1" \
-  alt_names="localhost" \
+  alt_names="localhost,kafka-replica-1" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-replica-1.json
 
@@ -251,7 +251,7 @@ chmod 644 /vault/secrets/kafka-replica-1.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-2" \
-  alt_names="localhost" \
+  alt_names="localhost,kafka-2" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-2.json
 
@@ -271,7 +271,7 @@ chmod 644 /vault/secrets/kafka-2.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-2" \
-  alt_names="localhost" \
+  alt_names="localhost,kafka-replica-2" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-replica-2.json
 
@@ -291,7 +291,7 @@ chmod 644 /vault/secrets/kafka-replica-2.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-3" \
-  alt_names="localhost" \
+  alt_names="localhost,kafka-3" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-3.json
 
@@ -311,7 +311,7 @@ chmod 644 /vault/secrets/kafka-3.p12
 
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-3" \
-  alt_names="localhost" \
+  alt_names="localhost,kafka-replica-3" \
   ip_sans="127.0.0.1" \
   > /vault/certs/kafka-replica-3.json
 

@@ -126,10 +126,10 @@ x-nifi-environment: &nifi-environment
     -Djavax.net.ssl.trustStorePassword=changeit
     -Djavax.net.ssl.keyStore=/opt/certs/client.p12
     -Djavax.net.ssl.keyStorePassword=changeit
-    -Dzookeeper.ssl.keyStore.location=/opt/nifi/certs/client.p12
+    -Dzookeeper.ssl.keyStore.location=/opt/certs/client.p12
     -Dzookeeper.ssl.keyStore.password=changeit
     -Dzookeeper.ssl.keyStore.type=PKCS12
-    -Dzookeeper.ssl.trustStore.location=/opt/nifi/certs/truststore.jks
+    -Dzookeeper.ssl.trustStore.location=/opt/certs/truststore.jks
     -Dzookeeper.ssl.trustStore.password=changeit
     -Dzookeeper.ssl.trustStore.type=JKS
 

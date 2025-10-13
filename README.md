@@ -358,8 +358,8 @@ openssl pkcs12 -export \
   -certfile /vault/certs/int-ca.pem \
   -name nifi-1 \
   -passout pass:changeit \
-  -out /vault/secrets/nifi-1.p12
-chmod 644 /vault/secrets/nifi-1.p12
+  -out /vault/certs/nifi-1.p12
+chmod 644 /vault/certs/nifi-1.p12
 ##
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-2" \
@@ -378,8 +378,8 @@ openssl pkcs12 -export \
   -certfile /vault/certs/int-ca.pem \
   -name nifi-2 \
   -passout pass:changeit \
-  -out /vault/secrets/nifi-2.p12
-chmod 644 /vault/secrets/nifi-2.p12
+  -out /vault/certs/nifi-2.p12
+chmod 644 /vault/certs/nifi-2.p12
 ##
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-3" \
@@ -398,8 +398,8 @@ openssl pkcs12 -export \
   -certfile /vault/certs/int-ca.pem \
   -name nifi-3 \
   -passout pass:changeit \
-  -out /vault/secrets/nifi-3.p12
-chmod 644 /vault/secrets/nifi-3.p12
+  -out /vault/certs/nifi-3.p12
+chmod 644 /vault/certs/nifi-3.p12
 ```
 
 4. Скачать коннекторы для Kafka Connect:

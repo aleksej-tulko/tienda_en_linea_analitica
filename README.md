@@ -527,7 +527,7 @@ kafka-topics --bootstrap-server kafka-1:9093 \
 sudo docker compose up -d
 ```
 
-8. Создать коннектор.
+8. Создать коннектор, проверить статус.
 ```bash
 sudo docker compose exec -it kafka-connect bash -lc "
 curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/connect.json http://localhost:8083/connectors
@@ -539,6 +539,8 @@ kafka-console-producer \
   --topic mirroring \
   --producer.config /etc/kafka/secrets/adminclient-configs.conf
 "
+sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/mirror_connector
 ```
+
 
 

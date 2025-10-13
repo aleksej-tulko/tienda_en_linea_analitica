@@ -135,72 +135,68 @@ services:
     build:
         context: ./vault
         dockerfile: Dockerfile
-    container_name: vault_certs_generator
+    container_name: vault
     hostname: vault
-    environment:
-      VAULT_ADDR: "http://127.0.0.1:8200"
-    cap_add:
-      - IPC_LOCK
     volumes:
       - vault_config:/vault/config
       - vault_certs:/vault/certs
       - vault_secrets:/vault/secrets
       - vault_storage:/vault/storage
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+    cap_add:
+      - IPC_LOCK
     entrypoint: vault server -config /vault/config/config.hcl
 
   zookeeper-1:
     <<: *zookeeper-base
     container_name: zookeeper-1
     hostname: zookeeper-1
-    environment:
-      <<: *zookeeper-environment
-      ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-1.p12
     volumes:
       - zookeeper_log_1:/var/lib/zookeeper/log
       - zookeeper_data_1:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
+    environment:
+      <<: *zookeeper-environment
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-1.p12
 
   zookeeper-2:
     <<: *zookeeper-base
     container_name: zookeeper-2
     hostname: zookeeper-2
-    environment:
-      <<: *zookeeper-environment
-      ZOOKEEPER_SERVER_ID: 2
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-2.p12
     volumes:
       - zookeeper_log_2:/var/lib/zookeeper/log
       - zookeeper_data_2:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
+    environment:
+      <<: *zookeeper-environment
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-2.p12
 
   zookeeper-3:
     <<: *zookeeper-base
     container_name: zookeeper-3
     hostname: zookeeper-3
-    environment:
-      <<: *zookeeper-environment
-      ZOOKEEPER_SERVER_ID: 3
-      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-3.p12
     volumes:
       - zookeeper_log_3:/var/lib/zookeeper/log
       - zookeeper_data_3:/var/lib/zookeeper/data
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.jaas.conf
+    environment:
+      <<: *zookeeper-environment
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/zookeeper/certs/zookeeper-3.p12
   
   zoonavigator:
     <<: *app-base
-    image: elkozmon/zoonavigator
     container_name: zoonavigator
     hostname: zoonavigator
-    ports:
-      - 9443:9443
-    depends_on:
-      - zookeeper-1
-      - zookeeper-2
-      - zookeeper-3
+    volumes:
+      - vault_certs:/etc/zookeeper/certs
+      - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
     environment:
       HTTP_PORT: disabled
       HTTPS_PORT: 9443
@@ -212,22 +208,27 @@ services:
       ZK_SSL_TRUSTSTORE_PATH: /etc/zookeeper/certs/truststore.jks
       ZK_SSL_TRUSTSTORE_PASSWORD: changeit
       ZK_SSL_KEYSTORE_PASSWORD: changeit
-
       SSL_KEYSTORE_PATH: /etc/zookeeper/certs/zoonavigator.p12
       SSL_KEYSTORE_TYPE: PKCS12
       SSL_KEYSTORE_PASSWORD: changeit
-
-      JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
-      JAVA_TOOL_OPTIONS: >- 
-        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
-    volumes:
-      - vault_certs:/etc/zookeeper/certs
-      - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.client.jaas.conf
+      JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.kafka.jaas.conf
+      JAVA_TOOL_OPTIONS: >-
+        -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
+    ports:
+      - 9443:9443
   
   kafka-1:
     <<: *kafka-base
     container_name: kafka-1
     hostname: kafka-1
+    volumes:
+      - kafka_1:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 1
@@ -239,19 +240,19 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-1.yml
-    volumes:
-      - kafka_1:/var/lib/kafka/data
-      - vault_certs:/etc/kafka/certs
-      - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
 
   kafka-replica-1:
     <<: *kafka-base
     container_name: kafka-replica-1
     hostname: kafka-replica-1
+    volumes:
+      - kafka_replica_1:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-replica-1.yml:/etc/kafka/config_kafka-replica-1.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 4
@@ -263,19 +264,19 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-replica-1.yml
-    volumes:
-      - kafka_replica_1:/var/lib/kafka/data
-      - vault_certs:/etc/kafka/certs
-      - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-replica-1.yml:/etc/kafka/config_kafka-replica-1.yml
 
   kafka-2:
     <<: *kafka-base
     container_name: kafka-2
     hostname: kafka-2
+    volumes:
+      - kafka_2:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 2
@@ -287,19 +288,19 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-1.yml
-    volumes:
-      - kafka_2:/var/lib/kafka/data
-      - vault_certs:/etc/kafka/certs
-      - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
   
   kafka-replica-2:
     <<: *kafka-base
     container_name: kafka-replica-2
     hostname: kafka-replica-2
+    volumes:
+      - kafka_replica_2:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-replica-2.yml:/etc/kafka/config_kafka-replica-2.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 5
@@ -311,19 +312,19 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-replica-2.yml
-    volumes:
-      - kafka_replica_2:/var/lib/kafka/data
-      - vault_certs:/etc/kafka/certs
-      - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-replica-2.yml:/etc/kafka/config_kafka-replica-2.yml
 
   kafka-3:
     <<: *kafka-base
     container_name: kafka-3
     hostname: kafka-3
+    volumes:
+      - kafka_3:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 3
@@ -335,19 +336,19 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-1.yml
-    volumes:
-      - kafka_3:/var/lib/kafka/data
-      - vault_certs:/etc/kafka/certs
-      - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
 
   kafka-replica-3:
     <<: *kafka-base
     container_name: kafka-replica-3
     hostname: kafka-replica-3
+    volumes:
+      - kafka_replica_3:/var/lib/kafka/data
+      - vault_certs:/etc/kafka/certs
+      - vault_secrets:/etc/kafka/secrets
+      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
+      - ./etc/jmx_exporter/config_kafka-replica-3.yml:/etc/kafka/config_kafka-replica-3.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 6
@@ -359,32 +360,18 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-replica-3.yml
-    volumes:
-      - kafka_replica_3:/var/lib/kafka/data
-      - vault_certs:/etc/kafka/certs
-      - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
-      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-replica-3.yml:/etc/kafka/config_kafka-replica-3.yml
 
   schema-registry:
     <<: *app-base
     image: confluentinc/cp-schema-registry:7.4.0
-    hostname: schema_registry
     container_name: schema_registry
-    depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - kafka-replica-1
-      - kafka-replica-2
-      - kafka-replica-3
+    hostname: schema_registry
+    volumes:
+      - vault_certs:/etc/kafka/certs
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
-
       SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SASL_SSL
       SCHEMA_REGISTRY_KAFKASTORE_SASL_MECHANISM: PLAIN
       SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG: >
@@ -395,8 +382,13 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: changeit
       SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORYTHM: ''
-    volumes:
-      - vault_certs:/etc/kafka/certs
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - kafka-replica-1
+      - kafka-replica-2
+      - kafka-replica-3
 
   ui:
     <<: *app-base
@@ -406,14 +398,14 @@ services:
     volumes:
       - vault_certs:/etc/ui/certs
       - ./kafka/configs/config.yml:/etc/ui/config.yml
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: /etc/ui/config.yml
     ports:
       - 8080:8080
     depends_on:
       - kafka-1
       - kafka-2
       - kafka-3
-    environment:
-      SPRING_CONFIG_ADDITIONAL_LOCATION: /etc/ui/config.yml
 
   kafka-connect:
     <<: *app-base
@@ -422,19 +414,15 @@ services:
       dockerfile: Dockerfile
     container_name: kafka_connect
     hostname: kafka_connect
-    depends_on:
-      - kafka-1
-      - kafka-2
-      - kafka-3
-      - schema-registry
-    ports:
-      - 8083:8083
+    volumes:
+      - vault_certs:/etc/kafka/certs
+      - ./confluent-hub-components/:/etc/kafka-connect/jars
+      - ./kafka-connect/connect.json:/etc/kafka/connect.json
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: kafka_connect
       CONNECT_REST_ADVERTISED_HOST_NAME: localhost
-
       CONNECT_SECURITY_PROTOCOL: SASL_SSL
       CONNECT_SASL_MECHANISM: PLAIN
       CONNECT_SASL_JAAS_CONFIG: >
@@ -445,23 +433,24 @@ services:
       CONNECT_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
       CONNECT_SSL_KEYSTORE_PASSWORD: changeit
       CONNECT_SSL_KEY_PASSWORD: changeit
-
       CONNECT_CONFIG_STORAGE_TOPIC: connect-config-storage
       CONNECT_OFFSET_STORAGE_TOPIC: connect-offset-storage
       CONNECT_STATUS_STORAGE_TOPIC: connect-status-storage
       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
-
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-    volumes:
-      - vault_certs:/etc/kafka/certs
-      - ./confluent-hub-components/:/etc/kafka-connect/jars
-      - ./kafka-connect/connect.json:/etc/kafka/connect.json
+    ports:
+      - 8083:8083
+    depends_on:
+      - kafka-1
+      - kafka-2
+      - kafka-3
+      - schema-registry
 
   nifi-1:
     <<: *nifi-base
@@ -546,10 +535,10 @@ services:
     image: nginx:latest
     container_name: nifi-web-proxy
     hostname: nifi-web-proxy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8443:8443
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - nifi-1
       - nifi-2
@@ -560,11 +549,11 @@ services:
     image: prom/prometheus:main
     container_name: prometheus
     hostname: prometheus
-    ports:
-      - 9090:9090
     volumes:
       - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./etc/prometheus/alert.rules:/etc/prometheus/alert.rules
+    ports:
+      - 9090:9090
     command: --config.file=/etc/prometheus/prometheus.yml
   
   alertmanager:
@@ -572,10 +561,10 @@ services:
     image: prom/alertmanager:main
     container_name: alertmanager
     hostname: alertmanager
-    ports:
-      - 9093:9093
     volumes:
       - ./etc/alertmanager/config.yml:/etc/alertmanager/config.yml
+    ports:
+      - 9093:9093
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
@@ -586,16 +575,16 @@ services:
     image: grafana/grafana:main-ubuntu
     container_name: grafana
     hostname: grafana
-    ports:
-      - 3000:3000
-    environment:
-      GF_PATHS_DATA: /var/lib/grafana
-      GF_SECURITY_ADMIN_PASSWORD: kafka
-    depends_on:
-      - prometheus
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      GF_PATHS_DATA: /var/lib/grafana
+      GF_SECURITY_ADMIN_PASSWORD: kafka
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
 
   namenode:
     <<: *app-base

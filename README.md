@@ -498,6 +498,11 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 # Mirror
 
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic mirroring --partitions 3 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
   --operation Describe --operation Read --group 'mirroring' \
@@ -513,11 +518,6 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:mirror \
   --operation Read --operation Write --operation Describe --operation Create \
   --topic 'source.mirroring' --topic 'mm2-offset-syncs.source.internal' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic mirroring --partitions 3 \
-  --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```
@@ -535,9 +535,9 @@ curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/connect.json
 sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/mirror_connector/status | jq
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc "
 kafka-console-producer \
-  --broker-list kafka-1:9093 \
-  --topic mirroring \
-  --producer.config /etc/kafka/secrets/adminclient-configs.conf
+  --bootstrap-server kafka-1:9093 \
+  --producer.config /etc/kafka/secrets/adminclient-configs.conf \
+  --topic mirroring 
 "
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/mirror_connector
 ```

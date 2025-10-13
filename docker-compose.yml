@@ -405,6 +405,7 @@ services:
     hostname: ui
     volumes:
       - vault_certs:/etc/ui/certs
+      - ./kafka/configs/config.yml:/etc/ui/config.yml
     ports:
       - 8080:8080
     depends_on:
@@ -412,45 +413,7 @@ services:
       - kafka-2
       - kafka-3
     environment:
-      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
-      KAFKA_CLUSTERS_0_NAME: kafka
-
-      KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL: SASL_SSL
-
-      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_TYPE: JKS
-      KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_TYPE: PKCS12
-
-      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_LOCATION: /etc/ui/certs/truststore.jks
-      KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_LOCATION: /etc/ui/certs/client.p12
-
-      KAFKA_CLUSTERS_0_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: changeit
-      KAFKA_CLUSTERS_0_PROPERTIES_SSL_KEYSTORE_PASSWORD: changeit
-
-      KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM: PLAIN
-      KAFKA_CLUSTERS_0_PROPERTIES_SASL_KERBEROS_SERVICE_NAME: kafka
-      KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: >
-        org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="ui" password="ui_pass";
-      
-      KAFKA_CLUSTERS_1_BOOTSTRAP_SERVERS: kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093
-      KAFKA_CLUSTERS_1_NAME: kafka-replica
-
-      KAFKA_CLUSTERS_1_PROPERTIES_SECURITY_PROTOCOL: SASL_SSL
-
-      KAFKA_CLUSTERS_1_PROPERTIES_SSL_TRUSTSTORE_TYPE: JKS
-      KAFKA_CLUSTERS_1_PROPERTIES_SSL_KEYSTORE_TYPE: PKCS12
-
-      KAFKA_CLUSTERS_1_PROPERTIES_SSL_TRUSTSTORE_LOCATION: /etc/ui/certs/truststore.jks
-      KAFKA_CLUSTERS_1_PROPERTIES_SSL_KEYSTORE_LOCATION: /etc/ui/certs/client.p12
-
-      KAFKA_CLUSTERS_1_PROPERTIES_SSL_TRUSTSTORE_PASSWORD: changeit
-      KAFKA_CLUSTERS_1_PROPERTIES_SSL_KEYSTORE_PASSWORD: changeit
-
-      KAFKA_CLUSTERS_1_PROPERTIES_SASL_MECHANISM: PLAIN
-      KAFKA_CLUSTERS_1_PROPERTIES_SASL_KERBEROS_SERVICE_NAME: kafka
-      KAFKA_CLUSTERS_1_PROPERTIES_SASL_JAAS_CONFIG: >
-        org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="ui" password="ui_pass";
+      SPRING_CONFIG_ADDITIONAL_LOCATION: /etc/ui/config.yml
 
   kafka-connect:
     <<: *app-base

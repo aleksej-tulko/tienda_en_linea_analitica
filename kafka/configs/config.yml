@@ -1,0 +1,21 @@
+kafka:
+  clusters:
+    - name: kafka
+      bootstrap-servers: kafka-1:9093,kafka-2:9093,kafka-3:9093
+      properties: &client_props
+        "security.protocol": SASL_SSL
+        "sasl.mechanism": PLAIN
+        "sasl.kerberos.service.name": kafka
+        "sasl.jaas.config": |
+          org.apache.kafka.common.security.plain.PlainLoginModule required
+          username="ui" password="ui_pass";
+        "ssl.truststore.type": JKS
+        "ssl.keystore.type": PKCS12
+        "ssl.truststore.location": /etc/ui/certs/truststore.jks
+        "ssl.truststore.password": changeit
+        "ssl.keystore.location": /etc/ui/certs/client.p12
+        "ssl.keystore.password": changeit
+
+    - name: kafka-replica
+      bootstrap-servers: kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093
+      properties: *client_props

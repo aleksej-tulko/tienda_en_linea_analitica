@@ -409,7 +409,7 @@ vault write int-ca/roles/schema-registry \
   key_usage="DigitalSignature,KeyEncipherment" \
   ext_key_usage="ServerAuth,ClientAuth"
 
-vault write -format=json int-ca/issue/nifi \
+vault write -format=json int-ca/issue/schema-registry \
   common_name="schema-registry" \
   alt_names="localhost,schema-registry" \
   ip_sans="127.0.0.1" \

@@ -446,7 +446,7 @@ services:
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_KERBEROS_SERVICE_NAME: kafka
       KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG: >
         org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="ui" password="ui_password";
+        username="ui" password="ui_pass";
       
       KAFKA_CLUSTERS_1_BOOTSTRAP_SERVERS: kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093
       KAFKA_CLUSTERS_1_NAME: kafka-replica
@@ -466,7 +466,7 @@ services:
       KAFKA_CLUSTERS_1_PROPERTIES_SASL_KERBEROS_SERVICE_NAME: kafka
       KAFKA_CLUSTERS_1_PROPERTIES_SASL_JAAS_CONFIG: >
         org.apache.kafka.common.security.plain.PlainLoginModule required
-        username="ui" password="ui_password";
+        username="ui" password="ui_pass";
 
   kafka-connect:
     <<: *app-base

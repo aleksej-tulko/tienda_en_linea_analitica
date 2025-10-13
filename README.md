@@ -503,11 +503,6 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Describe --operation Read --group 'mirroring' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
-kafka-acls --bootstrap-server kafka-replica-1:9093 \
-  --add --allow-principal User:mirror \
-  --operation Describe --operation Read --group 'mirroring' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
   --operation Read \
@@ -516,7 +511,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:mirror \
-  --operation Write \
+  --operation Read --operation Write --operation Describe --operation Create \
   --topic 'source.mirroring' --topic 'mm2-offset-syncs.source.internal' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
@@ -532,10 +527,17 @@ kafka-topics --bootstrap-server kafka-1:9093 \
 sudo docker compose up -d
 ```
 
-8. Создать топики и раздать права в Kafka.
+8. Создать коннектор.
 ```bash
 sudo docker compose exec -it kafka-connect bash -lc "
 curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/connect.json http://localhost:8083/connectors
+"
+sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/mirror_connector/status | jq
+sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc "
+kafka-console-producer \
+  --broker-list kafka-1:9093 \
+  --topic mirroring \
+  --producer.config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```
 

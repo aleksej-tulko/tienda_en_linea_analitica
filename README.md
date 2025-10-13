@@ -367,8 +367,8 @@ vault write -format=json int-ca/issue/nifi \
   ip_sans="127.0.0.1" \
   > /vault/certs/nifi-2.json
 
-jq -r ".data.private_key"  /vault/certs/kafka-2.json > /vault/certs/nifi-2.key
-jq -r ".data.certificate"  /vault/certs/kafka-2.json > /vault/certs/nifi-2.crt
+jq -r ".data.private_key"  /vault/certs/nifi-2.json > /vault/certs/nifi-2.key
+jq -r ".data.certificate"  /vault/certs/nifi-2.json > /vault/certs/nifi-2.crt
 chmod 600 /vault/certs/nifi-2.crt
 chmod 600 /vault/certs/nifi-2.key
 

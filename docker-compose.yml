@@ -228,8 +228,6 @@ services:
     <<: *kafka-base
     container_name: kafka-1
     hostname: kafka-1
-    ports:
-      - 7000:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 1
@@ -254,8 +252,6 @@ services:
     <<: *kafka-base
     container_name: kafka-replica-1
     hostname: kafka-replica-1
-    ports:
-      - 8000:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 4
@@ -280,8 +276,6 @@ services:
     <<: *kafka-base
     container_name: kafka-2
     hostname: kafka-2
-    ports:
-      - 7001:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 2
@@ -306,8 +300,6 @@ services:
     <<: *kafka-base
     container_name: kafka-replica-2
     hostname: kafka-replica-2
-    ports:
-      - 8001:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 5
@@ -332,8 +324,6 @@ services:
     <<: *kafka-base
     container_name: kafka-3
     hostname: kafka-3
-    ports:
-      - 7002:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 3
@@ -358,8 +348,6 @@ services:
     <<: *kafka-base
     container_name: kafka-replica-3
     hostname: kafka-replica-3
-    ports:
-      - 8002:6969
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 6

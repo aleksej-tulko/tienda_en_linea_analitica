@@ -192,6 +192,7 @@ services:
   
   zoonavigator:
     <<: *app-base
+    image: elkozmon/zoonavigator
     container_name: zoonavigator
     hostname: zoonavigator
     volumes:

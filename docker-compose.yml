@@ -617,7 +617,7 @@ services:
     ports:
       - 9866:9866
       - 9972:9972
-    # entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
+    entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
     command: ["hdfs", "datanode"]
     depends_on:
       - hadoop-namenode

@@ -535,7 +535,7 @@ services:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-1
       NIFI_WEB_HTTPS_HOST: nifi-1
-      KEYSTORE_PATH: /opt/certs/client.p12
+      KEYSTORE_PATH: /opt/certs/nifi-1.p12
       TRUSTSTORE_PATH: /opt/certs/truststore.jks
     entrypoint:
       - "/bin/bash"
@@ -561,7 +561,7 @@ services:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-2
       NIFI_WEB_HTTPS_HOST: nifi-2
-      KEYSTORE_PATH: /opt/certs/client.p12
+      KEYSTORE_PATH: /opt/certs/nifi-2.p12
       TRUSTSTORE_PATH: /opt/certs/truststore.jks
     entrypoint:
       - "/bin/bash"
@@ -587,7 +587,7 @@ services:
       <<: *nifi-environment
       NIFI_CLUSTER_ADDRESS: nifi-3
       NIFI_WEB_HTTPS_HOST: nifi-3
-      KEYSTORE_PATH: /opt/certs/client.p12
+      KEYSTORE_PATH: /opt/certs/nifi-3.p12
       TRUSTSTORE_PATH: /opt/certs/truststore.jks
     entrypoint:
       - "/bin/bash"

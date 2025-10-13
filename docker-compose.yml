@@ -572,6 +572,7 @@ services:
   hadoop-datanode-1:
     <<: *app-base
     image: apache/hadoop:3.4.1
+    platform: linux/amd64
     container_name: hadoop-datanode-1
     hostname: hadoop-datanode-1
     volumes:
@@ -589,6 +590,7 @@ services:
   hadoop-datanode-2:
     <<: *app-base
     image: apache/hadoop:3.4.1
+    platform: linux/amd64
     container_name: hadoop-datanode-2
     hostname: hadoop-datanode-2
     volumes:
@@ -605,6 +607,7 @@ services:
 
   hadoop-datanode-3:
     image: apache/hadoop:3.4.1
+    platform: linux/amd64
     container_name: hadoop-datanode-3
     hostname: hadoop-datanode-3
     volumes:

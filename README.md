@@ -139,7 +139,7 @@ openssl pkcs12 -export \
 chmod 644 /vault/certs/zookeeper-3.p12
 
 vault write int-ca/roles/client \
-  allowed_domains="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect,nifi-1,nifi-2,nifi-3" \
+  allowed_domains="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect" \
   allow_subdomains=true allow_bare_domains=true \
   allow_ip_sans=true allow_localhost=true \
   enforce_hostnames=false \
@@ -150,7 +150,7 @@ vault write int-ca/roles/client \
 
 vault write -format=json int-ca/issue/client \
   common_name="client" \
-  alt_names="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect,nifi-1,nifi-2,nifi-3" \
+  alt_names="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect" \
   ip_sans="127.0.0.1" \
   > /vault/certs/client.json
 
@@ -329,8 +329,6 @@ openssl pkcs12 -export \
   -out /vault/secrets/kafka-replica-3.p12
 chmod 644 /vault/secrets/kafka-replica-3.p12
 
-##
-
 vault write int-ca/roles/nifi \
   allowed_domains="localhost,nifi-1,nifi-2,nifi-3" \
   allow_subdomains=true allow_bare_domains=true \
@@ -360,7 +358,7 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/nifi-1.p12
 chmod 644 /vault/certs/nifi-1.p12
-##
+
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-2" \
   alt_names="localhost,nifi-2" \
@@ -380,7 +378,7 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/nifi-2.p12
 chmod 644 /vault/certs/nifi-2.p12
-##
+
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-3" \
   alt_names="localhost,nifi-3" \
@@ -400,6 +398,36 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/nifi-3.p12
 chmod 644 /vault/certs/nifi-3.p12
+
+vault write int-ca/roles/schema-registry \
+  allowed_domains="localhost,schema-registry" \
+  allow_subdomains=true allow_bare_domains=true \
+  allow_ip_sans=true allow_localhost=true \
+  enforce_hostnames=false \
+  server_flag=true client_flag=true \
+  key_type="rsa" key_bits=2048 ttl="720h" max_ttl="720h" \
+  key_usage="DigitalSignature,KeyEncipherment" \
+  ext_key_usage="ServerAuth,ClientAuth"
+
+vault write -format=json int-ca/issue/nifi \
+  common_name="schema-registry" \
+  alt_names="localhost,schema-registry" \
+  ip_sans="127.0.0.1" \
+  > /vault/certs/schema-registry.json
+
+jq -r ".data.private_key"  /vault/certs/schema-registry.json > /vault/certs/schema-registry.key
+jq -r ".data.certificate"  /vault/certs/schema-registry.json > /vault/certs/schema-registry.crt
+chmod 600 /vault/certs/schema-registry.crt
+chmod 600 /vault/certs/schema-registry.key
+
+openssl pkcs12 -export \
+  -inkey    /vault/certs/schema-registry.key \
+  -in       /vault/certs/schema-registry.crt \
+  -certfile /vault/certs/int-ca.pem \
+  -name schema-registry \
+  -passout pass:changeit \
+  -out /vault/certs/schema-registry.p12
+chmod 644 /vault/certs/schema-registry.p12
 ```
 
 4. Скачать коннекторы для Kafka Connect:

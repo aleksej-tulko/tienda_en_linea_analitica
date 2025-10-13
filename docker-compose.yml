@@ -229,7 +229,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
+      - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 1
@@ -240,7 +240,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-1.yml
+        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
 
   kafka-replica-1:
     <<: *kafka-base
@@ -253,7 +253,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-replica-1.yml:/etc/kafka/config_kafka-replica-1.yml
+      - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 4
@@ -264,7 +264,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka-replica
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-replica-1.yml
+        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
 
   kafka-2:
     <<: *kafka-base
@@ -277,7 +277,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
+      - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 2
@@ -288,7 +288,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-1.yml
+        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
   
   kafka-replica-2:
     <<: *kafka-base
@@ -301,7 +301,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-replica-2.yml:/etc/kafka/config_kafka-replica-2.yml
+      - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 5
@@ -312,7 +312,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka-replica
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-replica-2.yml
+        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
 
   kafka-3:
     <<: *kafka-base
@@ -325,7 +325,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-1.yml:/etc/kafka/config_kafka-1.yml
+      - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 3
@@ -336,7 +336,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-1.yml
+        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
 
   kafka-replica-3:
     <<: *kafka-base
@@ -349,7 +349,7 @@ services:
       - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
       - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
-      - ./etc/jmx_exporter/config_kafka-replica-3.yml:/etc/kafka/config_kafka-replica-3.yml
+      - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 6
@@ -360,7 +360,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka-replica
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
-        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka-replica-3.yml
+        -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
 
   schema-registry:
     <<: *app-base

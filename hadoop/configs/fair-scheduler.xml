@@ -3,7 +3,7 @@
   <queue name="root">
     <queue name="default">
       <minResources>512mb,1vcores</minResources>
-      <maxResources>2048mb,2vcores</maxResources>
+      <maxResources>1024mb,2vcores</maxResources>
       <weight>1.0</weight>
       <aclSubmitApps>*</aclSubmitApps>
       <aclAdministerApps>*</aclAdministerApps>

@@ -563,7 +563,7 @@ services:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/hdfs-site-namenode.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-      # - ./hadoop/configs/capacity-scheduler.xml:/opt/hadoop/etc/hadoop/capacity-scheduler.xml
+      - ./hadoop/configs/capacity-scheduler.xml:/opt/hadoop/etc/hadoop/capacity-scheduler.xml
       - ./hadoop/namenode_entrypoint.sh:/namenode_entrypoint.sh
     ports:
       - 9870:9870

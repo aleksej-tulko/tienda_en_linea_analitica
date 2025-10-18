@@ -580,6 +580,7 @@ services:
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/hdfs-site-datanode-1.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
     ports:
       - 9864:9864
@@ -598,6 +599,7 @@ services:
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/hdfs-site-datanode-2.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
     ports:
       - 9865:9865
@@ -616,6 +618,7 @@ services:
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/hdfs-site-datanode-3.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
     ports:
       - 9866:9866

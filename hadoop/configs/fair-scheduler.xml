@@ -1,22 +1,15 @@
+<?xml version="1.0"?>
 <allocations>
-   <queue name="root">
-       <weight>1.0</weight>
-       <schedulingPolicy>drf</schedulingPolicy>
-       <queue name="default">
-           <weight>1.0</weight>
-           <schedulingPolicy>drf</schedulingPolicy>
-       </queue>
-       <queue name="users" type="parent">
-           <maxChildResources>memory-mb=8192, vcores=1</maxChildResources>
-           <weight>1.0</weight>
-           <schedulingPolicy>drf</schedulingPolicy>
-       </queue>
-   </queue>
-   <queuePlacementPolicy>
-       <rule name="specified" create="true"/>
-       <rule name="nestedUserQueue" create="true">
-           <rule name="default" create="true" queue="users"/>
-       </rule>
-       <rule name="default"/>
-   </queuePlacementPolicy>
+  <queue name="root">
+    <queue name="default">
+      <minResources>512mb,1vcores</minResources>
+      <maxResources>2048mb,2vcores</maxResources>
+      <weight>1.0</weight>
+      <aclSubmitApps>*</aclSubmitApps>
+      <aclAdministerApps>*</aclAdministerApps>
+    </queue>
+  </queue>
+  <userMaxAppsDefault>50</userMaxAppsDefault>
+  <queueMaxAppsDefault>200</queueMaxAppsDefault>
+  <defaultQueueSchedulingPolicy>fair</defaultQueueSchedulingPolicy>
 </allocations>

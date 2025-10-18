@@ -625,8 +625,8 @@ services:
   hadoop-resource-manager:
     <<: *app-base
     image: apache/hadoop:3.4.1
-    container_name: hadoop-namenode
-    hostname: hadoop-namenode
+    container_name: hadoop-resource-manager
+    hostname: hadoop-resource-manager
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml

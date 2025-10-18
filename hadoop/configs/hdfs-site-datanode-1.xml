@@ -17,6 +17,10 @@
   <value>0.0.0.0:9864</value>
 </property>
 <property>
+  <name>yarn.nodemanager.webapp.address</name>
+  <value>0.0.0.0:8042</value>
+</property>
+<property>
   <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
   <value>false</value>
 </property>

@@ -430,6 +430,7 @@ services:
       - ./kafka-connect/connect.json:/etc/kafka/connect.json
       - ./kafka-connect/hdfs-sync.json:/etc/kafka/hdfs-sync.json
     environment:
+      CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/jars
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
       CONNECT_REST_PORT: 8083
       CONNECT_GROUP_ID: kafka_connect

@@ -16,4 +16,8 @@
   <name>dfs.datanode.http.address</name>
   <value>0.0.0.0:9864</value>
 </property>
+<property>
+  <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+  <value>false</value>
+</property>
 </configuration>

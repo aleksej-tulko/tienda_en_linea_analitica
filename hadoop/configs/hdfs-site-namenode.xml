@@ -8,4 +8,8 @@
   <name>dfs.namenode.name.dir</name>
   <value>file:/usr/local/hadoop/hdfs/namenode</value>
 </property>
+<property>
+  <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+  <value>false</value>
+</property>
 </configuration>

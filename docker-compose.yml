@@ -568,7 +568,6 @@ services:
       - 9870:9870
       - 9000:9000
       - 8088:8088
-      - 8042:8042
     entrypoint: ["/bin/bash", "/namenode_entrypoint.sh"]
     command: ["hdfs", "namenode"]
 
@@ -586,6 +585,7 @@ services:
     ports:
       - 9864:9864
       - 9970:9970
+      - 8042:8042
     entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
     command: ["hdfs", "datanode"]
     depends_on:

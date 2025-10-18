@@ -2,7 +2,7 @@
 <configuration>
     <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>spark-yarn-master</value>
+        <value>hadoop-namenode</value>
     </property>
     <property>
         <name>yarn.nodemanager.resource.cpu-vcores</name>

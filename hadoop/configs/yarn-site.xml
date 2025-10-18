@@ -29,4 +29,12 @@
         <name>yarn.log-aggregation-enable</name>
         <value>true</value>
     </property>
+    <property>
+  <name>yarn.nodemanager.local-dirs</name>
+  <value>/opt/hadoop/yarn/local</value>
+</property>
+<property>
+  <name>yarn.nodemanager.log-dirs</name>
+  <value>/opt/hadoop/yarn/logs</value>
+</property>
 </configuration>

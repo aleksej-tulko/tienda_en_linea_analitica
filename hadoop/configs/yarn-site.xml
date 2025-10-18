@@ -24,21 +24,20 @@
         <name>yarn.scheduler.minimum-allocation-mb</name>
         <value>512</value>
     </property>
-
     <property>
         <name>yarn.log-aggregation-enable</name>
         <value>true</value>
     </property>
     <property>
-  <name>yarn.nodemanager.local-dirs</name>
-  <value>/opt/hadoop/yarn/local</value>
-</property>
-<property>
-  <name>yarn.nodemanager.log-dirs</name>
-  <value>/opt/hadoop/yarn/logs</value>
-</property>
-<property>
-  <name>yarn.nodemanager.disk-health-checker.enable</name>
-  <value>false</value>
-</property>
+        <name>yarn.nodemanager.local-dirs</name>
+        <value>/opt/hadoop/yarn/local</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.log-dirs</name>
+        <value>/opt/hadoop/yarn/logs</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.disk-health-checker.enable</name>
+        <value>false</value>
+    </property>
 </configuration>

@@ -1,14 +1,14 @@
 {
-    "name": "hdfs3-parquet-field",
+    "name": "hdfs3-sync",
     "config": {
         "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
         "tasks.max": "1",
         "topics": "source.mirroring",
-        "hdfs.url": "hdfs://hadoop-nodename:9000",
+        "hdfs.url": "hdfs://hadoop-namenode:9000",
         "flush.size": "3",
         "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
         "confluent.topic.replication.factor": "1",
-        "format.class":"io.confluent.connect.hdfs3.parquet.ParquetFormat",
+        "format.class":"iio.confluent.connect.hdfs3.json.JsonFormat",
         "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
         "partition.field.name":"is_customer"
     }

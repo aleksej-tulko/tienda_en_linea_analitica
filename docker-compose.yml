@@ -428,6 +428,7 @@ services:
       - vault_certs:/etc/kafka/certs
       - ./confluent-hub-components/:/etc/kafka-connect/jars
       - ./kafka-connect/connect.json:/etc/kafka/connect.json
+      - ./kafka-connect/hdfs-sync.json:/etc/kafka/hdfs-sync.json
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093
       CONNECT_REST_PORT: 8083

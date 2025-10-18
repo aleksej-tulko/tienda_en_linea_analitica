@@ -557,6 +557,7 @@ sudo docker compose up -d
 
 8. Создать коннектор, проверить статус.
 ```bash
+cp -r ../confluentinc-kafka-connect-hdfs3-2.0.3/ confluent-hub-components/
 sudo docker compose exec -it kafka-connect bash -lc "
 curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/connect.json http://localhost:8083/connectors
 "

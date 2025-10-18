@@ -606,6 +606,7 @@ services:
       - hadoop-namenode
 
   hadoop-datanode-3:
+    <<: *app-base
     image: apache/hadoop:3.4.1
     platform: linux/amd64
     container_name: hadoop-datanode-3
@@ -630,7 +631,7 @@ services:
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-      - ./hadoop/namenode_entrypoint.sh:/namenode_entrypoint.sh
+      - ./hadoop/configs/yarn_entrypoint.sh:/yarn_entrypoint.sh
     ports:
       - 8088:8088
     entrypoint: ["/bin/bash", "/yarn_entrypoint.sh"]

@@ -562,6 +562,7 @@ services:
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
       - ./hadoop/configs/hdfs-site-namenode.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/namenode_entrypoint.sh:/namenode_entrypoint.sh
     ports:
       - 9870:9870
@@ -623,31 +624,31 @@ services:
     depends_on:
       - hadoop-namenode
 
-  hadoop-resource-manager:
-    <<: *app-base
-    image: apache/hadoop:3.4.1
-    container_name: hadoop-resource-manager
-    hostname: hadoop-resource-manager
-    volumes:
-      - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
-      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-      - ./hadoop/yarn_resource_entrypoint.sh:/yarn_entrypoint.sh
-    ports:
-      - 8088:8088
-    entrypoint: ["/bin/bash", "/yarn_entrypoint.sh"]
-    command: ["yarn", "resourcemanager"]
+  # hadoop-resource-manager:
+  #   <<: *app-base
+  #   image: apache/hadoop:3.4.1
+  #   container_name: hadoop-resource-manager
+  #   hostname: hadoop-resource-manager
+  #   volumes:
+  #     - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+  #     - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
+  #     - ./hadoop/yarn_resource_entrypoint.sh:/yarn_entrypoint.sh
+  #   ports:
+  #     - 8088:8088
+  #   entrypoint: ["/bin/bash", "/yarn_entrypoint.sh"]
+  #   command: ["yarn", "resourcemanager"]
 
-  hadoop-node-manager:
-    <<: *app-base
-    image: apache/hadoop:3.4.1
-    container_name: hadoop-node-manager
-    hostname: hadoop-node-manager
-    volumes:
-      - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
-      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-      - ./hadoop/yarn_node_entrypoint.sh:/yarn_entrypoint.sh
-    entrypoint: ["/bin/bash", "/yarn_entrypoint.sh"]
-    command: ["yarn", "nodemanager"]
+  # hadoop-node-manager:
+  #   <<: *app-base
+  #   image: apache/hadoop:3.4.1
+  #   container_name: hadoop-node-manager
+  #   hostname: hadoop-node-manager
+  #   volumes:
+  #     - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+  #     - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
+  #     - ./hadoop/yarn_node_entrypoint.sh:/yarn_entrypoint.sh
+  #   entrypoint: ["/bin/bash", "/yarn_entrypoint.sh"]
+  #   command: ["yarn", "nodemanager"]
   
   prometheus:
     <<: *app-base

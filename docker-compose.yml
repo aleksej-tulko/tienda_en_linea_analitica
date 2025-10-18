@@ -647,7 +647,7 @@ services:
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/yarn_node_entrypoint.sh:/yarn_entrypoint.sh
     ports:
-      - 8088:8088
+      - 8089:8088
     entrypoint: ["/bin/bash", "/yarn_entrypoint.sh"]
     command: ["yarn", "nodemanager"]
   

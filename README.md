@@ -438,6 +438,7 @@ tar -xvf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 mv debezium-connector-postgres confluent-hub-components
 curl -O https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar
 mv jmx_prometheus_javaagent-0.15.0.jar kafka-connect
+cp -r ../confluentinc-kafka-connect-hdfs3-2.0.3/ confluent-hub-components/
 rm -rf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 ```
 
@@ -575,9 +576,11 @@ sudo docker compose up -d
 
 8. Создать коннектор, проверить статус.
 ```bash
-cp -r ../confluentinc-kafka-connect-hdfs3-2.0.3/ confluent-hub-components/
 sudo docker compose exec -it kafka-connect bash -lc "
 curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/connect.json http://localhost:8083/connectors
+"
+sudo docker compose exec -it kafka-connect bash -lc "
+curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/hdfs-sync.json http://localhost:8083/connectors
 "
 sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/mirror_connector/status | jq
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc "
@@ -587,6 +590,7 @@ kafka-console-producer \
   --topic mirroring 
 "
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/mirror_connector
+sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/hdfs3-sync
 ```
 
 

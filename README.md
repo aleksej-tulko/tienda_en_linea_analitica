@@ -564,7 +564,7 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --command-config adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:mirror \
+  --add --allow-principal User:hdfs \
   --operation Read \
   --topic 'source.mirroring' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf

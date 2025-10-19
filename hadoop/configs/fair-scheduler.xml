@@ -1,15 +1,15 @@
-<?xml version="1.0"?>
-<allocations>
-  <queue name="root">
-    <queue name="default">
-      <minResources>512mb,1vcores</minResources>
-      <maxResources>1024mb,2vcores</maxResources>
-      <weight>1.0</weight>
-      <aclSubmitApps>*</aclSubmitApps>
-      <aclAdministerApps>*</aclAdministerApps>
-    </queue>
-  </queue>
-  <userMaxAppsDefault>50</userMaxAppsDefault>
-  <queueMaxAppsDefault>200</queueMaxAppsDefault>
-  <defaultQueueSchedulingPolicy>fair</defaultQueueSchedulingPolicy>
+<?xml version="1.0"?>  
+<allocations>  
+  <pool name="sample_pool">
+    <minMaps>5</minMaps>
+    <minReduces>5</minReduces>
+    <maxMaps>25</maxMaps>
+    <maxReduces>25</maxReduces>
+    <minSharePreemptionTimeout>300</minSharePreemptionTimeout>
+  </pool>
+  <user name="sample_user">
+    <maxRunningJobs>6</maxRunningJobs>
+  </user>
+  <userMaxJobsDefault>3</userMaxJobsDefault>
+  <fairSharePreemptionTimeout>600</fairSharePreemptionTimeout>
 </allocations>

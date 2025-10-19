@@ -2,12 +2,14 @@
   "name": "hdfs-sync",
   "config": {
     "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
-    "tasks.max": "3",
     "topics": "source.mirroring",
-
+    "tasks.max": "3",
     "hdfs.url": "hdfs://hadoop-namenode:9000",
-    "flush.size": "3",
-    "format.class": "io.confluent.connect.hdfs3.format.string.StringFormat",
+    "flush.size": "10",
+    "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",
+    "schema.compatibility": "FULL",
+    "retry.backoff.ms": "50000",
+    "max.retries": "5",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

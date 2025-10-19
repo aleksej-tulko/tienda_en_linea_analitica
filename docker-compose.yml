@@ -636,14 +636,18 @@ services:
     <<: *app-base
     image: apache/spark
     container_name: spark-master
+    hostname: spark-master
+    volumes:
+      - ./hadoop/configs/core-site.xml:/opt/hadoop/confs/core-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/confs/yarn-site.xml
+      - ./hadoop/spark_entrypoint.sh:/spark_entrypoint.sh
     environment:
-      SPARK_NO_DAEMONIZE: 1
-      SPARK_MASTER_HOST: spark-master
-      SPARK_MASTER_PORT: 7077
-      SPARK_MASTER_WEBUI_PORT: 1488
+      HADOOP_CONF_DIR: /opt/hadoop/conf
+      YARN_CONF_DIR: /opt/hadoop/conf
     ports:
       - 7077:7077
       - 1488:1488
+    entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
     command: ["/opt/spark/sbin/start-master.sh"]
 
   

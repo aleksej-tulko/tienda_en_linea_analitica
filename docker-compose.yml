@@ -634,7 +634,7 @@ services:
 
   spark-master:
     <<: *app-base
-    image: apache/spark
+    image: apache/spark:v3.3.0
     container_name: spark-master
     hostname: spark-master
     volumes:

@@ -24,6 +24,19 @@ x-nifi-base: &nifi-base
     - zookeeper-2
     - zookeeper-3
 
+x-hadoop-base: &hadoop-base
+  <<: *app-base
+  image: apache/hadoop:3.4.1
+  platform: linux/amd64
+
+x-datanode-base: &datanode-base
+  <<: *hadoop-base
+  entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
+  command: ["hdfs", "datanode"]
+  depends_on:
+    - hadoop-namenode
+  
+
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_QUORUM_LISTEN_ON_ALL_IPS: true
   ZOOKEEPER_SERVER_1: zookeeper-1:2888:3888
@@ -557,8 +570,7 @@ services:
       - nifi-3
 
   hadoop-namenode:
-    <<: *app-base
-    image: apache/hadoop:3.4.1
+    <<: *hadoop-base
     container_name: hadoop-namenode
     hostname: hadoop-namenode
     volumes:
@@ -569,15 +581,12 @@ services:
       - ./hadoop/namenode_entrypoint.sh:/namenode_entrypoint.sh
     ports:
       - 9870:9870
-      - 9000:9000
       - 8088:8088
     entrypoint: ["/bin/bash", "/namenode_entrypoint.sh"]
     command: ["hdfs", "namenode"]
 
   hadoop-datanode-1:
-    <<: *app-base
-    image: apache/hadoop:3.4.1
-    platform: linux/amd64
+    <<: *datanode-base
     container_name: hadoop-datanode-1
     hostname: hadoop-datanode-1
     volumes:
@@ -585,19 +594,9 @@ services:
       - ./hadoop/configs/hdfs-site-datanode-1.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
-    ports:
-      - 9864:9864
-      - 9970:9970
-      - 8042:8042
-    entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
-    command: ["hdfs", "datanode"]
-    depends_on:
-      - hadoop-namenode
   
   hadoop-datanode-2:
-    <<: *app-base
-    image: apache/hadoop:3.4.1
-    platform: linux/amd64
+    <<: *datanode-base
     container_name: hadoop-datanode-2
     hostname: hadoop-datanode-2
     volumes:
@@ -605,18 +604,9 @@ services:
       - ./hadoop/configs/hdfs-site-datanode-2.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
-    ports:
-      - 9865:9865
-      - 9971:9971
-    entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
-    command: ["hdfs", "datanode"]
-    depends_on:
-      - hadoop-namenode
 
   hadoop-datanode-3:
-    <<: *app-base
-    image: apache/hadoop:3.4.1
-    platform: linux/amd64
+    <<: *datanode-base
     container_name: hadoop-datanode-3
     hostname: hadoop-datanode-3
     volumes:
@@ -624,19 +614,12 @@ services:
       - ./hadoop/configs/hdfs-site-datanode-3.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
-    ports:
-      - 9866:9866
-      - 9972:9972
-    entrypoint: ["/bin/bash", "/datanode_entrypoint.sh"]
-    command: ["hdfs", "datanode"]
-    depends_on:
-      - hadoop-namenode
 
-  spark-master:
+  spark-node-1:
     <<: *app-base
     image: apache/spark:v3.3.0
-    container_name: spark-master
-    hostname: spark-master
+    container_name: spark-node-1
+    hostname: spark-node-1
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
       - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml
@@ -646,9 +629,6 @@ services:
       HADOOP_CONF_DIR: /opt/hadoop/conf
       YARN_CONF_DIR: /opt/yarn/conf
       SPARK_NO_DAEMONIZE: 1
-    ports:
-      - 1488:1488
-      - 4040:4040
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
     command: ["tail", "-f", "/dev/null"]
 

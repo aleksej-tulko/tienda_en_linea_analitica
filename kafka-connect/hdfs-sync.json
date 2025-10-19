@@ -27,16 +27,6 @@
     "consumer.override.ssl.keystore.location": "/etc/kafka/certs/client.p12",
     "consumer.override.ssl.keystore.password": "changeit",
     "consumer.override.ssl.key.password": "changeit",
-    "consumer.override.ssl.keystore.type": "PKCS12",
-
-    "admin.override.security.protocol": "SASL_SSL",
-    "admin.override.sasl.mechanism": "PLAIN",
-    "admin.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"hdfs\" password=\"hdfs_pass\";",
-    "admin.override.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
-    "admin.override.ssl.truststore.password": "changeit",
-    "admin.override.ssl.keystore.location": "/etc/kafka/certs/client.p12",
-    "admin.override.ssl.keystore.password": "changeit",
-    "admin.override.ssl.key.password": "changeit",
-    "admin.override.ssl.keystore.type": "PKCS12"
+    "consumer.override.ssl.keystore.type": "PKCS12"
   }
 }

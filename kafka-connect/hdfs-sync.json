@@ -16,6 +16,8 @@
         "confluent.topic.ssl.truststore.password": "changeit",
         "confluent.topic.ssl.keystore.password": "changeit",
         "confluent.topic.ssl.key.password": "changeit",
-        "consumer.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";"
+
+        "sasl.mechanism": "PLAIN",
+        "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";"
     }
 }

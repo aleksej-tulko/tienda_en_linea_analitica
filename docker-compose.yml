@@ -644,7 +644,7 @@ services:
       - ./hadoop/spark_entrypoint.sh:/spark_entrypoint.sh
     environment:
       HADOOP_CONF_DIR: /opt/hadoop/conf
-      YARN_CONF_DIR: /opt/hadoop/conf
+      YARN_CONF_DIR: /opt/yarn/conf
       SPARK_NO_DAEMONIZE: 1
       SPARK_MASTER_HOST: spark-master
       SPARK_MASTER_PORT: 7077

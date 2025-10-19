@@ -648,8 +648,9 @@ services:
       SPARK_NO_DAEMONIZE: 1
     ports:
       - 1488:1488
+      - 4040:4040
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
-    command: ["/opt/spark/sbin/start-master.sh"]
+    command: ["/opt/spark/bin/spark-shell", "--master", "yarn", "--deploy-mode", "client", "--conf", "spark.yarn.queue=queue1"]
 
   
   prometheus:

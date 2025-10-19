@@ -644,6 +644,10 @@ services:
     environment:
       HADOOP_CONF_DIR: /opt/hadoop/conf
       YARN_CONF_DIR: /opt/hadoop/conf
+      SPARK_NO_DAEMONIZE: 1
+      SPARK_MASTER_HOST: spark-master
+      SPARK_MASTER_PORT: 7077
+      SPARK_MASTER_WEBUI_PORT: 1488
     ports:
       - 7077:7077
       - 1488:1488

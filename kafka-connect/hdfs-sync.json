@@ -3,13 +3,20 @@
     "config": {
         "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
         "tasks.max": "1",
-        "topics": "source.mirroring",
+        "confluent.topic": "source.mirroring",
         "hdfs.url": "hdfs://hadoop-namenode:9000",
         "flush.size": "3",
         "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
         "confluent.topic.replication.factor": "1",
         "format.class":"io.confluent.connect.hdfs3.avro.AvroFormat",
-        "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
-        "partition.field.name":"is_customer"
+
+        "confluent.topic.security.protocol": "SASL_SSL",
+        "confluent.topic.ssl.keystore.location": "/etc/kafka/certs/client.p12",
+        "confluent.topic.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
+        "confluent.topic.ssl.truststore.password": "changeit",
+        "confluent.topic.ssl.keystore.password": "changeit",
+        "confluent.topic.ssl.key.password": "changeit",
+        "source.consumer.sasl.mechanism": "PLAIN",
+        "source.consumer.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";",
     }
 }

@@ -6,28 +6,30 @@
     <rule name="default"/>
   </queuePlacementPolicy>
   <queue name="root">
-    <queue name="queue1">
-      <minResources>128mb,1vcores</minResources>
-      <maxResources>256mb,2vcores</maxResources>
+    <queue name="default">
+      <minResources>1024mb,1vcores</minResources>
+      <maxResources>4096mb,4vcores</maxResources>
       <weight>1.0</weight>
       <aclSubmitApps>*</aclSubmitApps>
       <aclAdministerApps>*</aclAdministerApps>
+    </queue>
+    <queue name="queue1">
+      <minResources>1024mb,1vcores</minResources>
+      <maxResources>2048mb,2vcores</maxResources>
+      <weight>1.0</weight>
     </queue>
     <queue name="queue2">
-      <minResources>128mb,1vcores</minResources>
-      <maxResources>256mb,2vcores</maxResources>
+      <minResources>1024mb,1vcores</minResources>
+      <maxResources>2048mb,2vcores</maxResources>
       <weight>1.0</weight>
-      <aclSubmitApps>*</aclSubmitApps>
-      <aclAdministerApps>*</aclAdministerApps>
     </queue>
     <queue name="queue3">
-      <minResources>128mb,1vcores</minResources>
-      <maxResources>256mb,2vcores</maxResources>
+      <minResources>1024mb,1vcores</minResources>
+      <maxResources>2048mb,2vcores</maxResources>
       <weight>1.0</weight>
-      <aclSubmitApps>*</aclSubmitApps>
-      <aclAdministerApps>*</aclAdministerApps>
     </queue>
   </queue>
+
   <userMaxAppsDefault>50</userMaxAppsDefault>
   <queueMaxAppsDefault>200</queueMaxAppsDefault>
   <defaultQueueSchedulingPolicy>fair</defaultQueueSchedulingPolicy>

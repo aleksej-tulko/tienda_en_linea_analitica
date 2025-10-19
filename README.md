@@ -438,7 +438,9 @@ tar -xvf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 mv debezium-connector-postgres confluent-hub-components
 curl -O https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar
 mv jmx_prometheus_javaagent-0.15.0.jar kafka-connect
+
 cp -r ../confluentinc-kafka-connect-hdfs3-2.0.3/ confluent-hub-components/
+
 rm -rf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 ```
 

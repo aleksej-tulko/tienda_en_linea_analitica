@@ -555,7 +555,7 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \
-  --operation Describe --operation Read --group 'connect-hdfs3-sync' \
+  --operation Describe --operation Read --operation Create --group 'connect-hdfs3-sync' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \

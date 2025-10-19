@@ -560,7 +560,7 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \
-  --operation DESCRIBE --operation READ --operation WRITE --topic _confluent-command
+  --operation DESCRIBE --operation READ --operation WRITE --topic _confluent-command \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \

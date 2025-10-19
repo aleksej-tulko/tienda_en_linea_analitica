@@ -513,6 +513,11 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --operation Describe --operation Read --group 'kafka_connect' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+kafka-acls --bootstrap-server kafka-replica-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Describe --operation Read --group 'connect-hdfs3-sync' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:connect \
   --operation Read --operation Write --operation Describe --operation Create \
@@ -552,11 +557,6 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # HDFS connector
-
-kafka-acls --bootstrap-server kafka-replica-1:9093 \
-  --add --allow-principal User:hdfs \
-  --operation Describe --operation Read --operation Create --group 'connect-hdfs3-sync' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \

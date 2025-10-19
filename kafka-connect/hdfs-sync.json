@@ -9,6 +9,8 @@
     "flush.size": "3",
     "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",
 
+    "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
+
     "consumer.override.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "consumer.override.security.protocol": "SASL_SSL",
     "consumer.override.sasl.mechanism": "PLAIN",

@@ -9,7 +9,7 @@
     "flush.size": "3",
     "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",
 
-    "confluent.topic.bootstrap.servers": "kafka-1:9093,kafka-2:9093,kafka-3:9093",
+    "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "confluent.topic.security.protocol": "SSL",
     "confluent.topic.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
     "confluent.topic.ssl.truststore.password": "changeit",
@@ -18,7 +18,7 @@
     "confluent.topic.ssl.key.password": "changeit",
     "confluent.topic.ssl.keystore.type": "PKCS12",
 
-    "consumer.override.bootstrap.servers": "kafka-1:9093,kafka-2:9093,kafka-3:9093",
+    "consumer.override.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "consumer.override.security.protocol": "SASL_SSL",
     "consumer.override.sasl.mechanism": "PLAIN",
     "consumer.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"mirror\" password=\"mirror_pass\";",

@@ -6,7 +6,7 @@
         "topics": "source.mirroring",
         "hdfs.url": "hdfs://hadoop-namenode:9000",
         "flush.size": "3",
-        "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
+        "confluent.topic.bootstrap.servers": "kafka-1:9093,kafka-2:9093,kafka-3:9093",
         "confluent.topic.replication.factor": "1",
         "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",
 

@@ -38,15 +38,15 @@
     </property>
     <property>
         <name>yarn.nodemanager.resource.memory-mb</name>
-        <value>2048</value>
+        <value>256</value>
     </property>
     <property>
         <name>yarn.scheduler.maximum-allocation-mb</name>
-        <value>2048</value>
+        <value>512</value>
     </property>
     <property>
         <name>yarn.scheduler.minimum-allocation-mb</name>
-        <value>512</value>
+        <value>128</value>
     </property>
     <property>
         <name>yarn.log-aggregation-enable</name>

@@ -631,6 +631,16 @@ services:
     command: ["hdfs", "datanode"]
     depends_on:
       - hadoop-namenode
+
+  spark-master:
+    <<: *app-base
+    image: apache/spark
+    container_name: spark-master
+    ports:
+      - 7077:7077
+      - 1488:1488
+    command: ["/opt/spark/sbin/start-master.sh"]
+
   
   prometheus:
     <<: *app-base

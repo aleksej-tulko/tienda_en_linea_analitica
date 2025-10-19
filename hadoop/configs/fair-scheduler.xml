@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
 <allocations>
-  <queuePlacementPolicy>
-    <rule name="specified" create="false"/>
-    <rule name="user" create="true"/>
-    <rule name="default"/>
   <queue name="root">
     <queue name="default">
       <minResources>512mb,1vcores</minResources>

@@ -590,6 +590,7 @@ sudo docker compose exec -it kafka-connect bash -lc "
 curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/hdfs-sync.json http://localhost:8083/connectors
 "
 sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/mirror_connector/status | jq
+sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/hdfs3-sync/status | jq
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc "
 kafka-console-producer \
   --bootstrap-server kafka-1:9093 \

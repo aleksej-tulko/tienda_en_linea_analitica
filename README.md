@@ -556,12 +556,12 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \
   --operation CREATE --operation DESCRIBE --cluster \
-  --command-config adminclient-configs.conf
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --operation DESCRIBE --operation READ --operation WRITE --topic _confluent-command
   --add --allow-principal User:hdfs \
-  --command-config adminclient-configs.conf
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:hdfs \

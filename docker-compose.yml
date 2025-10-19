@@ -636,10 +636,15 @@ services:
     <<: *app-base
     image: apache/spark
     container_name: spark-master
+    environment:
+      SPARK_NO_DAEMONIZE: 1
+      SPARK_MASTER_HOST: spark-master
+      SPARK_MASTER_PORT: 7077
+      SPARK_MASTER_WEBUI_PORT: 1488
     ports:
       - 7077:7077
       - 1488:1488
-    # command: ["/opt/spark/sbin/start-master.sh"]
+    command: ["/opt/spark/sbin/start-master.sh"]
 
   
   prometheus:

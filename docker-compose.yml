@@ -639,7 +639,8 @@ services:
     hostname: spark-master
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
-      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/conf/yarn-site.xml
+      - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/yarn/conf/yarn-site.xml
       - ./hadoop/spark_entrypoint.sh:/spark_entrypoint.sh
     environment:
       HADOOP_CONF_DIR: /opt/hadoop/conf

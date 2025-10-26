@@ -22,11 +22,11 @@ alerting:
 scrape_configs:
   - job_name: 'kafka'
     static_configs:
-    - targets: ['kafka-1:6969','kafka-2:6969','kafka-3:6969']
+      - targets: ['kafka-1:6969','kafka-2:6969','kafka-3:6969']
 
-  - job_name: 'kafka-connect-host'
-    static_configs:
-      - targets: ['kafka-connect:9876']
+  # - job_name: 'kafka-connect-host'
+  #   static_configs:
+  #     - targets: ['kafka-connect:9876']
 
   - job_name: prometheus
     honor_timestamps: true

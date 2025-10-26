@@ -304,6 +304,8 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
+    ports:
+      - 29093:9093
   
   kafka-replica-2:
     <<: *kafka-base
@@ -352,6 +354,8 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
+    ports:
+      - 39093:9093
 
   kafka-replica-3:
     <<: *kafka-base

@@ -532,7 +532,12 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 # Mirror
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic mirroring --partitions 3 \
+  --create --topic 'raw_items' --partitions 3 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'unprocessed' --partitions 3 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
@@ -544,13 +549,13 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
   --operation Read \
-  --topic 'mirroring' \
+  --topic 'raw_items' --topic 'unprocessed' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:mirror \
   --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'source.mirroring' --topic 'mm2-offset-syncs.source.internal' \
+  --topic 'source.raw_items' --topic 'source.unprocessed' --topic 'mm2-offset-syncs.source.internal' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # HDFS connector
@@ -581,7 +586,7 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:producer \
   --operation Write \
-  --topic mirroring \
+  --topic 'raw_items' --topic 'unprocessed' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```

@@ -100,6 +100,7 @@ base_conf = {
     'security.protocol': SECURITY_PROTOCOL,
     'sasl.mechanism': AUTH_MECHANISM,
     'ssl.ca.location': CACERT_PATH,
+    'ssl.endpoint.identification.algorithm': 'none',
 }
 base_producer_conf = base_conf | {
     'sasl.username': PRODUCER_USERNAME,

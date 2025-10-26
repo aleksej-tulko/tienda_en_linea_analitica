@@ -104,7 +104,7 @@ x-kafka-environment: &kafka-environment
   KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
   KAFKA_LISTENER_NAME_SASL_SSL_SSL_CLIENT_AUTH: required
 
-  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_SSL:SASL_SSL
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_SSL:SASL_SSL,EXTERNAL:SASL_SSL
   KAFKA_INTER_BROKER_LISTENER_NAME: SASL_SSL
   KAFKA_AUTHORIZER_CLASS_NAME: kafka.security.authorizer.AclAuthorizer
   KAFKA_SUPER_USERS: User:kafka_server_admin
@@ -247,15 +247,15 @@ services:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 1
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-1.p12
-      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-1:9093
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093,EXTERNAL://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-1:9093,EXTERNAL://0.0.0.0:19093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-1.p12
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
     ports:
-      - 19093:9093
+      - 19093:9094
 
   kafka-replica-1:
     <<: *kafka-base
@@ -297,15 +297,15 @@ services:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 2
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-2.p12
-      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-2:9093
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093,EXTERNAL://0.0.0.0:9095
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-2:9093,EXTERNAL://0.0.0.0:29093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-2.p12
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
     ports:
-      - 29093:9093
+      - 29093:9095
   
   kafka-replica-2:
     <<: *kafka-base
@@ -347,15 +347,15 @@ services:
       <<: *kafka-environment
       KAFKA_BROKER_ID: 3
       KAFKA_SSL_KEYSTORE_FILENAME: kafka-3.p12
-      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-3:9093
+      KAFKA_LISTENERS: SASL_SSL://0.0.0.0:9093,EXTERNAL://0.0.0.0:9096
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://kafka-3:9093,EXTERNAL://0.0.0.0:19093
       KAFKA_ZOOKEEPER_SSL_KEYSTORE_LOCATION: /etc/kafka/secrets/kafka-3.p12
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
     ports:
-      - 39093:9093
+      - 39093:9096
 
   kafka-replica-3:
     <<: *kafka-base

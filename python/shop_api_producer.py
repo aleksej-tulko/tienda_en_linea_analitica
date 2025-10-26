@@ -13,7 +13,7 @@ PRODUCER_PASSWORD = 'producer_pass'
 SECURITY_PROTOCOL = 'SASL_SSL'
 AUTH_MECHANISM = 'PLAIN'
 SCHEMA_REGISTRY_URL = 'https://100.110.19.157:8081'
-CACERT_PATH = 'client.p12'
+CACERT_PATH = '/Users/aleksejtulko/git/tienda_en_linea_analitica/python/client.crt'
 TOPIC = 'mirroring'
 SUBJECT = TOPIC + '-value'
 KEY_SCHEMA_STR = """
@@ -49,7 +49,7 @@ VALUE_SCHEMA_STR = """
 
 schema_registry_client = SchemaRegistryClient(
     {
-        'url': f'https://{SCHEMA_REGISTRY_URL}',
+        'url': SCHEMA_REGISTRY_URL,
         'ssl.ca.location': CACERT_PATH,
     }
 )

@@ -428,6 +428,8 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/schema-registry.p12
 chmod 644 /vault/certs/schema-registry.p12
+
+cat /vault/certs/client.crt /vault/certs/int-ca.pem > /vault/certs/client_fullchain.crt
 ```
 
 4. Скачать коннекторы для Kafka Connect:
@@ -572,6 +574,14 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \
   --operation Read \
   --topic 'source.mirroring' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+# Producer
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:producer \
+  --operation Write \
+  --topic mirroring \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```

@@ -18,7 +18,7 @@ CACERT_PATH = '/Users/aleksejtulko/git/tienda_en_linea_analitica/python/chain.pe
 SR_CACERT_PATH = '/Users/aleksejtulko/git/tienda_en_linea_analitica/python/client.crt'
 KEY_PATH = '/Users/aleksejtulko/git/tienda_en_linea_analitica/python/client.key'
 TOPIC = 'mirroring'
-SUBJECT = TOPIC + '-value'
+SUBJECT = TOPIC + '-sr'
 KEY_SCHEMA_STR = """
 {
     "namespace": "product_id",
@@ -57,8 +57,8 @@ schema_registry_client = SchemaRegistryClient(
     {
         'url': SCHEMA_REGISTRY_URL,
         'ssl.ca.location': ca_ctx,
-        # 'ssl.certificate.location': SR_CACERT_PATH,
-        # 'ssl.key.location': KEY_PATH,
+        'ssl.certificate.location': SR_CACERT_PATH,
+        'ssl.key.location': KEY_PATH,
     }
 )
 
@@ -90,73 +90,74 @@ class LoggerMsg:
     PROGRAM_RUNNING = 'Выполняется программа.'
 
 
-# def delivery_report(err, msg) -> None:
-#     """Отчет о доставке."""
-#     if err is not None:
-#         logger.error(msg=LoggerMsg.MSG_NOT_DELIVERED.format(err=err))
-#     else:
-#         logger.info(
-#             msg=LoggerMsg.MSG_DELIVERED.format(
-#                 topic=msg.topic(),
-#                 partition=msg.partition()
-#             )
-#         )
+def delivery_report(err, msg) -> None:
+    """Отчет о доставке."""
+    if err is not None:
+        logger.error(msg=LoggerMsg.MSG_NOT_DELIVERED.format(err=err))
+    else:
+        logger.info(
+            msg=LoggerMsg.MSG_DELIVERED.format(
+                topic=msg.topic(),
+                partition=msg.partition()
+            )
+        )
 
 
-# base_conf = {
-#     'bootstrap.servers': BOOTSTRAP_SERVERS,
-#     'security.protocol': SECURITY_PROTOCOL,
-#     'sasl.mechanism': AUTH_MECHANISM,
-#     'ssl.ca.location': CACERT_PATH,
-# }
-# base_producer_conf = base_conf | {
-#     'sasl.username': PRODUCER_USERNAME,
-#     'sasl.password': PRODUCER_PASSWORD,
-#     'on_delivery': delivery_report,
-# }
-# avro_producer_conf = base_producer_conf | {
-#     'schema.registry.url': SCHEMA_REGISTRY_URL,
-#     'schema.registry.ssl.ca.location': CACERT_PATH
-# }
-# avro_producer = avro.AvroProducer(
-#     avro_producer_conf,
-#     default_key_schema=key_schema,
-#     default_value_schema=value_schema,
-# )
+conf = {
+    'bootstrap.servers': BOOTSTRAP_SERVERS,
+    'security.protocol': SECURITY_PROTOCOL,
+    'sasl.mechanism': AUTH_MECHANISM,
+    'ssl.ca.location': CACERT_PATH,
+    'sasl.username': PRODUCER_USERNAME,
+    'sasl.password': PRODUCER_PASSWORD,
+    'on_delivery': delivery_report,
+    'schema.registry.url': SCHEMA_REGISTRY_URL,
+    'schema.registry.ssl.ca.location': CACERT_PATH
+}
+
+producer = avro.AvroProducer(
+    config=conf,
+    default_key_schema=key_schema,
+    default_value_schema=value_schema,
+)
 
 
-# def create_message(producer: avro.AvroProducer) -> None:
-#     """Отправка сообщения в брокер."""
-#     producer.produce(topic=TOPIC, key=key, value=value)
+def create_message(producer: avro.AvroProducer) -> None:
+    """Отправка сообщения в брокер."""
+    producer.produce(topic=TOPIC, key=key, value=value)
 
 
-# def producer_infinite_loop(producer: avro.AvroProducer) -> None:
-#     """Запуска цикла для генерации сообщения."""
-#     try:
-#         while True:
-#             create_message(producer=avro_producer)
-#             producer.flush()
-#     except (KafkaException, Exception):
-#         raise
-#     finally:
-#         producer.flush()
+def producer_infinite_loop(producer: avro.AvroProducer) -> None:
+    """Запуска цикла для генерации сообщения."""
+    try:
+        while True:
+            create_message(producer=producer)
+            producer.flush()
+    except (KafkaException, Exception):
+        raise
+    finally:
+        producer.flush()
 
 
 def register_schema_version():
     """Поиск зарегистрированной схемы или регистрация новой."""
-    # try:
-    latest = schema_registry_client.get_latest_version(SUBJECT)
-    logger.info(msg=LoggerMsg.SCHEMA_ALREADY_EXISTS.format(
-        subject=SUBJECT, subject_str=latest.schema.schema_str
-    ))
-    # except Exception:
-    #     schema_object = Schema(VALUE_SCHEMA_STR, 'AVRO')
-    #     schema_id = schema_registry_client.register_schema(
-    #         SUBJECT, schema_object
-    #     )
-    #     logger.info(msg=LoggerMsg.SCHEMA_REGISTERED.format(
-    #         subject=SUBJECT, schema_id=schema_id
-    #     ))
+    try:
+        latest = schema_registry_client.get_latest_version(SUBJECT)
+        logger.info(
+            msg=LoggerMsg.SCHEMA_ALREADY_EXISTS.format(
+                subject=SUBJECT, subject_str=latest.schema.schema_str
+            )
+        )
+    except Exception:
+        schema_object = Schema(VALUE_SCHEMA_STR, 'AVRO')
+        schema_id = schema_registry_client.register_schema(
+            SUBJECT, schema_object
+        )
+        logger.info(
+            msg=LoggerMsg.SCHEMA_REGISTERED.format(
+                subject=SUBJECT, schema_id=schema_id
+            )
+        )
 
 
 if __name__ == '__main__':

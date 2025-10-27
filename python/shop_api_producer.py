@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import ssl
@@ -28,7 +27,7 @@ LINGER_MS = os.getenv('LINGER_MS', 5)
 COMPRESSION_TYPE = os.getenv('COMPRESSION_TYPE', 'lz4')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
-SUBJECT = SHOP_UNSORTED_TOPIC + 'unsorted'
+SUBJECT = SHOP_UNSORTED_TOPIC + '_unsorted'
 SECURITY_PROTOCOL = 'SASL_SSL'
 AUTH_MECHANISM = 'PLAIN'
 KEY_SCHEMA_STR = """
@@ -47,25 +46,112 @@ KEY_SCHEMA_STR = """
 VALUE_SCHEMA_STR = """
 {
     "namespace": "product_item",
-    "name": "value",
+    "name": "product",
     "type": "record",
     "fields": [
+        { "name": "product_id", "type": "string" },
+        { "name": "name", "type": "string" },
+        { "name": "description", "type": "string" },
         {
-            "name": "name",
-            "type": "string"
+            "name": "price",
+            "type": {
+                "type": "record",
+                "name": "Price",
+                "fields": [
+                    { "name": "amount", "type": "double" },
+                    { "name": "currency", "type": "string" }
+                ]
+            }
+        },
+        {"name": "category", "type": "string"},
+        {"name": "brand","type": "string"},
+        {
+            "name": "stock",
+            "type": {
+                "type": "record",
+                "name": "Stock",
+                "fields": [
+                    { "name": "available", "type": "int" },
+                    { "name": "reserved", "type": "int" }
+                ]
+            }
+        },
+        { "name": "sku", "type": "string" },
+        { "name": "tags", "type": { "type": "array", "items": "string" } },
+        {
+            "name": "images",
+            "type": {
+                "type": "array",
+                "items": {
+                    "type": "record",
+                    "name": "Image",
+                    "fields": [
+                        { "name": "url", "type": "string" },
+                        { "name": "alt", "type": "string" }
+                    ]
+                }
+            }
         },
         {
-            "name": "info",
-            "type": "string"
-        }
+            "name": "specifications",
+            "type": {
+                "type": "record",
+                "name": "Specifications",
+                "fields": [
+                    { "name": "weight", "type": "string" },
+                    { "name": "dimensions", "type": "string" },
+                    { "name": "battery_life", "type": "string" },
+                    { "name": "water_resistance", "type": "string" }
+                ]
+            }
+        },
+        { "name": "created_at", "type": "string" },
+        { "name": "updated_at", "type": "string" },
+        { "name": "index", "type": "string" },
+        { "name": "store_id", "type": "string" }
     ]
 }
 """
+VALUE_VALUE = {
+  "product_id": "12345",
+  "name": "Умные часы XYZ",
+  "description": "Умные часы с функцией мониторинга здоровья, GPS и уведомлениями.",
+  "price": {
+    "amount": 4999.99,
+    "currency": "RUB"
+  },
+  "category": "Электроника",
+  "brand": "XYZ",
+  "stock": {
+    "available": 150,
+    "reserved": 20
+  },
+  "sku": "XYZ-12345",
+  "tags": ["умные часы", "гаджеты", "технологии"],
+  "images": [
+    {
+      "url": "https://example.com/images/product1.jpg",
+      "alt": "Умные часы XYZ - вид спереди"
+    },
+    {
+      "url": "https://example.com/images/product1_side.jpg",
+      "alt": "Умные часы XYZ - вид сбоку"
+    }
+  ],
+  "specifications": {
+    "weight": "50g",
+    "dimensions": "42mm x 36mm x 10mm",
+    "battery_life": "24 hours",
+    "water_resistance": "IP68"
+  },
+  "created_at": "2023-10-01T12:00:00Z",
+  "updated_at": "2023-10-10T15:30:00Z",
+  "index": "products",
+  "store_id": "store_001"
+}
 
 key_schema = avro.loads(KEY_SCHEMA_STR)
 value_schema = avro.loads(VALUE_SCHEMA_STR)
-key = {'name': f'key-{uuid.uuid4()}'}
-value = {'name': f'val-{uuid.uuid4()}', 'info': f'info-{uuid.uuid4()}'}
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -80,7 +166,10 @@ class LoggerMsg:
     """Сообщения для логгирования."""
 
     MSG_NOT_DELIVERED = 'Ошибка доставки {err}.'
-    MSG_DELIVERED = 'Сообщение доставлено в {topic} в раздел {partition}.'
+    MSG_DELIVERED = (
+        'Сообщение доставлено в {topic} '
+        'в раздел {partition} с ключом {key}.'
+    )
     MSG_RECEIVED = 'Сообщение получено: {value}.'
     MSG_NOT_DESERIALIZED = 'Сообщение не десериализовано:'
     SCHEMA_ALREADY_EXISTS = ('Схема уже зарегистрирована '
@@ -98,6 +187,7 @@ def delivery_report(err, msg) -> None:
         logger.info(
             msg=LoggerMsg.MSG_DELIVERED.format(
                 topic=msg.topic(),
+                key=msg.key(),
                 partition=msg.partition()
             )
         )
@@ -132,10 +222,13 @@ schema_registry_client = SchemaRegistryClient(
         'ssl.key.location': CERT_KEY_PATH,
     }
 )
+schema_registry_client.set_compatibility(subject_name=SUBJECT, level='FULL')
 
 
 def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
+    key = {'name': f'key-{uuid.uuid4()}'}
+    value = VALUE_VALUE
     producer.produce(topic=SHOP_UNSORTED_TOPIC, key=key, value=value)
 
 
@@ -149,21 +242,6 @@ def producer_infinite_loop(producer: avro.AvroProducer) -> None:
         raise
     finally:
         producer.flush()
-
-
-def send_to_dlq(dlq_producer, key, value, error) -> None:
-    """Отправка сообщений в Dead Letter Queue."""
-    payload = {
-        'key': key,
-        'value': value,
-        'error': str(error),
-    }
-    dlq_producer.produce(
-        topic=DLQ,
-        key=str(key).encode(),
-        value=json.dumps(payload).encode('utf-8'),
-    )
-    dlq_producer.flush()
 
 
 def register_schema_version():

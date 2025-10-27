@@ -6,7 +6,7 @@ import uuid
 from threading import Thread
 from time import sleep
 
-from confluent_kafka import avro, KafkaException, Producer
+from confluent_kafka import avro, KafkaException
 from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
 from dotenv import load_dotenv
 

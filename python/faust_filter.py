@@ -193,7 +193,7 @@ sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 @app.agent(goods_topic)
 async def my_agent(stream):
-    async for record in stream.events():
+    async for record in stream:
         await sorted_goods_topic.send(
             value=record
         )

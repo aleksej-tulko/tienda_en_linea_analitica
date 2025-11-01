@@ -191,7 +191,7 @@ goods_topic = app.topic(SHOP_UNSORTED_TOPIC, key_type=SchemaKey, value_type=Sche
 sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 
-@app.agent('raw_items')
+@app.agent('raw_item')
 async def my_agent(stream):
     async for record in stream.events():
         await sorted_goods_topic.send(

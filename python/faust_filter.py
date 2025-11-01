@@ -171,7 +171,10 @@ serializer = FaustAvroSerializer(
 )
 
 schema_with_avro = faust.Schema(
-    key_serializer=SchemaKey, value_serializer=serializer)
+    key_type=SchemaKey,
+    value_type=SchemaValue,
+    key_serializer=serializer,
+    value_serializer=serializer)
 
 app = faust.App(
     "goods_filter",

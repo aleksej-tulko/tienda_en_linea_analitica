@@ -1,142 +1,62 @@
-import os
-import ssl
-
 import faust
+import ssl
 from faust_avro_serializer import FaustAvroSerializer
-from dotenv import load_dotenv
-from schema_registry.client import SchemaRegistryClient
+from confluent_kafka.schema_registry import SchemaRegistryClient
 
-load_dotenv()
+# === конфиг ===
+BOOTSTRAP = "kafka://100.110.19.157:19093,100.110.19.157:29093,100.110.19.157:39093"
+SHOP_UNSORTED_TOPIC = "raw_items"          # твой топик из логов
+SHOP_SORTED_TOPIC   = "sorted_items"        # другой топик для вывода
+SCHEMA_REGISTRY_URL = "http://localhost:8081"  # БЕЗ опечатки
 
-SCHEMA_REGISTRY_URL = os.getenv('SCHEMA_REGISTRY_URL', 'http://localost:8081')
-CA_PATH = os.getenv('CA_PATH', './client_fullchain.pem')
-CERT_PATH = os.getenv('CERT_PATH', './client.crt')
-CERT_KEY_PATH = os.getenv('CERT_KEY_PATH', './client.key')
-SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
-SHOP_SORTED_TOPIC = os.getenv('SHOP_SORTED_TOPIC', 'topic')
-PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
-PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
+CA_PATH = "./client_fullchain.pem"
+CERT_PATH = "./client.crt"
+CERT_KEY_PATH = "./client.key"
+PRODUCER_USERNAME = "producer"
+PRODUCER_PASSWORD = "..."
 
+# === SSL для брокера (не для SR) ===
+ca_ctx = ssl.create_default_context()
+ca_ctx.load_verify_locations(cafile=CA_PATH)
+ca_ctx.load_cert_chain(CERT_PATH, keyfile=CERT_KEY_PATH)
 
-class ProhibitedProducts(faust.Record):
-    """Модель запрещенных товаров."""
+# === SR-клиент: ВАЖНО — пути, НЕ SSLContext ===
+sr_client = SchemaRegistryClient({
+    "url": SCHEMA_REGISTRY_URL,
+    "ssl.ca.location": CA_PATH,
+    "ssl.certificate.location": CERT_PATH,
+    "ssl.key.location": CERT_KEY_PATH,
+})
 
-    goods: list[str]
+# === сериалайзеры Confluent Avro для key и value ===
+in_key_ser   = FaustAvroSerializer(sr_client, SHOP_UNSORTED_TOPIC, True)   # is_key=True
+in_value_ser = FaustAvroSerializer(sr_client, SHOP_UNSORTED_TOPIC, False)  # is_key=False
+out_key_ser  = FaustAvroSerializer(sr_client, SHOP_SORTED_TOPIC,   True)
+out_val_ser  = FaustAvroSerializer(sr_client, SHOP_SORTED_TOPIC,   False)
 
+# === модели (как у тебя) ===
+class SchemaKey(faust.Record):
+    name: str
 
 class Price(faust.Record):
-    """Модель цены."""
-
     amount: float
     currency: str
 
-
 class Stock(faust.Record):
-    """Модель стока."""
-
     available: int
     reserved: int
 
-
 class Image(faust.Record):
-    """Модель фото."""
-
     url: str
     alt: str
 
-
 class Specifications(faust.Record):
-    """Модель тех. характеристик."""
-
     weight: str
     dimensions: str
     battery_life: str
     water_resistance: str
 
-
-class SchemaKey(faust.Record):
-    _schema = {
-        "namespace": "product_id",
-        "name": "key",
-        "type": "record",
-        "fields": [
-            {
-                "name": "name",
-                "type": "string"
-            }
-        ]
-    }
-    name: str
-
-
 class SchemaValue(faust.Record):
-    _schema = {
-        "namespace": "product_item",
-        "name": "product",
-        "type": "record",
-        "fields": [
-            {"name": "product_id", "type": "string"},
-            {"name": "name", "type": "string"},
-            {"name": "description", "type": "string"},
-            {
-                "name": "price",
-                "type": {
-                    "type": "record",
-                    "name": "Price",
-                    "fields": [
-                        {"name": "amount", "type": "double"},
-                        {"name": "currency", "type": "string"}
-                    ]
-                }
-            },
-            {"name": "category", "type": "string"},
-            {"name": "brand", "type": "string"},
-            {
-                "name": "stock",
-                "type": {
-                    "type": "record",
-                    "name": "Stock",
-                    "fields": [
-                        {"name": "available", "type": "int"},
-                        {"name": "reserved", "type": "int"}
-                    ]
-                }
-            },
-            {"name": "sku", "type": "string"},
-            {"name": "tags", "type": {"type": "array", "items": "string"}},
-            {
-                "name": "images",
-                "type": {
-                    "type": "array",
-                    "items": {
-                        "type": "record",
-                        "name": "Image",
-                        "fields": [
-                            {"name": "url", "type": "string"},
-                            {"name": "alt", "type": "string"}
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "specifications",
-                "type": {
-                    "type": "record",
-                    "name": "Specifications",
-                    "fields": [
-                        {"name": "weight", "type": "string"},
-                        {"name": "dimensions", "type": "string"},
-                        {"name": "battery_life", "type": "string"},
-                        {"name": "water_resistance", "type": "string"}
-                    ]
-                }
-            },
-            {"name": "created_at", "type": "string"},
-            {"name": "updated_at", "type": "string"},
-            {"name": "index", "type": "string"},
-            {"name": "store_id", "type": "string"}
-        ]
-    }
     product_id: str
     name: str
     description: str
@@ -153,47 +73,43 @@ class SchemaValue(faust.Record):
     index: str
     store_id: str
 
-
-ca_ctx = ssl.create_default_context()
-ca_ctx.load_verify_locations(cafile=CA_PATH)
-ca_ctx.load_cert_chain(CERT_PATH, keyfile=CERT_KEY_PATH)
-schema_registry_client = SchemaRegistryClient(
-    {
-        'url': SCHEMA_REGISTRY_URL,
-        'ssl.ca.location': ca_ctx,
-        'ssl.certificate.location': CERT_PATH,
-        'ssl.key.location': CERT_KEY_PATH,
-    }
-)
-
-serializer = FaustAvroSerializer(
-    schema_registry_client, SHOP_UNSORTED_TOPIC, False
-)
-
-schema_with_avro = faust.Schema(
-    key_type=SchemaKey,
-    value_type=SchemaValue,
-    key_serializer=serializer,
-    value_serializer=serializer)
-
+# === Faust app ===
 app = faust.App(
     "goods_filter",
-    broker="kafka://100.110.19.157:19093,100.110.19.157:29093,100.110.19.157:39093",
+    broker=BOOTSTRAP,
     broker_credentials=faust.SASLCredentials(
         username=PRODUCER_USERNAME,
         password=PRODUCER_PASSWORD,
-        ssl_context=ca_ctx
-    )
+        ssl_context=ca_ctx,
+        mechanism="PLAIN",
+    ),
+    consumer_auto_offset_reset="earliest",   # чтобы увидеть старые сообщения
 )
 
-goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
-sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
+# === правильные схемы топиков ===
+in_schema = faust.Schema(
+    key_type=SchemaKey, value_type=SchemaValue,
+    key_serializer=in_key_ser, value_serializer=in_value_ser,
+)
+out_schema = faust.Schema(
+    key_type=SchemaKey, value_type=SchemaValue,
+    key_serializer=out_key_ser, value_serializer=out_val_ser,
+)
 
+goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=in_schema)
+sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC,  schema=out_schema)
 
+# — полезно видеть назначение партиций
+@app.on_partitions_assigned
+async def _assigned(sender, partitions, **kw):
+    app.log.info("ASSIGNED: %s", sorted(list(partitions)))
+
+# === агент с логом событий (ключ, оффсет) ===
 @app.agent(goods_topic)
-async def my_agent(stream):
-    async for record in stream.events():
-        print(f'Record: {record}')
-        await sorted_goods_topic.send(
-            value=record
-        )
+async def my_agent(stream: faust.Stream[SchemaValue]):
+    async for event in stream.events():
+        app.log.info("IN tp=%s/%s off=%s key=%r",
+                     event.message.topic, event.message.partition, event.message.offset,
+                     event.key)
+        app.log.info("VALUE: %r", event.value)   # <- тут появится твой record
+        await sorted_goods_topic.send(value=event.value, key=event.key)

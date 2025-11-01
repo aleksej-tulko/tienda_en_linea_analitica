@@ -8,6 +8,9 @@ from schema_registry.client import SchemaRegistryClient
 
 load_dotenv()
 
+BOOTSTRAP_SERVERS = (
+    'kafka://' + os.getenv('BOOTSTRAP_SERVERS', 'localhost:9093')
+)
 SCHEMA_REGISTRY_URL = os.getenv('SCHEMA_REGISTRY_URL', 'http://localost:8081')
 CA_PATH = os.getenv('CA_PATH', './client_fullchain.pem')
 CERT_PATH = os.getenv('CERT_PATH', './client.crt')
@@ -16,6 +19,8 @@ SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
 SHOP_SORTED_TOPIC = os.getenv('SHOP_SORTED_TOPIC', 'topic')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
+
+APP_NAME = 'goods_filter'
 
 
 class ProhibitedProducts(faust.Record):
@@ -177,8 +182,8 @@ schema_with_avro = faust.Schema(
     value_serializer=serializer)
 
 app = faust.App(
-    "goods_filter",
-    broker="kafka://100.110.19.157:19093,100.110.19.157:29093,100.110.19.157:39093",
+    APP_NAME,
+    broker=BOOTSTRAP_SERVERS,
     broker_credentials=faust.SASLCredentials(
         username=PRODUCER_USERNAME,
         password=PRODUCER_PASSWORD,

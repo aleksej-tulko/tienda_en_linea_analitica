@@ -590,6 +590,11 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
  
 # Faust
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Describe --operation Read --group 'goods_filter' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-topics --bootstrap-server kafka-1:9093 \
   --create --topic 'filtered_items' --partitions 3 \
   --replication-factor 3 \

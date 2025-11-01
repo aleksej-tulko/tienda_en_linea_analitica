@@ -191,7 +191,7 @@ sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 
 @app.agent(goods_topic)
-async def my_agent(stream: faust.Stream[SchemaValue]):
+async def my_agent(stream):
     async for record in stream.events():
         print(f'Record: {record}')
         await sorted_goods_topic.send(

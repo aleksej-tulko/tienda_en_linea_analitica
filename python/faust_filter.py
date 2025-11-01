@@ -166,15 +166,13 @@ schema_registry_client = SchemaRegistryClient(
     }
 )
 
-serializer = FaustAvroSerializer(
-    schema_registry_client, SHOP_UNSORTED_TOPIC, False
-)
+# serializer = FaustAvroSerializer(
+#     schema_registry_client, SHOP_UNSORTED_TOPIC, False
+# )
 
 schema_with_avro = faust.Schema(
     key_type=SchemaKey,
-    value_type=SchemaValue,
-    key_serializer=serializer,
-    value_serializer=serializer)
+    value_type=SchemaValue)
 
 app = faust.App(
     "goods_filter",
@@ -187,11 +185,11 @@ app = faust.App(
     consumer_auto_offset_reset="earliest"
 )
 
-goods_topic = app.topic(SHOP_UNSORTED_TOPIC, key_type=SchemaKey, value_type=SchemaValue)
+goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
 sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 
-@app.agent('raw_item')
+@app.agent(goods_topic)
 async def my_agent(stream):
     async for record in stream.events():
         await sorted_goods_topic.send(

@@ -13,6 +13,7 @@ CA_PATH = os.getenv('CA_PATH', './client_fullchain.pem')
 CERT_PATH = os.getenv('CERT_PATH', './client.crt')
 CERT_KEY_PATH = os.getenv('CERT_KEY_PATH', './client.key')
 SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
+SHOP_SORTED_TOPIC = os.getenv('SHOP_SORTED_TOPIC', 'topic')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 
@@ -155,8 +156,6 @@ class SchemaValue(faust.Record):
 
 ca_ctx = ssl.create_default_context()
 ca_ctx.load_verify_locations(cafile=CA_PATH)
-# ssl_context = ssl.create_default_context(
-#     purpose=ssl.Purpose.SERVER_AUTH, cafile=CA_PATH)
 ca_ctx.load_cert_chain(CERT_PATH, keyfile=CERT_KEY_PATH)
 schema_registry_client = SchemaRegistryClient(
     {
@@ -185,9 +184,12 @@ app = faust.App(
 )
 
 goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
+sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 
 @app.agent(goods_topic)
 async def my_agent(stream: faust.Stream[SchemaValue]):
     async for record in stream:
-        print(record.to_representation())
+        await sorted_goods_topic.send(
+            value=record
+        )

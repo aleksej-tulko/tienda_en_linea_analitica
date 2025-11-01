@@ -3,6 +3,10 @@ import ssl
 import faust
 from faust_avro_serializer import FaustAvroSerializer
 from confluent_kafka.schema_registry import SchemaRegistryClient
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 
 # === ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ===

@@ -166,13 +166,15 @@ schema_registry_client = SchemaRegistryClient(
     }
 )
 
-# serializer = FaustAvroSerializer(
-#     schema_registry_client, SHOP_UNSORTED_TOPIC, False
-# )
+serializer = FaustAvroSerializer(
+    schema_registry_client, SHOP_UNSORTED_TOPIC, False
+)
 
 schema_with_avro = faust.Schema(
     key_type=SchemaKey,
-    value_type=SchemaValue)
+    value_type=SchemaValue,
+    key_serializer=serializer,
+    value_serializer=serializer)
 
 app = faust.App(
     "goods_filter",

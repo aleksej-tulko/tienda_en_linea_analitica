@@ -604,7 +604,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:faust \
-  --operation Create \
+  --operation Create --operation Write --operation Read \
   --topic 'goods_filter-__assignor-__leader' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "

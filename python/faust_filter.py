@@ -3,14 +3,18 @@ import ssl
 
 import faust
 from faust_avro_serializer import FaustAvroSerializer
+from dotenv import load_dotenv
 from schema_registry.client import SchemaRegistryClient
 
+load_dotenv()
 
 SCHEMA_REGISTRY_URL = os.getenv('SCHEMA_REGISTRY_URL', 'http://localost:8081')
 CA_PATH = os.getenv('CA_PATH', './client_fullchain.pem')
 CERT_PATH = os.getenv('CERT_PATH', './client.crt')
 CERT_KEY_PATH = os.getenv('CERT_KEY_PATH', './client.key')
 SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
+PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
+PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 
 
 class ProhibitedProducts(faust.Record):
@@ -151,6 +155,9 @@ class SchemaValue(faust.Record):
 
 ca_ctx = ssl.create_default_context()
 ca_ctx.load_verify_locations(cafile=CA_PATH)
+# ssl_context = ssl.create_default_context(
+#     purpose=ssl.Purpose.SERVER_AUTH, cafile=CA_PATH)
+ca_ctx.load_cert_chain(CERT_PATH, keyfile=CERT_KEY_PATH)
 schema_registry_client = SchemaRegistryClient(
     {
         'url': SCHEMA_REGISTRY_URL,
@@ -169,13 +176,18 @@ schema_with_avro = faust.Schema(
 
 app = faust.App(
     "goods_filter",
-    broker="kafka://localhost:19093,localhost:29093,localhost:39093",
+    broker="kafka://100.110.19.157:19093,100.110.19.157:29093,100.110.19.157:39093",
+    broker_credentials=faust.SASLCredentials(
+        username=PRODUCER_USERNAME,
+        password=PRODUCER_PASSWORD,
+        ssl_context=ca_ctx
+    )
 )
 
 goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
 
 
-@app.agents(goods_topic)
+@app.agent(goods_topic)
 async def my_agent(stream: faust.Stream[SchemaValue]):
     async for record in stream:
         print(record.to_representation())

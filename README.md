@@ -588,6 +588,25 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Write \
   --topic 'raw_items' --topic 'unprocessed' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
+ 
+# Faust
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Read \
+  --topic 'raw_items' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Write \
+  --topic 'filtered_items' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create \
+  --topic 'goods_filter-__assignor-__leader' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```
 

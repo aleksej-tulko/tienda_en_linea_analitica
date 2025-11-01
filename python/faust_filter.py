@@ -187,7 +187,7 @@ app = faust.App(
     consumer_auto_offset_reset="earliest"
 )
 
-goods_topic = app.topic(SHOP_UNSORTED_TOPIC)
+goods_topic = app.topic(SHOP_UNSORTED_TOPIC, key_type=SchemaKey, value_type=SchemaValue)
 sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 

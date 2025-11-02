@@ -216,8 +216,7 @@ app = faust.App(
         password=PRODUCER_PASSWORD,
         ssl_context=ca_ctx
     ),
-    store='rocksdb://',
-    producer_ack='all'
+    store='rocksdb://'
 )
 
 filter_table = app.Table(
@@ -233,11 +232,15 @@ filter_table = app.Table(
 
 app.conf.consumer_auto_offset_reset = 'earliest'
 
-goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
+goods_topic = app.topic(
+    SHOP_UNSORTED_TOPIC,
+    schema=schema_with_avro,
+    acks=True
+)
 sorted_goods_topic = app.topic(
     SHOP_SORTED_TOPIC,
-    schema=schema_with_avro,
-    acks='all')
+    schema=schema_with_avro
+)
 prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,

@@ -260,9 +260,8 @@ def convert_price(value: SchemaValue) -> SchemaValue:
 @app.agent(prohibited_goods_topic)
 async def filter_prohibited_goods(stream):
     async for item in stream:
-        print(item.name)
-        # filter_table['prohibited'] + [prohibited for prohibited in item.item]
-        # yield (filter_table['prohibited'])
+        filter_table['prohibited'] + [prohibited for prohibited in item.item]
+        yield (filter_table['prohibited'])
 
 
 @app.agent(goods_topic, sink=[log_price])

@@ -2,8 +2,8 @@ import os
 import ssl
 
 import faust
-from faust_avro_serializer import FaustAvroSerializer
 from dotenv import load_dotenv
+from faust_avro_serializer import FaustAvroSerializer
 from schema_registry.client import SchemaRegistryClient
 
 load_dotenv()
@@ -19,8 +19,14 @@ SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
 SHOP_SORTED_TOPIC = os.getenv('SHOP_SORTED_TOPIC', 'topic')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
-
 APP_NAME = 'goods_filter'
+FILTER_TABLE = 'filter_anchors'
+
+
+class FilterWords(faust.Record):
+    """Модель для слов-якорей для фильтра."""
+
+    words: list[str]
 
 
 class ProhibitedProducts(faust.Record):
@@ -161,7 +167,8 @@ class SchemaValue(faust.Record):
 
 ca_ctx = ssl.create_default_context()
 ca_ctx.load_verify_locations(cafile=CA_PATH)
-ca_ctx.load_cert_chain(CERT_PATH, keyfile=CERT_KEY_PATH)
+ca_ctx.load_cert_chain(certfile=CERT_PATH, keyfile=CERT_KEY_PATH)
+
 schema_registry_client = SchemaRegistryClient(
     {
         'url': SCHEMA_REGISTRY_URL,
@@ -170,11 +177,9 @@ schema_registry_client = SchemaRegistryClient(
         'ssl.key.location': CERT_KEY_PATH,
     }
 )
-
 serializer = FaustAvroSerializer(
     schema_registry_client, SHOP_UNSORTED_TOPIC, False
 )
-
 schema_with_avro = faust.Schema(
     key_type=SchemaKey,
     value_type=SchemaValue,
@@ -189,16 +194,33 @@ app = faust.App(
         password=PRODUCER_PASSWORD,
         ssl_context=ca_ctx
     ),
-    consumer_auto_offset_reset="earliest"
+    store='rocksdb://',
 )
+
+filter_table = app.Table(
+    FILTER_TABLE,
+    partitions=3,
+    default=list
+)
+
+app.conf.consumer_auto_offset_reset = 'earliest'
 
 goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
 sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 
+def lower_str_input(value: SchemaValue) -> SchemaValue:
+    value.price.amount = float(value.price.amount)
+    return value
+
+
 @app.agent(goods_topic)
-async def my_agent(stream):
-    async for record in stream:
+async def add_filtered_record(stream):
+    processed_stream = app.stream(
+        stream,
+        processors=[lower_str_input]
+    )
+    async for record in processed_stream:
         await sorted_goods_topic.send(
             value=record
         )

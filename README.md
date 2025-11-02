@@ -532,12 +532,12 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 # Mirror
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'raw_items' --partitions 3 \
+  --create --topic 'raw_items' --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'unprocessed' --partitions 3 \
+  --create --topic 'unprocessed' --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
@@ -596,7 +596,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'filtered_items' --partitions 3 \
+  --create --topic 'filtered_items' --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 

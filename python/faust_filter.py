@@ -217,7 +217,7 @@ app = faust.App(
         ssl_context=ca_ctx
     ),
     store='rocksdb://',
-    producer_acks='all'
+    producer_ack='all'
 )
 
 filter_table = app.Table(

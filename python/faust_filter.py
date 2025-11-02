@@ -249,4 +249,4 @@ async def add_filtered_record(stream):
         await sorted_goods_topic.send(
             value=record
         )
-        yield (stream.name, stream.price.amount)
+        yield (record.name, record.price.amount)

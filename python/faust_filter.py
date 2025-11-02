@@ -238,7 +238,7 @@ prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,
     value_type=ProhibitedProducts,
-    acks='all'
+    acks='alls'
 )
 
 
@@ -281,7 +281,7 @@ async def add_filtered_record(stream):
         processors=[convert_price]
     )
     async for record in processed_stream:
-        if re.match(re_pattern, record.category):
+        if not re.match(re_pattern, record.category):
             continue
         if record.name in filter_table['prohibited']:
             continue

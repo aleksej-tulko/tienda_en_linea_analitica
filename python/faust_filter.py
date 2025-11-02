@@ -267,6 +267,7 @@ def convert_price(value: SchemaValue) -> SchemaValue:
 async def filter_prohibited_goods(stream):
     async for good in stream:
         filter_table['prohibited'] = good.item
+        print(filter_table['prohibited'])
         yield tuple(filter_table)
 
 

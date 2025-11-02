@@ -217,6 +217,7 @@ app = faust.App(
         ssl_context=ca_ctx
     ),
     store='rocksdb://',
+    producer_acks='all'
 )
 
 filter_table = app.Table(
@@ -241,7 +242,7 @@ prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,
     value_type=ProhibitedProducts,
-    acks='all'
+    acks=True
 )
 
 

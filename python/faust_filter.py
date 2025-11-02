@@ -218,7 +218,7 @@ app = faust.App(
 filter_table = app.Table(
     FILTER_TABLE,
     partitions=1,
-    default=list
+    default=list,
 )
 
 app.conf.consumer_auto_offset_reset = 'earliest'
@@ -228,7 +228,8 @@ sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,
-    value_type=ProhibitedProducts
+    value_type=ProhibitedProducts,
+    acks='all'
 )
 
 

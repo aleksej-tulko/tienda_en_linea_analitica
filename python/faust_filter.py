@@ -26,8 +26,8 @@ PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 APP_NAME = 'goods_filter'
 FILTER_TABLE = 'filter_anchors'
 
-prohibited_goods_regexp = r"\b(Ум\w*)\b"
-re_pattern = re.compile(prohibited_goods_regexp, re.S)
+prohibited_goods_regexp = r"час"
+re_pattern = re.compile(prohibited_goods_regexp, re.IGNORECASE)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

@@ -26,7 +26,7 @@ PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 APP_NAME = 'goods_filter'
 FILTER_TABLE = 'filter_anchors'
 
-prohibited_goods_regexp = r"электро"
+prohibited_goods_regexp = r'^[A-Za-zА-Яа-яЁё0-9 _-]+$'
 re_pattern = re.compile(prohibited_goods_regexp, re.IGNORECASE)
 
 logger = logging.getLogger(__name__)
@@ -281,7 +281,7 @@ async def add_filtered_record(stream):
         processors=[convert_price]
     )
     async for record in processed_stream:
-        if re.match(re_pattern, record.category):
+        if not re.match(re_pattern, record.category):
             continue
         if record.name in filter_table['prohibited']:
             continue

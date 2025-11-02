@@ -19,6 +19,7 @@ CERT_PATH = os.getenv('CERT_PATH', './client.crt')
 CERT_KEY_PATH = os.getenv('CERT_KEY_PATH', './client.key')
 SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
 SHOP_SORTED_TOPIC = os.getenv('SHOP_SORTED_TOPIC', 'topic')
+SHOP_BLOCKED_GOODS_TOPIC = os.getenv('SHOP_BLOCKED_GOODS_TOPIC', 'topic')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 APP_NAME = 'goods_filter'
@@ -36,7 +37,8 @@ logger.addHandler(handler)
 class LoggerMsg:
     """Сообщения для логгирования."""
 
-    BLOCK_EQUALS = 'Цена {item}: {price}'
+    PRICE_EQUALS = 'Цена {item}: {price}.'
+    GOODS_PROHIBITED = 'Запрещенные товары: {goods}.'
 
 
 class FilterWords(faust.Record):
@@ -48,7 +50,7 @@ class FilterWords(faust.Record):
 class ProhibitedProducts(faust.Record):
     """Модель запрещенных товаров."""
 
-    goods: list[str]
+    item: list[str]
 
 
 class Price(faust.Record):
@@ -223,31 +225,53 @@ app.conf.consumer_auto_offset_reset = 'earliest'
 
 goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
 sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
+prohibited_goods_topic = app.topic(
+    SHOP_BLOCKED_GOODS_TOPIC,
+    key_type=str,
+    value_type=ProhibitedProducts
+)
+
+
+def log_prohibited_items(data: tuple) -> None:
+    logger.info(
+        msg=LoggerMsg.GOODS_PROHIBITED.format(
+            goods=data
+        )
+    )
 
 
 def log_price(data: tuple) -> None:
     name, price = data
     logger.info(
-        msg=LoggerMsg.BLOCK_EQUALS.format(
+        msg=LoggerMsg.PRICE_EQUALS.format(
             item=name, price=price
         )
     )
 
 
-def lower_str_input(value: SchemaValue) -> SchemaValue:
-    value.price.amount = float(value.price.amount)
+def convert_price(value: SchemaValue) -> SchemaValue:
+    try:
+        value.price.amount = float(value.price.amount)
+    except TypeError as TE:
+        raise f'Cannot convert price to float value {TE}'
     return value
+
+
+@app.agent(prohibited_goods_topic, sink=[log_prohibited_items])
+async def filter_blocked_users(stream):
+    async for item in stream:
+        filter_table['prohibited'] = [prohibited for prohibited in item.item]
+        yield (filter_table['prohibited'])
 
 
 @app.agent(goods_topic, sink=[log_price])
 async def add_filtered_record(stream):
     processed_stream = app.stream(
         stream,
-        processors=[lower_str_input]
+        processors=[convert_price]
     )
     async for record in processed_stream:
-        if record.price.amount > 5000.0:
-            await sorted_goods_topic.send(
-                value=record
-            )
-            yield (record.name, record.price.amount)
+        await sorted_goods_topic.send(
+            value=record
+        )
+        yield (record.name, record.price.amount)

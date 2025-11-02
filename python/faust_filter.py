@@ -281,6 +281,7 @@ async def add_filtered_record(stream):
         processors=[convert_price]
     )
     async for record in processed_stream:
+        print(filter_table['prohibited'])
         if re.match(re_pattern, record.description):
             continue
         if record.name in filter_table['prohibited']:

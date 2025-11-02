@@ -1,5 +1,7 @@
+import logging
 import os
 import ssl
+import sys
 
 import faust
 from dotenv import load_dotenv
@@ -21,6 +23,20 @@ PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 APP_NAME = 'goods_filter'
 FILTER_TABLE = 'filter_anchors'
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+
+class LoggerMsg:
+    """Сообщения для логгирования."""
+
+    BLOCK_EQUALS = 'Цена {item}: {price}'
 
 
 class FilterWords(faust.Record):
@@ -209,12 +225,21 @@ goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
 sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
 
 
+def log_price(data: tuple) -> None:
+    name, price = data
+    logger.info(
+        msg=LoggerMsg.BLOCK_EQUALS.format(
+            item=name, price=price
+        )
+    )
+
+
 def lower_str_input(value: SchemaValue) -> SchemaValue:
     value.price.amount = float(value.price.amount)
     return value
 
 
-@app.agent(goods_topic)
+@app.agent(goods_topic, sink=[log_price])
 async def add_filtered_record(stream):
     processed_stream = app.stream(
         stream,
@@ -224,3 +249,4 @@ async def add_filtered_record(stream):
         await sorted_goods_topic.send(
             value=record
         )
+        yield (stream.name, stream.price.amount)

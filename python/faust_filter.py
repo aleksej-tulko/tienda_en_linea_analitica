@@ -217,7 +217,7 @@ app = faust.App(
 
 filter_table = app.Table(
     FILTER_TABLE,
-    partitions=3,
+    partitions=1,
     default=list
 )
 
@@ -259,7 +259,7 @@ def convert_price(value: SchemaValue) -> SchemaValue:
 
 @app.agent(prohibited_goods_topic, sink=[log_prohibited_items])
 async def filter_prohibited_goods(stream):
-    async for item in stream.group_by(name='repartition', key='item2'):
+    async for item in stream:
         filter_table['prohibited'] += item.item
         yield (filter_table['prohibited'])
 

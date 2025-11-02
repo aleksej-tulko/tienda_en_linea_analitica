@@ -246,7 +246,8 @@ async def add_filtered_record(stream):
         processors=[lower_str_input]
     )
     async for record in processed_stream:
-        await sorted_goods_topic.send(
-            value=record
-        )
-        yield (record.name, record.price.amount)
+        if record.price.amount > 5000.0:
+            await sorted_goods_topic.send(
+                value=record
+            )
+            yield (record.name, record.price.amount)

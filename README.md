@@ -661,6 +661,15 @@ kafka-console-producer \
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/mirror_connector
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/hdfs-sync
 sudo docker compose exec kafka-connect curl -s -X PUT -H 'Content-Type: application/json' -d '{"connector.class":"io.confluent.connect.hdfs3.Hdfs3SinkConnector"}' http://localhost:8083/connector-plugins/io.confluent.connect.hdfs3.Hdfs3SinkConnector/config/validate | jq -r '.configs[].definition | select(.name == "flush.size")'
+sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 \
+bash -lc 'kafka-console-producer \
+  --bootstrap-server kafka-1:9093 \
+  --producer.config /etc/kafka/secrets/adminclient-configs.conf \
+  --topic prohibited_goods \
+  --property parse.key=true \
+  --property key.separator=:'
+>item:{"item": ["her"]}
+
 ```
 
 

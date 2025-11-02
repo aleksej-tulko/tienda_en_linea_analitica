@@ -219,6 +219,11 @@ filter_table = app.Table(
     FILTER_TABLE,
     partitions=1,
     default=list,
+    changelog_topic=app.topic(
+        "filter-table-changelog",
+        value_type=ProhibitedProducts(item=list[str]),
+        partitions=1
+    )
 )
 
 app.conf.consumer_auto_offset_reset = 'earliest'

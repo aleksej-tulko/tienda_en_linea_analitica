@@ -233,12 +233,15 @@ filter_table = app.Table(
 app.conf.consumer_auto_offset_reset = 'earliest'
 
 goods_topic = app.topic(SHOP_UNSORTED_TOPIC, schema=schema_with_avro)
-sorted_goods_topic = app.topic(SHOP_SORTED_TOPIC, schema=schema_with_avro)
+sorted_goods_topic = app.topic(
+    SHOP_SORTED_TOPIC,
+    schema=schema_with_avro,
+    acks='all')
 prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,
     value_type=ProhibitedProducts,
-    acks='alls'
+    acks='all'
 )
 
 

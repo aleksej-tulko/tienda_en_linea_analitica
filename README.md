@@ -600,6 +600,11 @@ kafka-topics --bootstrap-server kafka-1:9093 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'prohibited_goods' --partitions 3 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:faust \
   --operation Read \
@@ -610,6 +615,12 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:faust \
   --operation Write \
   --topic 'filtered_items' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Read \
+  --topic 'prohibited_goods' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \

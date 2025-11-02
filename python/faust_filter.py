@@ -271,6 +271,8 @@ async def add_filtered_record(stream):
         processors=[convert_price]
     )
     async for record in processed_stream:
+        if record.name in filter_table['prohibited']:
+            continue
         await sorted_goods_topic.send(
             value=record
         )

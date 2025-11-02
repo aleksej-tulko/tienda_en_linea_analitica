@@ -634,6 +634,18 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Create --operation Write --operation Read \
   --topic 'goods_filter-filter_anchors-changelog' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create --operation Write --operation Read \
+  --topic 'faust_filter.filter_prohibited_goods-prohibited_goods-grouped-repartition' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create --operation Write --operation Read \
+  --topic 'filter-table-changelog' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```
 

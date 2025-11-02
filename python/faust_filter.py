@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import ssl
 import sys
 
@@ -24,6 +25,9 @@ PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 APP_NAME = 'goods_filter'
 FILTER_TABLE = 'filter_anchors'
+
+prohibited_goods_regexp = r"\b(Ум\w*)\b"
+re_pattern = re.compile(prohibited_goods_regexp, re.S)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -267,7 +271,6 @@ def convert_price(value: SchemaValue) -> SchemaValue:
 async def filter_prohibited_goods(stream):
     async for good in stream:
         filter_table['prohibited'] = good.item
-        print(filter_table['prohibited'])
         yield (filter_table['prohibited'])
 
 
@@ -278,6 +281,8 @@ async def add_filtered_record(stream):
         processors=[convert_price]
     )
     async for record in processed_stream:
+        if re.match(record.name, re_pattern):
+            print('heh')
         if record.name in filter_table['prohibited']:
             continue
         await sorted_goods_topic.send(

@@ -268,6 +268,7 @@ async def filter_prohibited_goods(stream):
     async for good in stream:
         current = filter_table['prohibited']
         updated = [*current, *good.item]
+        print(updated)
         filter_table['prohibited'] = updated
         yield tuple(updated)
 
@@ -279,7 +280,6 @@ async def add_filtered_record(stream):
         processors=[convert_price]
     )
     async for record in processed_stream:
-        print(filter_table['prohibited'])
         if record.name in filter_table['prohibited']:
             continue
         await sorted_goods_topic.send(

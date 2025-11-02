@@ -246,7 +246,7 @@ def log_prohibited_items(data: tuple) -> None:
     )
 
 
-def log_price(data: tuple) -> None:
+def log_price(data: list) -> None:
     name, price = data
     logger.info(
         msg=LoggerMsg.PRICE_EQUALS.format(
@@ -268,7 +268,7 @@ async def filter_prohibited_goods(stream):
     async for good in stream:
         filter_table['prohibited'] = good.item
         print(filter_table['prohibited'])
-        yield tuple(filter_table)
+        yield (filter_table['prohibited'])
 
 
 @app.agent(goods_topic, sink=[log_price])

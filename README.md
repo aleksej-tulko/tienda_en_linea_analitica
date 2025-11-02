@@ -674,6 +674,7 @@ bash -lc 'kafka-console-producer \
   --property key.separator=:'
 >item:{"item": ["her"]}
 sudo docker compose down && sudo docker volume rm $(sudo docker volume ls -q) && sudo docker system prune -af && rm -rf python/goods_filter-data && git pull
+faust -A faust_filter  worker -l INFO
 ```
 
 

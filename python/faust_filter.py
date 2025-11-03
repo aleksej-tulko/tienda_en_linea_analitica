@@ -24,7 +24,10 @@ SHOP_BLOCKED_GOODS_TOPIC = os.getenv('SHOP_BLOCKED_GOODS_TOPIC', 'topic')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
 APP_NAME = 'goods_filter'
-FILTER_TABLE = 'filter_anchors'
+FILTER_TABLE = os.getenv('FILTER_TABLE', 'table')
+FILTER_TABLE_CHANGELOG_TOPIC = os.getenv(
+    'FILTER_TABLE_CHANGELOG_TOPIC', 'topic'
+)
 
 prohibited_goods_regexp = r'^[A-Za-zА-Яа-яЁё0-9 _-]+$'
 re_pattern = re.compile(prohibited_goods_regexp, re.IGNORECASE)
@@ -224,7 +227,7 @@ filter_table = app.Table(
     partitions=1,
     default=list,
     changelog_topic=app.topic(
-        'filter-table-changelog',
+        FILTER_TABLE_CHANGELOG_TOPIC,
         value_type=ProhibitedProducts(item=list[str]),
         partitions=1
     )
@@ -257,7 +260,7 @@ def log_prohibited_items(data: tuple) -> None:
     )
 
 
-def log_price(data: list) -> None:
+def log_price(data: tuple) -> None:
     name, price = data
     logger.info(
         msg=LoggerMsg.PRICE_EQUALS.format(

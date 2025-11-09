@@ -229,7 +229,8 @@ filter_table = app.Table(
     changelog_topic=app.topic(
         FILTER_TABLE_CHANGELOG_TOPIC,
         value_type=ProhibitedProducts(item=list[str]),
-        partitions=3
+        partitions=1,
+        replicas=3
     )
 )
 

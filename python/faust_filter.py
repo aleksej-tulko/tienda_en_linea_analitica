@@ -44,7 +44,7 @@ logger.addHandler(handler)
 class LoggerMsg:
     """Сообщения для логгирования."""
 
-    PRICE_EQUALS = 'Цена {item}: {price}.'
+    PRICE_EQUALS = 'Цена {product}: {price}.'
     PRODUCTS_PROHIBITED = 'Запрещенные товары: {products}.'
 
 
@@ -247,7 +247,7 @@ prohibited_goods_topic = app.topic(
 )
 
 
-def log_prohibited_products(products: tuple) -> None:
+def log_prohibited_products(products: ProhibitedProducts) -> None:
     logger.info(
         msg=LoggerMsg.PRODUCTS_PROHIBITED.format(
             products=products
@@ -255,11 +255,11 @@ def log_prohibited_products(products: tuple) -> None:
     )
 
 
-def log_price(data: tuple) -> None:
-    name, price = data
+def log_price(product: tuple) -> None:
+    name, price = product
     logger.info(
         msg=LoggerMsg.PRICE_EQUALS.format(
-            item=name, price=price
+            product=name, price=price
         )
     )
 
@@ -278,7 +278,7 @@ async def filter_prohibited_products(prohibited_products):
         filter_table['prohibited'] = ProhibitedProducts(
             products=products.products
         )
-        yield (filter_table['prohibited'])
+        yield filter_table['prohibited']
 
 
 @app.agent(goods_topic, sink=[log_price])

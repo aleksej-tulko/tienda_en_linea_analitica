@@ -45,7 +45,7 @@ class LoggerMsg:
     """Сообщения для логгирования."""
 
     PRICE_EQUALS = 'Цена {item}: {price}.'
-    GOODS_PROHIBITED = 'Запрещенные товары: {goods}.'
+    PRODUCTS_PROHIBITED = 'Запрещенные товары: {goods}.'
 
 
 class FilterWords(faust.Record):
@@ -253,10 +253,10 @@ prohibited_goods_topic = app.topic(
 )
 
 
-def log_prohibited_items(data: tuple) -> None:
+def log_prohibited_products(products: tuple) -> None:
     logger.info(
-        msg=LoggerMsg.GOODS_PROHIBITED.format(
-            goods=data
+        msg=LoggerMsg.PRODUCTS_PROHIBITED.format(
+            products=products
         )
     )
 
@@ -270,7 +270,7 @@ def log_price(data: tuple) -> None:
     )
 
 
-def convert_price(value: SchemaValue) -> SchemaValue:
+def convert_price_to_float(value: SchemaValue) -> SchemaValue:
     try:
         value.price.amount = float(value.price.amount)
     except TypeError as TE:
@@ -278,10 +278,12 @@ def convert_price(value: SchemaValue) -> SchemaValue:
     return value
 
 
-@app.agent(prohibited_goods_topic, sink=[log_prohibited_items])
+@app.agent(prohibited_goods_topic, sink=[log_prohibited_products])
 async def filter_prohibited_products(prohibited_products):
     async for products in prohibited_products:
-        filter_table['prohibited'] = ProhibitedProducts(products=products)
+        filter_table['prohibited'] = ProhibitedProducts(
+            products=products.items
+        )
         yield (filter_table['prohibited'])
 
 
@@ -289,7 +291,7 @@ async def filter_prohibited_products(prohibited_products):
 async def add_filtered_record(stream):
     processed_stream = app.stream(
         stream,
-        processors=[convert_price]
+        processors=[convert_price_to_float]
     )
     async for record in processed_stream:
         if not re.match(re_pattern, record.category):

@@ -294,7 +294,7 @@ async def add_filtered_record(stream):
     async for record in processed_stream:
         if not re.match(re_pattern, record.category):
             continue
-        if record.name in filter_table['prohibited'].item:
+        if record.name in filter_table['prohibited']:
             continue
         await sorted_goods_topic.send(
             value=record

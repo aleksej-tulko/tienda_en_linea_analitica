@@ -295,7 +295,7 @@ async def add_filtered_record(stream):
         if not re.match(re_pattern, record.category):
             continue
         heh = filter_table['prohibited']
-        print(dir(heh))
+        print(heh.item)
         # if record.name in filter_table['prohibited']:
         #     continue
         await sorted_goods_topic.send(

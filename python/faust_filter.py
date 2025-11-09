@@ -296,6 +296,8 @@ async def add_filtered_record(stream):
             continue
         if ('prohibited' in filter_table and
                 record.name in filter_table['prohibited'].item):
+            print(record.name)
+            filter_table['prohibited'].item
             continue
         await sorted_goods_topic.send(
             value=record

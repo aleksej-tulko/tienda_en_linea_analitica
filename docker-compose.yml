@@ -696,6 +696,7 @@ services:
       - kafka-replica-1
       - kafka-replica-2
       - kafka-replica-3
+    command: ["python", "shop_api_producer.py"]
 
 volumes:
   vault_config:

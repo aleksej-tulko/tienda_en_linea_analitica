@@ -282,7 +282,7 @@ def convert_price_to_float(value: SchemaValue) -> SchemaValue:
 async def filter_prohibited_products(prohibited_products):
     async for products in prohibited_products:
         filter_table['prohibited'] = ProhibitedProducts(
-            products=products.items
+            products=products.products
         )
         yield (filter_table['prohibited'])
 

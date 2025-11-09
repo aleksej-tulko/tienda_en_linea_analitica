@@ -229,7 +229,12 @@ def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
     key = {'name': f'key-{uuid.uuid4()}'}
     value = VALUE_VALUE
-    producer.produce(topic=SHOP_UNSORTED_TOPIC, key=key, value=value, headers={"source": "script", "env": "dev"})
+    producer.produce(
+        topic=SHOP_UNSORTED_TOPIC,
+        key=key,
+        value=value,
+        headers={'source': 'script', 'env': 'dev'}
+    )
 
 
 def producer_infinite_loop(producer: avro.AvroProducer) -> None:

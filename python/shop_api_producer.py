@@ -151,7 +151,7 @@ VALUE_VALUE = {
 }
 
 import os
-for p in ["/opt/certs/int-ca.pem","/opt/certs/client.crt","/opt/certs/client.key"]:
+for p in [CA_PATH,CERT_PATH,CERT_KEY_PATH]:
     print(p, "->", os.path.exists(p))
 
 key_schema = avro.loads(KEY_SCHEMA_STR)

@@ -8,4 +8,6 @@ RUN pip install -r requirements.txt --no-cache-dir
 
 COPY ./shop_api_producer.py .
 
+RUN mkdir /opt/certs && chmod 777 /opt/certs
+
 CMD ["python3", "shop_api_producer.py"]

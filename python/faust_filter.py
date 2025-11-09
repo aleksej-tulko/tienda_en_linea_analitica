@@ -225,7 +225,7 @@ app = faust.App(
 filter_table = app.Table(
     FILTER_TABLE,
     partitions=1,
-    default=list,
+    default=ProhibitedProducts,
     changelog_topic=app.topic(
         FILTER_TABLE_CHANGELOG_TOPIC,
         value_type=ProhibitedProducts(item=list[str]),
@@ -294,7 +294,7 @@ async def add_filtered_record(stream):
     async for record in processed_stream:
         if not re.match(re_pattern, record.category):
             continue
-        if record.name in filter_table['prohibited']:
+        if record.name in filter_table['prohibited'].item:
             continue
         await sorted_goods_topic.send(
             value=record

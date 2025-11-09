@@ -10,4 +10,4 @@ COPY ./shop_api_producer.py .
 
 RUN mkdir /opt/certs && chmod 777 /opt/certs
 
-CMD ["ls", "-lha"]
+CMD ["ls", "-lha /opt/certs"]

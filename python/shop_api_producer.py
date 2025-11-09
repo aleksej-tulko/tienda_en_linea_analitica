@@ -150,10 +150,6 @@ VALUE_VALUE = {
   "store_id": "store_001"
 }
 
-import os
-for p in [CA_PATH,CERT_PATH,CERT_KEY_PATH]:
-    print(p, "->", os.path.exists(p))
-
 key_schema = avro.loads(KEY_SCHEMA_STR)
 value_schema = avro.loads(VALUE_SCHEMA_STR)
 
@@ -233,7 +229,7 @@ def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
     key = {'name': f'key-{uuid.uuid4()}'}
     value = VALUE_VALUE
-    producer.produce(topic=SHOP_UNSORTED_TOPIC, key=key, value=value)
+    producer.produce(topic=SHOP_UNSORTED_TOPIC, key=key, value=value, headers={"source": "script", "env": "dev"})
 
 
 def producer_infinite_loop(producer: avro.AvroProducer) -> None:

@@ -685,6 +685,14 @@ bash -lc 'kafka-console-producer \
   --property parse.key=true \
   --property key.separator=:'
 >item:{"item": ["her"]}
+
+sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc 'kafka-console-producer \
+  --bootstrap-server kafka-1:9093 \
+  --producer.config /etc/kafka/secrets/adminclient-configs.conf \
+  --topic prohibited_goods'
+>"products": ["Умные часы XYZ"]
+>{"products": ["Умные часы XYZ"]}
+
 sudo docker compose down && sudo docker volume rm $(sudo docker volume ls -q) && sudo docker system prune -af && rm -rf python/goods_filter-data && git pull
 faust -A faust_filter  worker -l INFO
 ```

@@ -57,7 +57,7 @@ class FilterWords(faust.Record):
 class ProhibitedProducts(faust.Record):
     """Модель запрещенных товаров."""
 
-    item: list[str]
+    goods: list[str]
 
 
 class Price(faust.Record):
@@ -281,7 +281,7 @@ def convert_price(value: SchemaValue) -> SchemaValue:
 @app.agent(prohibited_goods_topic, sink=[log_prohibited_items])
 async def filter_prohibited_goods(stream):
     async for good in stream:
-        filter_table['prohibited'] = ProhibitedProducts(item=good.item)
+        filter_table['prohibited'] = ProhibitedProducts(item=good.goods)
         yield (filter_table['prohibited'])
 
 
@@ -295,10 +295,8 @@ async def add_filtered_record(stream):
         if not re.match(re_pattern, record.category):
             continue
         if ('prohibited' in filter_table and
-                record.name in filter_table['prohibited'].item):
+                record.name in filter_table['prohibited'].goods):
             continue
-        print(record.name)
-        print(filter_table['prohibited'].item)
         await sorted_goods_topic.send(
             value=record
         )

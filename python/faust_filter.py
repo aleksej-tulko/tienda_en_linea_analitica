@@ -225,7 +225,7 @@ app = faust.App(
 filter_table = app.Table(
     FILTER_TABLE,
     partitions=1,
-    default=ProhibitedProducts,
+    default=ProhibitedProducts(item=list[str]),
     changelog_topic=app.topic(
         FILTER_TABLE_CHANGELOG_TOPIC,
         value_type=ProhibitedProducts(item=list[str]),

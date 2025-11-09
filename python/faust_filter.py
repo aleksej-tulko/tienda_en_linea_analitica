@@ -45,13 +45,7 @@ class LoggerMsg:
     """Сообщения для логгирования."""
 
     PRICE_EQUALS = 'Цена {item}: {price}.'
-    PRODUCTS_PROHIBITED = 'Запрещенные товары: {goods}.'
-
-
-class FilterWords(faust.Record):
-    """Модель для слов-якорей для фильтра."""
-
-    words: list[str]
+    PRODUCTS_PROHIBITED = 'Запрещенные товары: {products}.'
 
 
 class ProhibitedProducts(faust.Record):

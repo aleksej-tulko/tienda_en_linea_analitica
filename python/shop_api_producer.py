@@ -212,6 +212,8 @@ producer = avro.AvroProducer(
     default_value_schema=value_schema,
 )
 
+print(CA_PATH)
+
 ca_ctx = ssl.create_default_context()
 ca_ctx.load_verify_locations(cafile=CA_PATH)
 schema_registry_client = SchemaRegistryClient(

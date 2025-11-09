@@ -709,7 +709,6 @@ services:
       - vault_certs:/opt/certs
     env_file:
       - .env
-    depends_on: [shop_api_producer]
     command: ["faust", "-A", "faust_filter", "worker", "-l", "INFO"]
 
 volumes:

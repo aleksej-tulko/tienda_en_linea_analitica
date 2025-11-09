@@ -294,7 +294,7 @@ async def add_filtered_record(stream):
     async for record in processed_stream:
         if not re.match(re_pattern, record.category):
             continue
-        print(dir(filter_table['prohibited']['item']))
+        print(dir(filter_table))
         print(filter_table['prohibited']['item'])
         if record.name in filter_table['prohibited']['item']:
             continue

@@ -146,7 +146,7 @@ vault write int-ca/roles/client \
   server_flag=false client_flag=true \
   key_type="rsa" key_bits=2048 ttl="720h" max_ttl="720h" \
   key_usage="DigitalSignature,KeyEncipherment" \
-  ext_key_usage="ServerAuth,ClientAuth"
+  ext_key_usage="ClientAuth"
 
 vault write -format=json int-ca/issue/client \
   common_name="client" \

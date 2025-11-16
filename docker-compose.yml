@@ -570,6 +570,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 8443:8443
+      - 9443:9443
     depends_on:
       - nifi-1
       - nifi-2

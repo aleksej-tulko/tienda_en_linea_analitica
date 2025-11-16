@@ -119,7 +119,7 @@ x-nifi-environment: &nifi-environment
   NIFI_ELECTION_MAX_CANDIDATES: 1
   NIFI_SENSITIVE_PROPS_KEY: 3e38a10eb5fb
   NIFI_CLUSTER_NODE_PROTOCOL_PORT: 8082
-  NIFI_WEB_PROXY_HOST: 100.100.19.8:8443
+  NIFI_WEB_PROXY_HOST: 100.100.19.157:8443
   SINGLE_USER_CREDENTIALS_USERNAME: nifi-user
   SINGLE_USER_CREDENTIALS_PASSWORD: nifi-password
   NIFI_SECURITY_USER_AUTHORIZER: single-user-authorizer
@@ -507,7 +507,7 @@ services:
     entrypoint:
       - "/bin/bash"
       - "-c"
-      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-1 (v1.21.0)/nifi.web.proxy.host=100.110.19.157:8443/' conf/nifi.properties; ../scripts/start.sh"
+      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-1 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
 
   nifi-2:
     <<: *nifi-base
@@ -533,7 +533,7 @@ services:
     entrypoint:
       - "/bin/bash"
       - "-c"
-      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-2 (v1.21.0)/nifi.web.proxy.host=100.110.19.157:8443/' conf/nifi.properties; ../scripts/start.sh"
+      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-2 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
   
   nifi-3:
     <<: *nifi-base
@@ -559,7 +559,7 @@ services:
     entrypoint:
       - "/bin/bash"
       - "-c"
-      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-3 (v1.21.0)/nifi.web.proxy.host=100.110.19.157:8443/' conf/nifi.properties; ../scripts/start.sh"
+      - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-3 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
 
   nifi-web-proxy:
     <<: *app-base

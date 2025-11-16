@@ -228,8 +228,8 @@ services:
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.kafka.jaas.conf
       JAVA_TOOL_OPTIONS: >-
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
-    ports:
-      - 9443:9443
+    # ports:
+    #   - 9443:9443
   
   kafka-1:
     <<: *kafka-base

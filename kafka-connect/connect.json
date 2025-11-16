@@ -4,7 +4,7 @@
     "connector.class": "org.apache.kafka.connect.mirror.MirrorSourceConnector",
     "source.cluster.alias":"source",
     "target.cluster.alias": "target",
-    "topics":"raw_items,unprocessed,filtered_items",
+    "topics":"filtered_items",
     "source.cluster.bootstrap.servers": "kafka-1:9093,kafka-2:9093,kafka-3:9093",
     "target.cluster.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "offset-syncs.topic.replication.factor": "3",

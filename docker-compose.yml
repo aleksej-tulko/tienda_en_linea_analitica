@@ -212,8 +212,8 @@ services:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
     environment:
-      HTTP_PORT: disabled
-      HTTPS_PORT: 9443
+      HTTP_PORT: 9443
+      # HTTPS_PORT: 9443 // Uncomment if nginx is not used
       ZK_CLIENT_SECURE: true
       ZK_SASL_CLIENT: true
       ZK_SASL_CLIENT_CONFIG: Client
@@ -504,10 +504,6 @@ services:
       NIFI_WEB_HTTPS_HOST: nifi-1
       KEYSTORE_PATH: /opt/certs/nifi-1.p12
       TRUSTSTORE_PATH: /opt/certs/truststore.jks
-    # entrypoint:
-    #   - "/bin/bash"
-    #   - "-c"
-    #   - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-1 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
 
   nifi-2:
     <<: *nifi-base
@@ -530,10 +526,6 @@ services:
       NIFI_WEB_HTTPS_HOST: nifi-2
       KEYSTORE_PATH: /opt/certs/nifi-2.p12
       TRUSTSTORE_PATH: /opt/certs/truststore.jks
-    # entrypoint:
-    #   - "/bin/bash"
-    #   - "-c"
-    #   - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-2 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
   
   nifi-3:
     <<: *nifi-base
@@ -556,10 +548,6 @@ services:
       NIFI_WEB_HTTPS_HOST: nifi-3
       KEYSTORE_PATH: /opt/certs/nifi-3.p12
       TRUSTSTORE_PATH: /opt/certs/truststore.jks
-    # entrypoint:
-    #   - "/bin/bash"
-    #   - "-c"
-    #   - "sed -i 's/nifi.ui.banner.text=.*/nifi.ui.banner.text=nifi-3 (v1.21.0)/' conf/nifi.properties; ../scripts/start.sh"
 
   proxy:
     <<: *app-base

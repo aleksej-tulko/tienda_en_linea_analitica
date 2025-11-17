@@ -637,8 +637,8 @@ services:
     volumes:
       - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./etc/prometheus/alert.rules:/etc/prometheus/alert.rules
-    ports:
-      - 9090:9090
+    # ports:
+    #   - 9090:9090
     command: --config.file=/etc/prometheus/prometheus.yml
   
   alertmanager:
@@ -648,8 +648,8 @@ services:
     hostname: alertmanager
     volumes:
       - ./etc/alertmanager/config.yml:/etc/alertmanager/config.yml
-    ports:
-      - 9093:9093
+    # ports:
+    #   - 9093:9093
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
@@ -666,8 +666,8 @@ services:
     environment:
       GF_PATHS_DATA: /var/lib/grafana
       GF_SECURITY_ADMIN_PASSWORD: kafka
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
     depends_on:
       - prometheus
 

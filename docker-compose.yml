@@ -212,8 +212,7 @@ services:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
     environment:
-      HTTP_PORT: 9443 # change to 'disabled' if nginx is not used
-      # HTTPS_PORT: 9443 // Uncomment if nginx is not used
+      HTTP_PORT: 9443
       ZK_CLIENT_SECURE: true
       ZK_SASL_CLIENT: true
       ZK_SASL_CLIENT_CONFIG: Client
@@ -228,8 +227,6 @@ services:
       JAVA_JAAS_LOGIN_CONFIG: /etc/zookeeper/configs/zookeeper.sasl.kafka.jaas.conf
       JAVA_TOOL_OPTIONS: >-
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
-    # ports:
-    #   - 9443:9443 // Uncomment if nginx is not used
   
   kafka-1:
     <<: *kafka-base
@@ -254,8 +251,6 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
-    # ports:
-    #   - 19093:9094
 
   kafka-replica-1:
     <<: *kafka-base
@@ -304,8 +299,6 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
-    # ports:
-    #   - 29093:9095
   
   kafka-replica-2:
     <<: *kafka-base
@@ -354,8 +347,6 @@ services:
       KAFKA_OPTS: >-
         -Djava.security.auth.login.config=/etc/kafka/secrets/kafka_server_jaas.conf
         -javaagent:/opt/jmx_prometheus_javaagent.jar=6969:/etc/kafka/config_kafka.yml
-    # ports:
-    #   - 39093:9096
 
   kafka-replica-3:
     <<: *kafka-base
@@ -409,8 +400,6 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/kafka/certs/client.p12
       SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: changeit
       SCHEMA_REGISTRY_KAFKASTORE_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: ''
-    # ports:
-    #   - 8081:8081
     depends_on:
       - kafka-1
       - kafka-2
@@ -429,8 +418,6 @@ services:
       - ./kafka/configs/config.yml:/etc/ui/config.yml
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /etc/ui/config.yml
-    # ports:
-    #   - 8080:8080
     depends_on:
       - kafka-1
       - kafka-2
@@ -475,8 +462,6 @@ services:
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-    # ports:
-    #   - 8083:8083
     depends_on:
       - kafka-1
       - kafka-2
@@ -580,9 +565,6 @@ services:
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/configs/fair-scheduler.xml:/opt/hadoop/etc/hadoop/fair-scheduler.xml
       - ./hadoop/namenode_entrypoint.sh:/namenode_entrypoint.sh
-    # ports:
-      # - 9870:9870
-      # - 8088:8088
     entrypoint: ["/bin/bash", "/namenode_entrypoint.sh"]
     command: ["hdfs", "namenode"]
 
@@ -642,8 +624,6 @@ services:
     volumes:
       - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./etc/prometheus/alert.rules:/etc/prometheus/alert.rules
-    # ports:
-    #   - 9090:9090
     command: --config.file=/etc/prometheus/prometheus.yml
   
   alertmanager:
@@ -653,8 +633,6 @@ services:
     hostname: alertmanager
     volumes:
       - ./etc/alertmanager/config.yml:/etc/alertmanager/config.yml
-    # ports:
-    #   - 9093:9093
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
@@ -671,8 +649,6 @@ services:
     environment:
       GF_PATHS_DATA: /var/lib/grafana
       GF_SECURITY_ADMIN_PASSWORD: kafka
-    # ports:
-    #   - 3000:3000
     depends_on:
       - prometheus
 

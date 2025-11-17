@@ -481,7 +481,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'raw_goods' --partitions 1 \
+  --create --topic 'raw_items' --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 

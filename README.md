@@ -546,7 +546,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
-  --operation Read --topic 'filtered_items'\
+  --operation Read --operation Describe --topic 'filtered_items'\
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \

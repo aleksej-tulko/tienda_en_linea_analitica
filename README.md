@@ -449,10 +449,6 @@ rm -rf debezium-connector-postgres-3.2.0.Final-plugin.tar.gz
 5. Запустить сервисы Zookeeper, Kafka, Zoonavigator, Kafka UI:
 ```bash
 sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 kafka-2 kafka-3 kafka-replica-1 kafka-replica-2 kafka-replica-3 ui -d
-
-# Zoonavigator будет доступен по адресу https://<your_host_ip>:9443. Мой адрес https://192.168.1.128:9443
-# Connection string 'zookeeper-1:2281,zookeeper-2:2281,zookeeper-3:2281/kafka'
-# Юзер и пароль для входа -  navigator:navigator_pass
 ```
 
 6. Создать топики и раздать права в Kafka.

@@ -529,6 +529,20 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 # Mirror
 
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Read --operation Write --operation Describe --operation Create \
+  --topic 'connect-offset-storage' \
+  --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replica-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Read --operation Write --operation Describe --operation Create \
+  --topic 'connect-offset-storage' \
+  --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 kafka-topics --bootstrap-server kafka-1:9093 \
   --create --topic 'raw_items' --partitions 3 \
   --replication-factor 3 \

@@ -212,7 +212,7 @@ services:
       - vault_certs:/etc/zookeeper/certs
       - ./zookeeper/configs/zookeeper.sasl.client.jaas.conf:/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
     environment:
-      HTTP_PORT: 9443
+      HTTP_PORT: 9443 # change to 'disabled' if nginx is not used
       # HTTPS_PORT: 9443 // Uncomment if nginx is not used
       ZK_CLIENT_SECURE: true
       ZK_SASL_CLIENT: true
@@ -229,7 +229,7 @@ services:
       JAVA_TOOL_OPTIONS: >-
         -Djava.security.auth.login.config=/etc/zookeeper/configs/zookeeper.sasl.zoonavigator.jaas.conf
     # ports:
-    #   - 9443:9443
+    #   - 9443:9443 // Uncomment if nginx is not used
   
   kafka-1:
     <<: *kafka-base
@@ -429,8 +429,8 @@ services:
       - ./kafka/configs/config.yml:/etc/ui/config.yml
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /etc/ui/config.yml
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     depends_on:
       - kafka-1
       - kafka-2

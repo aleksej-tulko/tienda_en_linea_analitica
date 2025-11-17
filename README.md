@@ -518,14 +518,12 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:connect \
   --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'connect-offset-storage' \
   --topic 'connect-status-storage' --topic 'connect-config-storage' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:connect \
   --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'connect-offset-storage' \
   --topic 'connect-status-storage' --topic 'connect-config-storage' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
@@ -548,15 +546,13 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
-  --operation Read \
-  --topic 'raw_items' --topic 'unprocessed' --topic 'filtered_items'\
+  --operation Read --topic 'filtered_items'\
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:mirror \
   --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'source.raw_items' --topic 'source.unprocessed' --topic 'source.filtered_items'\
-  --topic 'mm2-offset-syncs.source.internal' \
+  --topic 'source.filtered_items' --topic 'mm2-offset-syncs.source.internal' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # HDFS connector

@@ -481,7 +481,17 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'raw_items' --topic 'filtered_items' --topic 'prohibited_goods' --partitions 3 \
+  --create --topic 'raw_goods' --partitions 1 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'filtered_items' --partitions 3 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'prohibited_goods' --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 

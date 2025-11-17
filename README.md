@@ -454,6 +454,61 @@ sudo docker compose up zookeeper-1 zookeeper-2 zookeeper-3 zoonavigator kafka-1 
 6. Создать топики и раздать права в Kafka.
 ```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" kafka-1 bash -lc "
+# Create topics
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create --operation Write --operation Read \
+  --topic 'goods_filter-__assignor-__leader' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create --operation Write --operation Read \
+  --topic 'goods_filter-filter_anchors-changelog' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create --operation Write --operation Read \
+  --topic 'faust_filter.filter_prohibited_goods-prohibited_goods-grouped-repartition' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Create --operation Write --operation Read \
+  --topic 'filter-table-changelog' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'filtered_items' --partitions 3 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'prohibited_goods' --partitions 1 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Read --operation Write --operation Describe --operation Create \
+  --topic 'connect-offset-storage' \
+  --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replica-1:9093 \
+  --add --allow-principal User:connect \
+  --operation Read --operation Write --operation Describe --operation Create \
+  --topic 'connect-offset-storage' \
+  --topic 'connect-status-storage' --topic 'connect-config-storage' \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-topics --bootstrap-server kafka-1:9093 \
+  --create --topic 'unprocessed' --topic 'raw_items' --partitions 3 \
+  --replication-factor 3 \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
 # UI
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:ui \
@@ -490,14 +545,12 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:schema \
-  --operation All \
-  --topic '_schemas' \
+  --operation All --topic '_schemas' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:schema \
-  --operation All \
-  --topic '_schemas' \
+  --operation All --topic '_schemas' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # Connect
@@ -511,44 +564,7 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --operation Describe --operation Read --group 'kafka_connect' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:connect \
-  --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'connect-status-storage' --topic 'connect-config-storage' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-replica-1:9093 \
-  --add --allow-principal User:connect \
-  --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'connect-status-storage' --topic 'connect-config-storage' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
 # Mirror
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:connect \
-  --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'connect-offset-storage' \
-  --topic 'connect-status-storage' --topic 'connect-config-storage' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-replica-1:9093 \
-  --add --allow-principal User:connect \
-  --operation Read --operation Write --operation Describe --operation Create \
-  --topic 'connect-offset-storage' \
-  --topic 'connect-status-storage' --topic 'connect-config-storage' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'raw_items' --partitions 3 \
-  --replication-factor 3 \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'unprocessed' --partitions 3 \
-  --replication-factor 3 \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:mirror \
   --operation Describe --operation Read --group 'mirroring' \
@@ -566,7 +582,6 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # HDFS connector
-
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \
   --operation DESCRIBE --operation READ --group 'connect-hdfs-sync' \
@@ -583,11 +598,9 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # Producer
-
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:producer \
-  --operation Write \
-  --topic 'raw_items' --topic 'unprocessed' \
+  --operation Write --topic 'raw_items' --topic 'unprocessed' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
  
 # Faust
@@ -596,56 +609,14 @@ kafka-acls --bootstrap-server kafka-1:9093 \
   --operation Describe --operation Read --group 'goods_filter' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
-kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'filtered_items' --partitions 3 \
-  --replication-factor 3 \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'prohibited_goods' --partitions 1 \
-  --replication-factor 3 \
+kafka-acls --bootstrap-server kafka-1:9093 \
+  --add --allow-principal User:faust \
+  --operation Read --topic 'raw_items' --topic 'prohibited_goods' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:faust \
-  --operation Read \
-  --topic 'raw_items' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:faust \
-  --operation Write \
-  --topic 'filtered_items' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:faust \
-  --operation Read \
-  --topic 'prohibited_goods' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:faust \
-  --operation Create --operation Write --operation Read \
-  --topic 'goods_filter-__assignor-__leader' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:faust \
-  --operation Create --operation Write --operation Read \
-  --topic 'goods_filter-filter_anchors-changelog' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:faust \
-  --operation Create --operation Write --operation Read \
-  --topic 'faust_filter.filter_prohibited_goods-prohibited_goods-grouped-repartition' \
-  --command-config /etc/kafka/secrets/adminclient-configs.conf
-
-kafka-acls --bootstrap-server kafka-1:9093 \
-  --add --allow-principal User:faust \
-  --operation Create --operation Write --operation Read \
-  --topic 'filter-table-changelog' \
+  --operation Write --topic 'filtered_items' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 "
 ```

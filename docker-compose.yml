@@ -620,7 +620,8 @@ services:
       YARN_CONF_DIR: /opt/yarn/conf
       SPARK_NO_DAEMONIZE: true
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
-    command: ["/opt/spark/sbin/start-master.sh"]
+    command: ["tail", "-f", "/dev/null"]
+    # command: ["/opt/spark/sbin/start-master.sh"]
 
   spark-worker-1:
     <<: *spark-worker-base

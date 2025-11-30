@@ -608,9 +608,9 @@ services:
     environment:
       HADOOP_CONF_DIR: /opt/hadoop/conf
       YARN_CONF_DIR: /opt/yarn/conf
-      SPARK_NO_DAEMONIZE: 1
-    entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
-    command: ["tail", "-f", "/dev/null"]
+      # SPARK_NO_DAEMONIZE: 
+    # entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
+    # command: ["tail", "-f", "/dev/null"]
 
   
   prometheus:

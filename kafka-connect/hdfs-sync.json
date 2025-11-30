@@ -2,7 +2,7 @@
   "name": "hdfs-sync",
   "config": {
     "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
-    "topics": "source.mirroring",
+    "topics": "source.filtered_items",
     "tasks.max": "3",
     "hdfs.url": "hdfs://hadoop-namenode:9000",
     "flush.size": "10",

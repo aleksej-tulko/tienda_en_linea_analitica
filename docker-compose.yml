@@ -595,11 +595,11 @@ services:
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
 
-  spark-node-1:
+  spark-master:
     <<: *app-base
     image: apache/spark:v3.3.0
-    container_name: spark-node-1
-    hostname: spark-node-1
+    container_name: spark-master
+    hostname: spark-master
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
       - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml
@@ -613,6 +613,24 @@ services:
     command: ["/opt/spark/sbin/start-master.sh"]
     # command: ["tail", "-f", "/dev/null"]
 
+  spark-worker-1:
+    <<: *app-base
+    image: apache/spark:v3.3.0
+    container_name: spark-node-1
+    hostname: spark-node-1
+    volumes:
+      - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
+      - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/yarn/conf/yarn-site.xml
+      - ./hadoop/spark_entrypoint.sh:/spark_entrypoint.sh
+    environment:
+      HADOOP_CONF_DIR: /opt/hadoop/conf
+      YARN_CONF_DIR: /opt/yarn/conf
+      SPARK_NO_DAEMONIZE: true
+      SPARK_MASTER: spark://spark-master:7077
+    entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
+    command: ["/opt/spark/sbin/start-worker.sh"]
+    # command: ["tail", "-f", "/dev/null"]
   
   prometheus:
     <<: *app-base

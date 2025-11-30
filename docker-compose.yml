@@ -556,6 +556,7 @@ services:
       - nifi-2
       - nifi-3
 
+
   hadoop-namenode:
     <<: *hadoop-base
     container_name: hadoop-namenode

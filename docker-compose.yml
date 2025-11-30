@@ -610,7 +610,7 @@ services:
       YARN_CONF_DIR: /opt/yarn/conf
       SPARK_NO_DAEMONIZE: true
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
-    command: ["/opt/spark/start-master.sh"]
+    command: ["$SPARK_HOME/sbin/start-master.sh"]
     # command: ["tail", "-f", "/dev/null"]
 
   

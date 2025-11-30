@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <allocations>
-  <queue name="roots">
+  <queue name="root">
     <queue name="defaults">
       <minResources>512mb,1vcores</minResources>
       <maxResources>1024mb,2vcores</maxResources>

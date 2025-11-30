@@ -3,7 +3,7 @@
   "config": {
     "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
     "topics": "source.filtered_items",
-    "tasks.max": "3",
+    "tasks.max": "2",
     "hdfs.url": "hdfs://hadoop-namenode:9000",
     "flush.size": "10",
     "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",

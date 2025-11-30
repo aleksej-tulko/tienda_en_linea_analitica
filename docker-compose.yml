@@ -629,7 +629,7 @@ services:
       SPARK_NO_DAEMONIZE: true
       SPARK_MASTER: spark-master:7077
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
-    # command: ["/opt/spark/sbin/start-worker.sh"]
+    command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
     # command: ["tail", "-f", "/dev/null"]
   
   prometheus:

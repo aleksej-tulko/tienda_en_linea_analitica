@@ -17,8 +17,8 @@ sudo docker compose exec vault vault operator init -key-shares=1 -key-threshold=
 sudo docker compose exec vault sh -c 'echo "changeit" > /vault/secrets/kafka_creds'
 cat init.txt
 sudo docker compose exec -it vault sh
-vault operator unseal # Запросит ввести Unseal Key 1 из файла init.txt
-export VAULT_TOKEN=XXXX # Подставить Initial Root Token из файла init.txt
+vault operator unseal
+export VAULT_TOKEN=
 ```
 
 3. Настроить Vault для создания корневого и промежуточных сертификатов. Cобрать truststore и keystore'ы для сервисов:
@@ -600,6 +600,11 @@ kafka-acls --bootstrap-server kafka-replica-1:9093 \
 kafka-acls --bootstrap-server kafka-replica-1:9093 \
   --add --allow-principal User:hdfs \
   --operation DESCRIBE --operation READ --operation WRITE --topic _confluent-command \
+  --command-config /etc/kafka/secrets/adminclient-configs.conf
+
+kafka-acls --bootstrap-server kafka-replica-1:9093 \
+  --add --allow-principal User:hdfs \
+  --operation READ --topic source.filtered_items \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 # Producer

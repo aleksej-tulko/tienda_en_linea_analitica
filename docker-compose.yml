@@ -608,8 +608,8 @@ services:
 
   spark-yarn:
     <<: *spark-base
-    container_name: spark-master
-    hostname: spark-master
+    container_name: spark-yarn
+    hostname: spark-yarn
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
       - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml

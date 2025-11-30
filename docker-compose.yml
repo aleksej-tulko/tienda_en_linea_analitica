@@ -611,28 +611,39 @@ services:
       SPARK_NO_DAEMONIZE: true
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
     command: ["/opt/spark/sbin/start-master.sh"]
-    # command: ["tail", "-f", "/dev/null"]
 
   spark-worker-1:
     <<: *app-base
     image: apache/spark:v3.3.0
     container_name: spark-worker-1
     hostname: spark-worker-1
-    # volumes:
-    #   - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
-    #   - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml
-    #   - ./hadoop/configs/yarn-site.xml:/opt/yarn/conf/yarn-site.xml
-    #   - ./hadoop/spark_entrypoint.sh:/spark_entrypoint.sh
     environment:
-      # HADOOP_CONF_DIR: /opt/hadoop/conf
-      # YARN_CONF_DIR: /opt/yarn/conf
       SPARK_WORKER_CORES: 1
       SPARK_WORKER_MEMORY: 1G
       SPARK_NO_DAEMONIZE: true
-    #   SPARK_MASTER: spark-master:7077
-    # entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
     command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
-    # command: ["tail", "-f", "/dev/null"]
+
+  spark-worker-2:
+    <<: *app-base
+    image: apache/spark:v3.3.0
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    environment:
+      SPARK_WORKER_CORES: 1
+      SPARK_WORKER_MEMORY: 1G
+      SPARK_NO_DAEMONIZE: true
+    command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
+
+  spark-worker-3:
+    <<: *app-base
+    image: apache/spark:v3.3.0
+    container_name: spark-worker-3
+    hostname: spark-worker-3
+    environment:
+      SPARK_WORKER_CORES: 1
+      SPARK_WORKER_MEMORY: 1G
+      SPARK_NO_DAEMONIZE: true
+    command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
   
   prometheus:
     <<: *app-base

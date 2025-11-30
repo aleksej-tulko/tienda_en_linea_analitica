@@ -537,8 +537,8 @@ services:
   proxy:
     <<: *app-base
     image: nginx:latest
-    container_name: nifi-web-proxy
-    hostname: nifi-web-proxy
+    container_name: proxy
+    hostname: proxy
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
@@ -550,12 +550,7 @@ services:
       - 9090:9090
       - 9870:9870
       - 8088:8088
-      - 9867:9867
-    depends_on:
-      - nifi-1
-      - nifi-2
-      - nifi-3
-
+      - 8042:8042
 
   hadoop-namenode:
     <<: *hadoop-base

@@ -616,8 +616,8 @@ services:
   spark-worker-1:
     <<: *app-base
     image: apache/spark:v3.3.0
-    container_name: spark-node-1
-    hostname: spark-node-1
+    container_name: spark-worker-1
+    hostname: spark-worker-1
     volumes:
       - ./hadoop/configs/core-site.xml:/opt/hadoop/conf/core-site.xml
       - ./hadoop/configs/spark-site.xml:/opt/hadoop/conf/hdfs-site.xml
@@ -629,7 +629,7 @@ services:
       SPARK_NO_DAEMONIZE: true
       SPARK_MASTER: spark://spark-master:7077
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
-    command: ["/opt/spark/sbin/start-worker.sh"]
+    command: ["/opt/spark/sbin/start-worker.sh", "@"]
     # command: ["tail", "-f", "/dev/null"]
   
   prometheus:

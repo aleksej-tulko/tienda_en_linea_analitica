@@ -35,7 +35,18 @@ x-datanode-base: &datanode-base
   command: ["hdfs", "datanode"]
   depends_on:
     - hadoop-namenode
-  
+
+x-spark-base: &spark-base
+  <<: *app-base
+  image: apache/spark:v3.3.0
+
+x-spark-worker-base: &spark-worker-base
+  <<: *spark-base
+  environment:
+    SPARK_WORKER_CORES: 1
+    SPARK_WORKER_MEMORY: 1G
+    SPARK_NO_DAEMONIZE: true
+  command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
 
 x-zookeeper-environment: &zookeeper-environment
   ZOOKEEPER_QUORUM_LISTEN_ON_ALL_IPS: true
@@ -596,8 +607,7 @@ services:
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
 
   spark-master:
-    <<: *app-base
-    image: apache/spark:v3.3.0
+    <<: *spark-base
     container_name: spark-master
     hostname: spark-master
     volumes:
@@ -613,37 +623,20 @@ services:
     command: ["/opt/spark/sbin/start-master.sh"]
 
   spark-worker-1:
-    <<: *app-base
-    image: apache/spark:v3.3.0
+    <<: *spark-worker-base
     container_name: spark-worker-1
     hostname: spark-worker-1
-    environment:
-      SPARK_WORKER_CORES: 1
-      SPARK_WORKER_MEMORY: 1G
-      SPARK_NO_DAEMONIZE: true
-    command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
 
   spark-worker-2:
-    <<: *app-base
-    image: apache/spark:v3.3.0
+    <<: *spark-worker-base
     container_name: spark-worker-2
     hostname: spark-worker-2
-    environment:
-      SPARK_WORKER_CORES: 1
-      SPARK_WORKER_MEMORY: 1G
-      SPARK_NO_DAEMONIZE: true
-    command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
 
   spark-worker-3:
-    <<: *app-base
+    <<: *spark-worker-base
     image: apache/spark:v3.3.0
     container_name: spark-worker-3
     hostname: spark-worker-3
-    environment:
-      SPARK_WORKER_CORES: 1
-      SPARK_WORKER_MEMORY: 1G
-      SPARK_NO_DAEMONIZE: true
-    command: ["/opt/spark/sbin/start-worker.sh", "spark://spark-master:7077"]
   
   prometheus:
     <<: *app-base

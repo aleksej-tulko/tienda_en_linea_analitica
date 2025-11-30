@@ -588,15 +588,15 @@ services:
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
 
-  # hadoop-datanode-3:
-  #   <<: *datanode-base
-  #   container_name: hadoop-datanode-3
-  #   hostname: hadoop-datanode-3
-  #   volumes:
-  #     - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
-  #     - ./hadoop/configs/hdfs-site-datanode-3.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
-  #     - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-  #     - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
+  hadoop-datanode-3:
+    <<: *datanode-base
+    container_name: hadoop-datanode-3
+    hostname: hadoop-datanode-3
+    volumes:
+      - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+      - ./hadoop/configs/hdfs-site-datanode-3.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
+      - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
 
   spark-node-1:
     <<: *app-base

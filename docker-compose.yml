@@ -562,7 +562,7 @@ services:
       - 9870:9870
       - 8088:8088
       - 6969:6969
-      - 7077:7077
+      # - 7077:7077
 
   hadoop-namenode:
     <<: *hadoop-base
@@ -639,6 +639,8 @@ services:
       SPARK_NO_DAEMONIZE: true
     entrypoint: ["/bin/bash", "/spark_entrypoint.sh"]
     command: ["/opt/spark/sbin/start-master.sh"]
+    ports:
+      - 7077:7077
 
   spark-worker-1:
     <<: *spark-worker-base
@@ -652,7 +654,6 @@ services:
 
   spark-worker-3:
     <<: *spark-worker-base
-    image: apache/spark:v3.3.0
     container_name: spark-worker-3
     hostname: spark-worker-3
   

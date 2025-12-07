@@ -38,7 +38,7 @@ x-datanode-base: &datanode-base
 
 x-spark-base: &spark-base
   <<: *app-base
-  image: apache/spark:v4.0.1
+  image: apache/spark:4.0.1
 
 x-spark-worker-base: &spark-worker-base
   <<: *spark-base

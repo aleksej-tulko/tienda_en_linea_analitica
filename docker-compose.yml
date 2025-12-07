@@ -562,6 +562,7 @@ services:
       - 9870:9870
       - 8088:8088
       - 6969:6969
+      - 7077:7077
 
   hadoop-namenode:
     <<: *hadoop-base

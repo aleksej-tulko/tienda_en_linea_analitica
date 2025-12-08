@@ -29,7 +29,7 @@ with spark_manager() as context:
     textFileRDD = context.textFile(File)
     lines = textFileRDD.collect()
     for line in lines:
-        print(line)
+        print(lambda line: line)
     wordCounts = textFileRDD.flatMap(lambda line: line.split()).map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
     wordCounts.saveAsTextFile("output")
 

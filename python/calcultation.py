@@ -27,7 +27,7 @@ def spark_manager():
 with spark_manager() as context:
     File = "hdfs://100.110.19.157:9000/topics/README.txt"
     textFileRDD = context.textFile(File)
-    lines = textFileRDD.flatMap(lambda line: line.split(',')).map(lambda line: (line[0],line[1])).collect()
+    lines = textFileRDD.flatMap(lambda line: line.split(',')).map(lambda word: (word, 1)).collect()
     print(lines)
     wordCounts = textFileRDD.flatMap(lambda line: line.split()).map(lambda word: (word, 1)).reduceByKey(lambda a, b: a+b)
     wordCounts.saveAsTextFile("output")

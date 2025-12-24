@@ -479,71 +479,71 @@ services:
       - kafka-3
       - schema-registry
 
-  nifi-1:
-    <<: *nifi-base
-    container_name: nifi-1
-    hostname: nifi-1
-    volumes:
-      - vault_certs:/opt/certs
-      - nifi-1_conf:/opt/nifi/nifi-current/conf
-      - nifi-1_extensions:/opt/nifi/nifi-current/extensions
-      - nifi-1_database_repository:/opt/nifi/nifi-current/database_repository
-      - nifi-1_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
-      - nifi-1_content_repository:/opt/nifi/nifi-current/content_repository
-      - nifi-1_provenance_repository:/opt/nifi/nifi-current/provenance_repository
-      - nifi-1_state:/opt/nifi/nifi-current/state
-      - nifi-1_logs:/opt/nifi/nifi-current/logs
-      - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
-    environment:
-      <<: *nifi-environment
-      NIFI_CLUSTER_ADDRESS: nifi-1
-      NIFI_WEB_HTTPS_HOST: nifi-1
-      KEYSTORE_PATH: /opt/certs/nifi-1.p12
-      TRUSTSTORE_PATH: /opt/certs/truststore.jks
+  # nifi-1:
+  #   <<: *nifi-base
+  #   container_name: nifi-1
+  #   hostname: nifi-1
+  #   volumes:
+  #     - vault_certs:/opt/certs
+  #     - nifi-1_conf:/opt/nifi/nifi-current/conf
+  #     - nifi-1_extensions:/opt/nifi/nifi-current/extensions
+  #     - nifi-1_database_repository:/opt/nifi/nifi-current/database_repository
+  #     - nifi-1_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+  #     - nifi-1_content_repository:/opt/nifi/nifi-current/content_repository
+  #     - nifi-1_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+  #     - nifi-1_state:/opt/nifi/nifi-current/state
+  #     - nifi-1_logs:/opt/nifi/nifi-current/logs
+  #     - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
+  #   environment:
+  #     <<: *nifi-environment
+  #     NIFI_CLUSTER_ADDRESS: nifi-1
+  #     NIFI_WEB_HTTPS_HOST: nifi-1
+  #     KEYSTORE_PATH: /opt/certs/nifi-1.p12
+  #     TRUSTSTORE_PATH: /opt/certs/truststore.jks
 
-  nifi-2:
-    <<: *nifi-base
-    container_name: nifi-2
-    hostname: nifi-2
-    volumes:
-      - vault_certs:/opt/certs
-      - nifi-2_conf:/opt/nifi/nifi-current/conf
-      - nifi-2_extensions:/opt/nifi/nifi-current/extensions
-      - nifi-2_database_repository:/opt/nifi/nifi-current/database_repository
-      - nifi-2_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
-      - nifi-2_content_repository:/opt/nifi/nifi-current/content_repository
-      - nifi-2_provenance_repository:/opt/nifi/nifi-current/provenance_repository
-      - nifi-2_state:/opt/nifi/nifi-current/state
-      - nifi-2_logs:/opt/nifi/nifi-current/logs
-      - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
-    environment:
-      <<: *nifi-environment
-      NIFI_CLUSTER_ADDRESS: nifi-2
-      NIFI_WEB_HTTPS_HOST: nifi-2
-      KEYSTORE_PATH: /opt/certs/nifi-2.p12
-      TRUSTSTORE_PATH: /opt/certs/truststore.jks
+  # nifi-2:
+  #   <<: *nifi-base
+  #   container_name: nifi-2
+  #   hostname: nifi-2
+  #   volumes:
+  #     - vault_certs:/opt/certs
+  #     - nifi-2_conf:/opt/nifi/nifi-current/conf
+  #     - nifi-2_extensions:/opt/nifi/nifi-current/extensions
+  #     - nifi-2_database_repository:/opt/nifi/nifi-current/database_repository
+  #     - nifi-2_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+  #     - nifi-2_content_repository:/opt/nifi/nifi-current/content_repository
+  #     - nifi-2_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+  #     - nifi-2_state:/opt/nifi/nifi-current/state
+  #     - nifi-2_logs:/opt/nifi/nifi-current/logs
+  #     - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
+  #   environment:
+  #     <<: *nifi-environment
+  #     NIFI_CLUSTER_ADDRESS: nifi-2
+  #     NIFI_WEB_HTTPS_HOST: nifi-2
+  #     KEYSTORE_PATH: /opt/certs/nifi-2.p12
+  #     TRUSTSTORE_PATH: /opt/certs/truststore.jks
   
-  nifi-3:
-    <<: *nifi-base
-    container_name: nifi-3
-    hostname: nifi-3
-    volumes:
-      - vault_certs:/opt/certs
-      - nifi-3_conf:/opt/nifi/nifi-current/conf
-      - nifi-3_extensions:/opt/nifi/nifi-current/extensions
-      - nifi-3_database_repository:/opt/nifi/nifi-current/database_repository
-      - nifi-3_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
-      - nifi-3_content_repository:/opt/nifi/nifi-current/content_repository
-      - nifi-3_provenance_repository:/opt/nifi/nifi-current/provenance_repository
-      - nifi-3_state:/opt/nifi/nifi-current/state
-      - nifi-3_logs:/opt/nifi/nifi-current/logs
-      - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
-    environment:
-      <<: *nifi-environment
-      NIFI_CLUSTER_ADDRESS: nifi-3
-      NIFI_WEB_HTTPS_HOST: nifi-3
-      KEYSTORE_PATH: /opt/certs/nifi-3.p12
-      TRUSTSTORE_PATH: /opt/certs/truststore.jks
+  # nifi-3:
+  #   <<: *nifi-base
+  #   container_name: nifi-3
+  #   hostname: nifi-3
+  #   volumes:
+  #     - vault_certs:/opt/certs
+  #     - nifi-3_conf:/opt/nifi/nifi-current/conf
+  #     - nifi-3_extensions:/opt/nifi/nifi-current/extensions
+  #     - nifi-3_database_repository:/opt/nifi/nifi-current/database_repository
+  #     - nifi-3_flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+  #     - nifi-3_content_repository:/opt/nifi/nifi-current/content_repository
+  #     - nifi-3_provenance_repository:/opt/nifi/nifi-current/provenance_repository
+  #     - nifi-3_state:/opt/nifi/nifi-current/state
+  #     - nifi-3_logs:/opt/nifi/nifi-current/logs
+  #     - ./zookeeper/configs/zookeeper.sasl.nifi.jaas.conf:/opt/nifi/conf/zookeeper.sasl.nifi.jaas.conf
+  #   environment:
+  #     <<: *nifi-environment
+  #     NIFI_CLUSTER_ADDRESS: nifi-3
+  #     NIFI_WEB_HTTPS_HOST: nifi-3
+  #     KEYSTORE_PATH: /opt/certs/nifi-3.p12
+  #     TRUSTSTORE_PATH: /opt/certs/truststore.jks
 
   proxy:
     <<: *app-base
@@ -589,25 +589,25 @@ services:
       - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
       - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
   
-  hadoop-datanode-2:
-    <<: *datanode-base
-    container_name: hadoop-datanode-2
-    hostname: hadoop-datanode-2
-    volumes:
-      - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
-      - ./hadoop/configs/hdfs-site-datanode-2.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
-      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-      - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
+  # hadoop-datanode-2:
+  #   <<: *datanode-base
+  #   container_name: hadoop-datanode-2
+  #   hostname: hadoop-datanode-2
+  #   volumes:
+  #     - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+  #     - ./hadoop/configs/hdfs-site-datanode-2.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+  #     - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
+  #     - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
 
-  hadoop-datanode-3:
-    <<: *datanode-base
-    container_name: hadoop-datanode-3
-    hostname: hadoop-datanode-3
-    volumes:
-      - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
-      - ./hadoop/configs/hdfs-site-datanode-3.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
-      - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
-      - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
+  # hadoop-datanode-3:
+  #   <<: *datanode-base
+  #   container_name: hadoop-datanode-3
+  #   hostname: hadoop-datanode-3
+  #   volumes:
+  #     - ./hadoop/configs/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml
+  #     - ./hadoop/configs/hdfs-site-datanode-3.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml
+  #     - ./hadoop/configs/yarn-site.xml:/opt/hadoop/etc/hadoop/yarn-site.xml
+  #     - ./hadoop/datanode_entrypoint.sh:/datanode_entrypoint.sh
 
   spark-yarn:
     <<: *spark-base
@@ -659,41 +659,41 @@ services:
     container_name: spark-worker-3
     hostname: spark-worker-3
   
-  prometheus:
-    <<: *app-base
-    image: prom/prometheus:main
-    container_name: prometheus
-    hostname: prometheus
-    volumes:
-      - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./etc/prometheus/alert.rules:/etc/prometheus/alert.rules
-    command: --config.file=/etc/prometheus/prometheus.yml
+  # prometheus:
+  #   <<: *app-base
+  #   image: prom/prometheus:main
+  #   container_name: prometheus
+  #   hostname: prometheus
+  #   volumes:
+  #     - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - ./etc/prometheus/alert.rules:/etc/prometheus/alert.rules
+  #   command: --config.file=/etc/prometheus/prometheus.yml
   
-  alertmanager:
-    <<: *app-base
-    image: prom/alertmanager:main
-    container_name: alertmanager
-    hostname: alertmanager
-    volumes:
-      - ./etc/alertmanager/config.yml:/etc/alertmanager/config.yml
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-      - '--log.level=debug'
+  # alertmanager:
+  #   <<: *app-base
+  #   image: prom/alertmanager:main
+  #   container_name: alertmanager
+  #   hostname: alertmanager
+  #   volumes:
+  #     - ./etc/alertmanager/config.yml:/etc/alertmanager/config.yml
+  #   command:
+  #     - '--config.file=/etc/alertmanager/config.yml'
+  #     - '--storage.path=/alertmanager'
+  #     - '--log.level=debug'
 
-  grafana:
-    <<: *app-base
-    image: grafana/grafana:main-ubuntu
-    container_name: grafana
-    hostname: grafana
-    volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-    environment:
-      GF_PATHS_DATA: /var/lib/grafana
-      GF_SECURITY_ADMIN_PASSWORD: kafka
-    depends_on:
-      - prometheus
+  # grafana:
+  #   <<: *app-base
+  #   image: grafana/grafana:main-ubuntu
+  #   container_name: grafana
+  #   hostname: grafana
+  #   volumes:
+  #     - ./grafana/provisioning:/etc/grafana/provisioning
+  #     - ./grafana/dashboards:/var/lib/grafana/dashboards
+  #   environment:
+  #     GF_PATHS_DATA: /var/lib/grafana
+  #     GF_SECURITY_ADMIN_PASSWORD: kafka
+  #   depends_on:
+  #     - prometheus
 
   shop_api_producer:
     <<: *app-base

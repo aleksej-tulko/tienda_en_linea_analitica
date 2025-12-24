@@ -6,7 +6,7 @@
     "tasks.max": "3",
     "hdfs.url": "hdfs://hadoop-namenode:9000",
     "flush.size": "10",
-    "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",
+    "format.class": "io.confluent.connect.hdfs3.parquet.ParquetFormat",
     "schema.compatibility": "FULL",
     "retry.backoff.ms": "50000",
     "max.retries": "5",

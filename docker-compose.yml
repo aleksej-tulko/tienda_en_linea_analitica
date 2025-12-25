@@ -418,6 +418,8 @@ services:
       - kafka-replica-1
       - kafka-replica-2
       - kafka-replica-3
+    ports:
+      - 8081:8081
 
   ui:
     <<: *app-base

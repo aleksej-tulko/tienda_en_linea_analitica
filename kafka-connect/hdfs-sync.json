@@ -22,8 +22,6 @@
     "errors.tolerance": "all",
     "errors.log.enable": "true",
     "errors.log.include.messages": "true",
-    "errors.deadletterqueue.topic.name": "dlq.hdfs-sync",
-    "errors.deadletterqueue.context.headers.enable": "true",
 
     "retry.backoff.ms": "50000",
     "max.retries": "5",

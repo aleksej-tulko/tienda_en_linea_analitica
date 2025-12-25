@@ -8,12 +8,16 @@
     "flush.size": "10",
     "key.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
-    "key.converter.schema.registry.url": "http://schema-registry:8081",
-    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "key.converter.schema.registry.url": "https://schema-registry:8081",
+    "value.converter.schema.registry.url": "https://schema-registry:8081",
     "format.class": "io.confluent.connect.hdfs3.parquet.ParquetFormat",
     "schema.compatibility": "FULL",
     "retry.backoff.ms": "50000",
     "max.retries": "5",
+
+    "value.converter.value.subject.name.strategy": "io.confluent.kafka.serializers.subject.TopicRecordNameStrategy",
+    "key.converter.key.subject.name.strategy": "io.confluent.kafka.serializers.subject.TopicRecordNameStrategy",
+    "behavior.on.null.values": "ignore",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

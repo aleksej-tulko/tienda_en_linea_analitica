@@ -8,6 +8,8 @@
     "flush.size": "10",
     "key.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "http://schema-registry:8081",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
     "format.class": "io.confluent.connect.hdfs3.parquet.ParquetFormat",
     "schema.compatibility": "FULL",
     "retry.backoff.ms": "50000",

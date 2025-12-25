@@ -4,10 +4,27 @@
     "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
     "topics": "source.filtered_items",
     "tasks.max": "3",
+
     "hdfs.url": "hdfs://hadoop-namenode:9000",
-    "flush.size": "10",
     "format.class": "io.confluent.connect.hdfs3.avro.AvroFormat",
     "schema.compatibility": "FULL",
+
+    "flush.size": "1000",
+    "rotate.interval.ms": "600000",
+
+    "behavior.on.null.values": "ignore",
+
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "key.converter.schema.registry.url": "https://schema-registry:8081",
+    "value.converter.schema.registry.url": "https://schema-registry:8081",
+
+    "errors.tolerance": "all",
+    "errors.log.enable": "true",
+    "errors.log.include.messages": "true",
+    "errors.deadletterqueue.topic.name": "dlq.hdfs-sync",
+    "errors.deadletterqueue.context.headers.enable": "true",
+
     "retry.backoff.ms": "50000",
     "max.retries": "5",
 

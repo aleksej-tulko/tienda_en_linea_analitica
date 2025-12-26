@@ -306,7 +306,7 @@ async def add_filtered_record(products):
             if product.name in filter_table['prohibited'].products:
                 continue
         await sorted_goods_topic.send(
-            key=SchemaKey(name=f'{product}-{uuid.uuid4()}'),
+            key=SchemaKey(name=product.name),
             value=product
         )
         print(product)

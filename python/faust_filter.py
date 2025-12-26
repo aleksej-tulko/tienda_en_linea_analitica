@@ -5,6 +5,7 @@ import ssl
 import sys
 
 import faust
+from confluent_kafka.schema_registry.json_schema import JSONSerializer, StringSerializer
 from dotenv import load_dotenv
 from faust_avro_serializer import FaustAvroSerializer
 from schema_registry.client import SchemaRegistryClient
@@ -184,6 +185,78 @@ class SchemaValue(faust.Record):
     store_id: str
 
 
+class SchemaJsonValue(faust.Record):
+    json_schema_str = """
+        {
+            "namespace": "product_item",
+            "name": "product",
+            "type": "record",
+            "fields": [
+                {"name": "product_id", "type": "string"},
+                {"name": "name", "type": "string"},
+                {"name": "description", "type": "string"},
+                {
+                    "name": "price",
+                    "type": {
+                        "type": "record",
+                        "name": "Price",
+                        "fields": [
+                            {"name": "amount", "type": "double"},
+                            {"name": "currency", "type": "string"}
+                        ]
+                    }
+                },
+                {"name": "category", "type": "string"},
+                {"name": "brand", "type": "string"},
+                {
+                    "name": "stock",
+                    "type": {
+                        "type": "record",
+                        "name": "Stock",
+                        "fields": [
+                            {"name": "available", "type": "int"},
+                            {"name": "reserved", "type": "int"}
+                        ]
+                    }
+                },
+                {"name": "sku", "type": "string"},
+                {"name": "tags", "type": {"type": "array", "items": "string"}},
+                {
+                    "name": "images",
+                    "type": {
+                        "type": "array",
+                        "items": {
+                            "type": "record",
+                            "name": "Image",
+                            "fields": [
+                                {"name": "url", "type": "string"},
+                                {"name": "alt", "type": "string"}
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "specifications",
+                    "type": {
+                        "type": "record",
+                        "name": "Specifications",
+                        "fields": [
+                            {"name": "weight", "type": "string"},
+                            {"name": "dimensions", "type": "string"},
+                            {"name": "battery_life", "type": "string"},
+                            {"name": "water_resistance", "type": "string"}
+                        ]
+                    }
+                },
+                {"name": "created_at", "type": "string"},
+                {"name": "updated_at", "type": "string"},
+                {"name": "index", "type": "string"},
+                {"name": "store_id", "type": "string"}
+            ]
+        }
+    """
+
+
 ca_ctx = ssl.create_default_context()
 ca_ctx.load_verify_locations(cafile=CA_PATH)
 ca_ctx.load_cert_chain(certfile=CERT_PATH, keyfile=CERT_KEY_PATH)
@@ -197,13 +270,26 @@ schema_registry_client = SchemaRegistryClient(
     }
 )
 serializer = FaustAvroSerializer(
-    schema_registry_client, SHOP_UNSORTED_TOPIC, False
+    schema_registry_client,
+    SHOP_UNSORTED_TOPIC,
+    False
+)
+json_serializer = JSONSerializer(
+    schema_registry_client,
+    SHOP_SORTED_TOPIC,
+    False
 )
 schema_with_avro = faust.Schema(
     key_type=SchemaKey,
     value_type=SchemaValue,
     key_serializer=serializer,
     value_serializer=serializer)
+
+schema_with_json = faust.Schema(
+    key_type=str,
+    value_type=SchemaJsonValue,
+    key_serializer=StringSerializer,
+    value_serializer=json_serializer)
 
 app = faust.App(
     APP_NAME,
@@ -213,7 +299,7 @@ app = faust.App(
         password=PRODUCER_PASSWORD,
         ssl_context=ca_ctx
     ),
-    store='rocksdb://'
+    # store='rocksdb://'
 )
 
 filter_table = app.Table(

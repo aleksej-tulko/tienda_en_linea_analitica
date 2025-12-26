@@ -1,4 +1,5 @@
 python-dotenv==0.20.0
 faust-streaming==0.11.3
 faust-avro-serializer==1.2.0
-faust-streaming-rocksdb==0.9.3
+confluent_kafka==2.10.1
+# faust-streaming-rocksdb==0.9.3

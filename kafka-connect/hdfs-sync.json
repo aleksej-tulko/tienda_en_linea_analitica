@@ -10,6 +10,8 @@
     "schema.compatibility": "NONE",
     "retry.backoff.ms": "50000",
     "max.retries": "5",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

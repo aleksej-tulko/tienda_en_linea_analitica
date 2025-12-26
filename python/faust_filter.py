@@ -246,7 +246,7 @@ goods_topic = app.topic(
 sorted_goods_topic = app.topic(
     SHOP_SORTED_TOPIC,
     key_type=str,
-    value_type=dict,
+    value_type=SchemaValue,
     acks=True
 )
 

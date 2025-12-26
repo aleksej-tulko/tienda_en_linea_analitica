@@ -10,7 +10,7 @@
     "schema.compatibility": "NONE",
     "retry.backoff.ms": "50000",
     "max.retries": "5",
-    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
 
     "key.converter.schemas.enable": "false",

@@ -6,12 +6,15 @@
     "tasks.max": "3",
     "hdfs.url": "hdfs://hadoop-namenode:9000",
     "flush.size": "3",
-    "format.class": "io.confluent.connect.hdfs3.json.JsonFormat",
+    "format.class": "io.confluent.connect.hdfs3.text.LineFormat",
     "schema.compatibility": "NONE",
     "retry.backoff.ms": "50000",
     "max.retries": "5",
-    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+
+    "key.converter.schemas.enable": "false",
+    "value.converter.schemas.enable": "false",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

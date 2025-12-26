@@ -412,7 +412,7 @@ vault write int-ca/roles/schema-registry \
 vault write -format=json int-ca/issue/schema-registry \
   common_name="schema-registry" \
   alt_names="localhost,schema-registry" \
-  ip_sans="127.0.0.1,29.24" \
+  ip_sans="127.0.0.1,100.110.29.24" \
   > /vault/certs/schema-registry.json
 
 jq -r ".data.private_key"  /vault/certs/schema-registry.json > /vault/certs/schema-registry.key

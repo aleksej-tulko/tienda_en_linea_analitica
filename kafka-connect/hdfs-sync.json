@@ -13,6 +13,8 @@
 
     "key.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
+    "partition.field.name":"name",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

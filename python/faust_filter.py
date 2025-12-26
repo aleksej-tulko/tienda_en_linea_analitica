@@ -246,7 +246,7 @@ goods_topic = app.topic(
 sorted_goods_topic = app.topic(
     SHOP_SORTED_TOPIC,
     key_type=str,
-    value_type=SchemaValue,
+    value_type=dict,
     acks=True
 )
 
@@ -308,5 +308,5 @@ async def add_filtered_record(products):
             key=product.name,
             value=product.dumps()
         )
-        print(product.dumps())
+        print(product.asdict())
         yield (product.name, product.price.amount)

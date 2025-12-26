@@ -10,6 +10,9 @@ from dotenv import load_dotenv
 from faust_avro_serializer import FaustAvroSerializer
 from schema_registry.client import SchemaRegistryClient
 
+from confluent_kafka.schema_registry.json_schema import JSONSerializer
+from confluent_kafka.serialization import StringSerializer
+
 load_dotenv()
 
 BOOTSTRAP_SERVERS = (
@@ -197,14 +200,20 @@ schema_registry_client = SchemaRegistryClient(
         'ssl.key.location': CERT_KEY_PATH,
     }
 )
-serializer = FaustAvroSerializer(
+
+key_serializer = FaustAvroSerializer(
+    schema_registry_client, SHOP_UNSORTED_TOPIC, True
+)
+
+value_serializer = FaustAvroSerializer(
     schema_registry_client, SHOP_UNSORTED_TOPIC, False
 )
+
 schema_with_avro = faust.Schema(
     key_type=SchemaKey,
     value_type=SchemaValue,
-    key_serializer=serializer,
-    value_serializer=serializer)
+    key_serializer=key_serializer,
+    value_serializer=value_serializer)
 
 app = faust.App(
     APP_NAME,
@@ -238,8 +247,10 @@ goods_topic = app.topic(
 )
 sorted_goods_topic = app.topic(
     SHOP_SORTED_TOPIC,
-    schema=schema_with_avro
+    schema=schema_with_avro,
+    acks=True
 )
+
 prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,
@@ -295,7 +306,8 @@ async def add_filtered_record(products):
             if product.name in filter_table['prohibited'].products:
                 continue
         await sorted_goods_topic.send(
-            key=f'{product}-{uuid.uuid4()}',
+            key=SchemaKey(name=f'{product}-{uuid.uuid4()}'),
             value=product
         )
+        print(product)
         yield (product.name, product.price.amount)

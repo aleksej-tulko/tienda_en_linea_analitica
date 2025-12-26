@@ -441,6 +441,8 @@ services:
       - kafka-1
       - kafka-2
       - kafka-3
+    ports:
+      - 8080:8080
 
   kafka-connect:
     <<: *app-base
@@ -561,16 +563,16 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - 8443:8443
+      # - 8443:8443
       - 9443:9443
-      - 8080:8080
+      # - 8080:8080
       - 3000:3000
       - 9093:9093
       - 9090:9090
       - 9870:9870
       - 8088:8088
       - 6969:6969
-      - 8081:8081
+      # - 8081:8081
 
   hadoop-namenode:
     <<: *hadoop-base

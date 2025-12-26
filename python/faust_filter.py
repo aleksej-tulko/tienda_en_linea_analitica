@@ -3,6 +3,7 @@ import os
 import re
 import ssl
 import sys
+import uuid
 
 import faust
 from dotenv import load_dotenv
@@ -294,6 +295,7 @@ async def add_filtered_record(products):
             if product.name in filter_table['prohibited'].products:
                 continue
         await sorted_goods_topic.send(
+            key=f'{product}-{uuid.uuid4()}',
             value=product
         )
         yield (product.name, product.price.amount)

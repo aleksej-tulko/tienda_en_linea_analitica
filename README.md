@@ -232,7 +232,7 @@ chmod 644 /vault/secrets/kafka-1.p12
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-1" \
   alt_names="localhost,kafka-replica-1" \
-  ip_sans="127.0.0.1,29.24" \
+  ip_sans="127.0.0.1,100.110.29.24" \
   > /vault/certs/kafka-replica-1.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-replica-1.json > /vault/certs/kafka-replica-1.key

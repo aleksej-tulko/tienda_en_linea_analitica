@@ -15,6 +15,8 @@
     "value.converter": "io.confluent.connect.avro.AvroConverter",
     "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
     "partition.field.name":"name",
+    "value.converter.schema.registry.url":"https://schema-registry:8081",
+    "key.converter.schema.registry.url":"https://schema-registry:8081",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

@@ -308,4 +308,5 @@ async def add_filtered_record(products):
             key=product.name,
             value=product.dumps()
         )
+        print(product.dumps())
         yield (product.name, product.price.amount)

@@ -1,17 +1,15 @@
+import json
 import logging
 import os
 import re
 import ssl
 import sys
-import uuid
 
 import faust
+from faust.serializers import codecs
 from dotenv import load_dotenv
 from faust_avro_serializer import FaustAvroSerializer
 from schema_registry.client import SchemaRegistryClient
-
-from confluent_kafka.schema_registry.json_schema import JSONSerializer
-from confluent_kafka.serialization import StringSerializer
 
 load_dotenv()
 
@@ -103,7 +101,7 @@ class SchemaKey(faust.Record):
     name: str
 
 
-class SchemaValue(faust.Record):
+class SchemaValue(faust.Record, serializer='json'):
     _schema = {
         "namespace": "product_item",
         "name": "product",
@@ -247,7 +245,8 @@ goods_topic = app.topic(
 )
 sorted_goods_topic = app.topic(
     SHOP_SORTED_TOPIC,
-    schema=schema_with_avro,
+    key_type=str,
+    value_type=dict,
     acks=True
 )
 
@@ -306,8 +305,7 @@ async def add_filtered_record(products):
             if product.name in filter_table['prohibited'].products:
                 continue
         await sorted_goods_topic.send(
-            key=SchemaKey(name=product.name),
-            value=product
+            key=product.name,
+            value=json.loads(product.dumps())
         )
-        print(product)
         yield (product.name, product.price.amount)

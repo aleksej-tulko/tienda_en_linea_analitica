@@ -13,14 +13,25 @@
 
     "key.converter": "io.confluent.connect.avro.AvroConverter",
     "value.converter": "io.confluent.connect.avro.AvroConverter",
-    "partitioner.class":"io.confluent.connect.storage.partitioner.FieldPartitioner",
-    "partition.field.name":"name",
-    "value.converter.schema.registry.url":"https://schema-registry:8081",
-    "key.converter.schema.registry.url":"https://schema-registry:8081",
-    "value.converter.schema.registry.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
+
+    "key.converter.schema.registry.url": "https://schema-registry:8081",
+    "value.converter.schema.registry.url": "https://schema-registry:8081",
+
     "key.converter.schema.registry.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
-    "value.converter.schema.registry.ssl.keystore.location": "/etc/kafka/certs/client.p12",
+    "key.converter.schema.registry.ssl.truststore.password": "changeit",
+    "value.converter.schema.registry.ssl.truststore.location": "/etc/kafka/certs/truststore.jks",
+    "value.converter.schema.registry.ssl.truststore.password": "changeit",
+
     "key.converter.schema.registry.ssl.keystore.location": "/etc/kafka/certs/client.p12",
+    "key.converter.schema.registry.ssl.keystore.password": "changeit",
+    "key.converter.schema.registry.ssl.keystore.type": "PKCS12",
+    "value.converter.schema.registry.ssl.keystore.location": "/etc/kafka/certs/client.p12",
+    "value.converter.schema.registry.ssl.keystore.password": "changeit",
+    "value.converter.schema.registry.ssl.keystore.type": "PKCS12",
+
+    "partitioner.class": "io.confluent.connect.storage.partitioner.FieldPartitioner",
+    "partition.field.name": "name",
+
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 
     "consumer.override.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",

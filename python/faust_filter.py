@@ -306,6 +306,6 @@ async def add_filtered_record(products):
                 continue
         await sorted_goods_topic.send(
             key=product.name,
-            value=json.loads(product.dumps())
+            value=product.dumps()
         )
         yield (product.name, product.price.amount)

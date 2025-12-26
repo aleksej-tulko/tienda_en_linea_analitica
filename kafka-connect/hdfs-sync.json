@@ -4,12 +4,15 @@
     "connector.class": "io.confluent.connect.hdfs3.Hdfs3SinkConnector",
     "topics": "source.filtered_items",
     "tasks.max": "3",
-
     "hdfs.url": "hdfs://hadoop-namenode:9000",
-    "flush.size": "1000",
-
+    "flush.size": "3",
     "format.class": "io.confluent.connect.hdfs3.json.JsonFormat",
     "schema.compatibility": "NONE",
+    "retry.backoff.ms": "50000",
+    "max.retries": "5",
+
+    "key.converter": "io.confluent.connect.avro.AvroConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

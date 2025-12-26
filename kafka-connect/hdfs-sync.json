@@ -7,7 +7,7 @@
     "hdfs.url": "hdfs://hadoop-namenode:9000",
     "flush.size": "3",
     "format.class": "io.confluent.connect.hdfs3.parquet.ParquetFormat",
-    "schema.compatibility": "FULL",
+    "schema.compatibility": "NONE",
     "retry.backoff.ms": "50000",
     "max.retries": "5",
 

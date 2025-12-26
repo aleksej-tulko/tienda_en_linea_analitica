@@ -6,7 +6,7 @@
     "tasks.max": "3",
     "hdfs.url": "hdfs://hadoop-namenode:9000",
     "flush.size": "3",
-    "format.class": "io.confluent.connect.hdfs3.json.JsonFormat",
+    "format.class": "io.confluent.connect.hdfs3.text.LineFormat",
     "schema.compatibility": "NONE",
     "retry.backoff.ms": "50000",
     "max.retries": "5",

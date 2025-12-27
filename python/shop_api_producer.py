@@ -62,31 +62,31 @@ VALUE_SCHEMA_STR = """
 PRODUCT_VALUES = [{
     "product_id": 1,
     "amount": 1,
-    "name": "Часы",
-    "description": "Топ",
+    "name": "Watch",
+    "description": "Top",
     "price": 4999.99,
-    "category": "Электроника",
-    "brand": "Луч",
-    "tags": ["умные часы", "гаджеты", "технологии"],
+    "category": "Electronics",
+    "brand": "Luch",
+    "tags": ["smart watch", "gadgets"],
     "ingressed_at": "2023-10-10T15:30:00Z"
 }, {
     "product_id": 2,
     "amount": 2,
-    "name": "Компас",
-    "description": "Полезно",
+    "name": "Compas",
+    "description": "Useful",
     "price": 4998.99,
-    "category": "Механика",
+    "category": "Mechanic",
     "brand": "XYZ",
-    "tags": ["портативный"],
+    "tags": ["portable"],
     "ingressed_at": "2023-10-10T15:30:00Z"
 }, {
     "product_id": 3,
     "amount": 1,
-    "name": "Вафли",
-    "description": "Вкусно",
+    "name": "Waffles",
+    "description": "Tasty",
     "price": 4997.99,
-    "category": "Еда",
-    "brand": "Витьба",
+    "category": "Food",
+    "brand": "Vitba",
     "tags": ["postre"],
     "ingressed_at": "2023-10-10T15:30:00Z"
 }
@@ -162,8 +162,8 @@ schema_registry_client = SchemaRegistryClient(
 
 def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
-    key = {'name': f'key-{uuid.uuid4()}'}
     for value in PRODUCT_VALUES:
+        key = {'name': value['product_id']}
         producer.produce(
             topic=SHOP_UNSORTED_TOPIC,
             key=key,

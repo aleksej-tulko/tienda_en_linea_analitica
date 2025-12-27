@@ -7,7 +7,7 @@ from threading import Thread
 from time import sleep
 
 from confluent_kafka import avro, KafkaException
-from confluent_kafka.schema_registry import SchemaRegistryClient, Schema
+from confluent_kafka.schema_registry import SchemaRegistryClient
 from dotenv import load_dotenv
 
 
@@ -44,51 +44,34 @@ KEY_SCHEMA_STR = """
 """
 VALUE_SCHEMA_STR = """
 {
-    "namespace": "product_item",
-    "name": "product",
+    "namespace": "value",
+    "name": "product_details",
     "type": "record",
     "fields": [
         { "name": "product_id", "type": "int" },
+        { "name": "amount", "type": "int" },
         { "name": "name", "type": "string" },
         { "name": "description", "type": "string" },
         { "name": "price", "type": "double" },
         { "name": "category", "type": "string"},
         { "name": "brand","type": "string"},
         { "name": "tags", "type": { "type": "array", "items": "string" } },
-        {
-            "name": "specifications",
-            "type": {
-                "type": "record",
-                "name": "Specifications",
-                "fields": [
-                    { "name": "weight", "type": "string" },
-                    { "name": "dimensions", "type": "string" },
-                    { "name": "battery_life", "type": "string" },
-                    { "name": "water_resistance", "type": "string" }
-                ]
-            }
-        },
         { "name": "created_at", "type": "string" },
         { "name": "updated_at", "type": "string" }
     ]
 }
 """
 VALUE_VALUE = {
-  "product_id": 12345,
-  "name": "Умные часы XYZ",
-  "description": "Умные часы с функцией мониторинга здоровья, GPS и уведомлениями.",
-  "price": 4999.99,
-  "category": "Электроника",
-  "brand": "XYZ",
-  "tags": ["умные часы", "гаджеты", "технологии"],
-  "specifications": {
-    "weight": "50g",
-    "dimensions": "42mm x 36mm x 10mm",
-    "battery_life": "24 hours",
-    "water_resistance": "IP68"
-  },
-  "created_at": "2023-10-01T12:00:00Z",
-  "updated_at": "2023-10-10T15:30:00Z"
+    "product_id": 12345,
+    "amount": 1,
+    "name": "Умные часы XYZ",
+    "description": "Умные часы с функцией мониторинга здоровья, GPS и уведомлениями.",
+    "price": 4999.99,
+    "category": "Электроника",
+    "brand": "XYZ",
+    "tags": ["умные часы", "гаджеты", "технологии"],
+    "created_at": "2023-10-01T12:00:00Z",
+    "updated_at": "2023-10-10T15:30:00Z"
 }
 
 key_schema = avro.loads(KEY_SCHEMA_STR)
@@ -113,10 +96,6 @@ class LoggerMsg:
     )
     MSG_RECEIVED = 'Сообщение получено: {value}.'
     MSG_NOT_DESERIALIZED = 'Сообщение не десериализовано:'
-    SCHEMA_ALREADY_EXISTS = ('Схема уже зарегистрирована '
-                             'для {subject}: \n{subject_str}.')
-    SCHEMA_REGISTERED = ('Зарегистрирована схема {subject} '
-                         'с ID {schema_id}.')
     PROGRAM_RUNNING = 'Выполняется программа.'
 
 

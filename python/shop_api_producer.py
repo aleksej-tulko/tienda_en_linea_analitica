@@ -3,6 +3,7 @@ import os
 import ssl
 import sys
 import uuid
+from datetime import datetime
 from threading import Thread
 from time import sleep
 
@@ -61,7 +62,7 @@ VALUE_SCHEMA_STR = """
     ]
 }
 """
-VALUE_VALUE = {
+PRODUCT_VALUE = {
     "product_id": 12345,
     "amount": 1,
     "name": "Умные часы XYZ",
@@ -94,8 +95,6 @@ class LoggerMsg:
         'Сообщение доставлено в {topic} '
         'в раздел {partition} с ключом {key}.'
     )
-    MSG_RECEIVED = 'Сообщение получено: {value}.'
-    MSG_NOT_DESERIALIZED = 'Сообщение не десериализовано:'
     PROGRAM_RUNNING = 'Выполняется программа.'
 
 
@@ -147,12 +146,12 @@ schema_registry_client = SchemaRegistryClient(
 def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
     key = {'name': f'key-{uuid.uuid4()}'}
-    value = VALUE_VALUE
+    value = PRODUCT_VALUE
     producer.produce(
         topic=SHOP_UNSORTED_TOPIC,
         key=key,
         value=value,
-        headers={'source': 'script', 'env': 'dev'}
+        headers={'datetime': datetime.now().strftime('%Y-%m-%d %H:%M')}
     )
 
 

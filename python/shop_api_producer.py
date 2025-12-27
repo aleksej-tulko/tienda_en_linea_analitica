@@ -170,14 +170,15 @@ def producer_infinite_loop(producer: avro.AvroProducer) -> None:
 if __name__ == '__main__':
     """Запуск программы."""
 
-    producer_thread = Thread(
-        target=producer_infinite_loop,
-        args=(producer,),
-        daemon=True
-    )
+    producer_infinite_loop(producer=producer)
+    # producer_thread = Thread(
+    #     target=producer_infinite_loop,
+    #     args=(producer,),
+    #     daemon=True
+    # )
 
-    producer_thread.start()
+    # producer_thread.start()
 
-    while True:
-        logger.debug(msg=LoggerMsg.PROGRAM_RUNNING)
-        sleep(10)
+    # while True:
+    #     logger.debug(msg=LoggerMsg.PROGRAM_RUNNING)
+    #     sleep(10)

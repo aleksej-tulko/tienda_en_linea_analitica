@@ -54,40 +54,10 @@ class ProhibitedProducts(faust.Record):
     products: list[str]
 
 
-class Price(faust.Record):
-    """Модель цены."""
-
-    amount: float
-    currency: str
-
-
-class Stock(faust.Record):
-    """Модель стока."""
-
-    available: int
-    reserved: int
-
-
-class Image(faust.Record):
-    """Модель фото."""
-
-    url: str
-    alt: str
-
-
-class Specifications(faust.Record):
-    """Модель тех. характеристик."""
-
-    weight: str
-    dimensions: str
-    battery_life: str
-    water_resistance: str
-
-
 class SchemaKey(faust.Record):
     _schema = {
-        "namespace": "product_id",
-        "name": "key",
+        "namespace": "key",
+        "name": "product",
         "type": "record",
         "fields": [
             {
@@ -101,87 +71,30 @@ class SchemaKey(faust.Record):
 
 class SchemaValue(faust.Record, serializer='json'):
     _schema = {
-        "namespace": "product_item",
-        "name": "product",
+        "namespace": "value",
+        "name": "product_details",
         "type": "record",
         "fields": [
-            {"name": "product_id", "type": "string"},
+            {"name": "product_id", "type": "int"},
+            {"name": "amount", "type": "int"},
             {"name": "name", "type": "string"},
             {"name": "description", "type": "string"},
-            {
-                "name": "price",
-                "type": {
-                    "type": "record",
-                    "name": "Price",
-                    "fields": [
-                        {"name": "amount", "type": "double"},
-                        {"name": "currency", "type": "string"}
-                    ]
-                }
-            },
+            {"name": "price", "type": "double"},
             {"name": "category", "type": "string"},
             {"name": "brand", "type": "string"},
-            {
-                "name": "stock",
-                "type": {
-                    "type": "record",
-                    "name": "Stock",
-                    "fields": [
-                        {"name": "available", "type": "int"},
-                        {"name": "reserved", "type": "int"}
-                    ]
-                }
-            },
-            {"name": "sku", "type": "string"},
             {"name": "tags", "type": {"type": "array", "items": "string"}},
-            {
-                "name": "images",
-                "type": {
-                    "type": "array",
-                    "items": {
-                        "type": "record",
-                        "name": "Image",
-                        "fields": [
-                            {"name": "url", "type": "string"},
-                            {"name": "alt", "type": "string"}
-                        ]
-                    }
-                }
-            },
-            {
-                "name": "specifications",
-                "type": {
-                    "type": "record",
-                    "name": "Specifications",
-                    "fields": [
-                        {"name": "weight", "type": "string"},
-                        {"name": "dimensions", "type": "string"},
-                        {"name": "battery_life", "type": "string"},
-                        {"name": "water_resistance", "type": "string"}
-                    ]
-                }
-            },
-            {"name": "created_at", "type": "string"},
-            {"name": "updated_at", "type": "string"},
-            {"name": "index", "type": "string"},
-            {"name": "store_id", "type": "string"}
+            {"name": "ingressed_at", "type": "string"}
         ]
     }
     product_id: str
+    amount: int
     name: str
     description: str
-    price: Price
+    price: float
     category: str
     brand: str
-    stock: Stock
-    sku: str
     tags: list[str]
-    images: list[Image]
-    specifications: Specifications
-    created_at: str
-    updated_at: str
-    index: str
-    store_id: str
+    ingressed_at: str
 
 
 ca_ctx = ssl.create_default_context()
@@ -273,14 +186,6 @@ def log_price(product: tuple) -> None:
     )
 
 
-def convert_price_to_float(value: SchemaValue) -> SchemaValue:
-    try:
-        value.price.amount = float(value.price.amount)
-    except TypeError as TE:
-        raise f'Cannot convert price to float value {TE}'
-    return value
-
-
 @app.agent(prohibited_goods_topic, sink=[log_prohibited_products])
 async def filter_prohibited_products(prohibited_products):
     async for products in prohibited_products:
@@ -292,10 +197,7 @@ async def filter_prohibited_products(prohibited_products):
 
 @app.agent(goods_topic, sink=[log_price])
 async def add_filtered_record(products):
-    processed_products = app.stream(
-        products,
-        processors=[convert_price_to_float]
-    )
+    processed_products = app.stream(products)
     async for product in processed_products:
         if not re.match(re_pattern, product.category):
             continue
@@ -306,4 +208,4 @@ async def add_filtered_record(products):
             key=product.name,
             value=product.asdict()
         )
-        yield (product.name, product.price.amount)
+        yield (product.name, product.price)

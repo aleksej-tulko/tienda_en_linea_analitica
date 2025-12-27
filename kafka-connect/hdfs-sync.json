@@ -18,6 +18,7 @@
     "partition.duration.ms": 1,
     "path.format": "'year'=YYYY/'month'=MM/'day'=dd/'hour'=HH",
     "timezone": "Europe/Madrid",
+    "locale": "en-US",
 
     "confluent.topic.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
 

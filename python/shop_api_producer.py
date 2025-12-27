@@ -4,10 +4,8 @@ import ssl
 import sys
 import uuid
 from datetime import datetime
-from threading import Thread
-from time import sleep
 
-from confluent_kafka import avro, KafkaException
+from confluent_kafka import avro
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from dotenv import load_dotenv
 
@@ -57,23 +55,42 @@ VALUE_SCHEMA_STR = """
         { "name": "category", "type": "string"},
         { "name": "brand","type": "string"},
         { "name": "tags", "type": { "type": "array", "items": "string" } },
-        { "name": "created_at", "type": "string" },
-        { "name": "updated_at", "type": "string" }
+        { "name": "ingressed_at", "type": "string" }
     ]
 }
 """
-PRODUCT_VALUE = {
-    "product_id": 12345,
+PRODUCT_VALUES = [{
+    "product_id": 1,
     "amount": 1,
-    "name": "Умные часы XYZ",
-    "description": "Умные часы с функцией мониторинга здоровья, GPS и уведомлениями.",
+    "name": "Часы",
+    "description": "Топ",
     "price": 4999.99,
     "category": "Электроника",
-    "brand": "XYZ",
+    "brand": "Луч",
     "tags": ["умные часы", "гаджеты", "технологии"],
-    "created_at": "2023-10-01T12:00:00Z",
-    "updated_at": "2023-10-10T15:30:00Z"
+    "ingressed_at": "2023-10-10T15:30:00Z"
+}, {
+    "product_id": 2,
+    "amount": 2,
+    "name": "Компас",
+    "description": "Полезно",
+    "price": 4998.99,
+    "category": "Механика",
+    "brand": "XYZ",
+    "tags": ["портативный"],
+    "ingressed_at": "2023-10-10T15:30:00Z"
+}, {
+    "product_id": 3,
+    "amount": 1,
+    "name": "Вафли",
+    "description": "Вкусно",
+    "price": 4997.99,
+    "category": "Еда",
+    "brand": "Витьба",
+    "tags": ["postre"],
+    "ingressed_at": "2023-10-10T15:30:00Z"
 }
+]
 
 key_schema = avro.loads(KEY_SCHEMA_STR)
 value_schema = avro.loads(VALUE_SCHEMA_STR)
@@ -146,13 +163,13 @@ schema_registry_client = SchemaRegistryClient(
 def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
     key = {'name': f'key-{uuid.uuid4()}'}
-    value = PRODUCT_VALUE
-    producer.produce(
-        topic=SHOP_UNSORTED_TOPIC,
-        key=key,
-        value=value,
-        headers={'datetime': datetime.now().strftime('%Y-%m-%d %H:%M')}
-    )
+    for value in PRODUCT_VALUES:
+        producer.produce(
+            topic=SHOP_UNSORTED_TOPIC,
+            key=key,
+            value=value,
+            headers={'datetime': datetime.now().strftime('%Y-%m-%d %H:%M')}
+        )
 
 
 def producer_infinite_loop(producer: avro.AvroProducer) -> None:
@@ -161,7 +178,7 @@ def producer_infinite_loop(producer: avro.AvroProducer) -> None:
         while True:
             create_message(producer=producer)
             producer.flush()
-    except (KafkaException, Exception):
+    except (Exception):
         raise
     finally:
         producer.flush()
@@ -171,14 +188,3 @@ if __name__ == '__main__':
     """Запуск программы."""
 
     producer_infinite_loop(producer=producer)
-    # producer_thread = Thread(
-    #     target=producer_infinite_loop,
-    #     args=(producer,),
-    #     daemon=True
-    # )
-
-    # producer_thread.start()
-
-    # while True:
-    #     logger.debug(msg=LoggerMsg.PROGRAM_RUNNING)
-    #     sleep(10)

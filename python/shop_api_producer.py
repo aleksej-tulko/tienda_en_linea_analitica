@@ -51,7 +51,7 @@ VALUE_SCHEMA_STR = """
         { "name": "product_id", "type": "int" },
         { "name": "name", "type": "string" },
         { "name": "description", "type": "string" },
-        { "name": "price", "type": "int" },
+        { "name": "price", "type": "double" },
         { "name": "category", "type": "string"},
         { "name": "brand","type": "string"},
         { "name": "tags", "type": { "type": "array", "items": "string" } },

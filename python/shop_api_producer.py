@@ -31,8 +31,8 @@ SECURITY_PROTOCOL = 'SASL_SSL'
 AUTH_MECHANISM = 'PLAIN'
 KEY_SCHEMA_STR = """
 {
-    "namespace": "product_id",
-    "name": "key",
+    "namespace": "key",
+    "name": "product",
     "type": "record",
     "fields": [
         {

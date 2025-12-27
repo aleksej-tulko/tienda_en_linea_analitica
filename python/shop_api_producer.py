@@ -163,7 +163,7 @@ schema_registry_client = SchemaRegistryClient(
 def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
     for value in PRODUCT_VALUES:
-        key = {'name': value['product_id']}
+        key = {'name': value['name']}
         producer.produce(
             topic=SHOP_UNSORTED_TOPIC,
             key=key,

@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import re
@@ -6,7 +5,6 @@ import ssl
 import sys
 
 import faust
-from faust.serializers import codecs
 from dotenv import load_dotenv
 from faust_avro_serializer import FaustAvroSerializer
 from schema_registry.client import SchemaRegistryClient

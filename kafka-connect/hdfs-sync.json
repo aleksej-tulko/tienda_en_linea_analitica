@@ -15,6 +15,7 @@
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
     "partitioner.class": "io.confluent.connect.storage.partitioner.TimeBasedPartitioner",
+    "partition.duration.ms": 1,
     "path.format": "'year'=YYYY/'month'=MM/'day'=dd/'hour'=HH",
     "timezone": "Europe/Madrid",
 

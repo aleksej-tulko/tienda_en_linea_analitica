@@ -9,7 +9,7 @@
     "target.cluster.bootstrap.servers": "kafka-replica-1:9093,kafka-replica-2:9093,kafka-replica-3:9093",
     "offset-syncs.topic.replication.factor": "3",
     "offset-syncs.topic.location": "target",
-    "tasks.max": 1,
+    "tasks.max": 3,
     "key.converter": "org.apache.kafka.connect.converters.ByteArrayConverter",
     "value.converter": "org.apache.kafka.connect.converters.ByteArrayConverter",
 

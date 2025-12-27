@@ -306,8 +306,6 @@ async def add_filtered_record(products):
                 continue
         await sorted_goods_topic.send(
             key=product.name,
-            value=product.dumps().decode('utf-8')
+            value=product.asdict()
         )
-        if isinstance(product.dumps().decode("utf-8"), str):
-            print(product.dumps().decode("utf-8"))
         yield (product.name, product.price.amount)

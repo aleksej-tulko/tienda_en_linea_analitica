@@ -1,15 +1,30 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 
 from api.permissions import IsAuthenticatedOrReadOnlyOrCreateUser
+from api.serializers import ReadUserSerializer, WriteUserSerializer
 from api.validators import regex_email
 
 User = get_user_model()
+
+
+class UsersViewSet(viewsets.ModelViewSet):
+    """
+    Mixin for auxiliary methods and overriding
+    built-in viewset methods for user management.
+    """
+
+    def get_serializer_class(self) -> type[Serializer]:
+        """Selects the appropriate serializer class."""
+
+        return (WriteUserSerializer if self.action in ('create',)
+                else ReadUserSerializer)
 
 
 @api_view(['POST'])

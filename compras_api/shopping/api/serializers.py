@@ -8,6 +8,9 @@ from api.constants import (
 from api.validators import prohibited_usernames, regex_username
 from users.models import ApiUser
 
+INCORRECT_CURRENT_PASSWORD = 'Incorrect current password.'
+NEW_PASSWORD_IS_SAME = 'The new password must not be the same as the old one.'
+
 User = get_user_model()
 
 
@@ -44,3 +47,27 @@ class WriteUserSerializer(serializers.ModelSerializer):
         user.save()
         user.password = password
         return user
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """Serializer for changing user password."""
+
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate(self, data: dict) -> dict:
+        """Validates password fields."""
+
+        user = self.context['request'].user
+        if not user.check_password(data['current_password']):
+            raise serializers.ValidationError(INCORRECT_CURRENT_PASSWORD)
+        if data['new_password'] == data['current_password']:
+            raise serializers.ValidationError(NEW_PASSWORD_IS_SAME)
+        return data
+
+    def update(self, instance: ApiUser, validated_data: dict) -> ApiUser:
+        """Updates user password."""
+
+        instance.set_password(validated_data['new_password'])
+        instance.save()
+        return instance

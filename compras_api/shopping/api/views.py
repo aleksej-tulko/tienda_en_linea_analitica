@@ -2,13 +2,19 @@ from django.contrib.auth import authenticate, get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 
+from api.constants import PASSWORD_NAME, PASSWORD_URI
 from api.permissions import IsAuthenticatedOrReadOnlyOrCreateUser
-from api.serializers import ReadUserSerializer, WriteUserSerializer
+from api.serializers import (
+    ChangePasswordSerializer,
+    ReadUserSerializer,
+    WriteUserSerializer
+)
 from api.validators import regex_email
 
 User = get_user_model()
@@ -25,6 +31,29 @@ class UsersViewSet(viewsets.ModelViewSet):
 
         return (WriteUserSerializer if self.action in ('create',)
                 else ReadUserSerializer)
+
+    @action(
+        detail=False, url_path=PASSWORD_URI, url_name=PASSWORD_NAME,
+        permission_classes=(IsAuthenticated,), methods=('post',)
+    )
+    def change_password(self, request: Request, pk=None) -> Response:
+        """
+        Change the authenticated user's password.
+
+        Args:
+            request (Request): The HTTP request object containing
+            old and new passwords.
+
+        Returns:
+            Response: Empty response with a 204 status code.
+        """
+
+        serializer = ChangePasswordSerializer(
+            data=request.data, context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.update(request.user, serializer.validated_data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['POST'])

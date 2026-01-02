@@ -15,7 +15,6 @@ GET_USER_FIELDS = (
     'email',
     'first_name',
     'last_name',
-    'avatar',
 )
 SUBSCRIPTION_FIELDS = (
     'avatar',
@@ -40,3 +39,7 @@ RECIPE_FIELDS = ('author',
                  'text',
                  'cooking_time',)
 NESTED_RECIPE_FIELDS = ('id', 'name', 'image', 'cooking_time',)
+INCORRECT_CURRENT_PASSWORD = 'Incorrect current password.'
+NEW_PASSWORD_IS_SAME = 'The new password must not be the same as the old one.'
+MIN_AMOUNT_ERROR = 'Amount cant be lesser than 1.'
+PRODUCT_NON_EXISTING = 'No such good in database.'

@@ -1,0 +1,8 @@
+[
+    {"name": "Diario", "slug": 1},
+    {"name": "Semanal", "slug": 2},
+    {"name": "Mensual", "slug": 3},
+    {"name": "Obligatorio", "slug": 4},
+    {"name": "Opcional", "slug": 5},
+    {"name": "No definido", "slug": 6}
+]

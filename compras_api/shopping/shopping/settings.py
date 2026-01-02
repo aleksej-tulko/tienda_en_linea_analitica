@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'users.apps.UsersConfig',
+    'gastos.apps.GastosConfig',
     'api.apps.ApiConfig',
 ]
 
@@ -78,7 +79,9 @@ else:
 
 AUTH_USER_MODEL = 'users.ApiUser'
 
-PROHIBITED_NAMES = ['me']
+PERSONAL_PAGE_URL = 'me'
+
+PROHIBITED_NAMES = [PERSONAL_PAGE_URL]
 
 AUTH_PASSWORD_VALIDATORS = [
     {

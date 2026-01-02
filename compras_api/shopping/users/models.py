@@ -8,9 +8,8 @@ from users.constants import (
     LAST_NAME_LENGTH,
     PASSWORD_LENGTH,
     USERNAME_LENGTH,
+    USERS_ORDER,
 )
-
-USERS_ORDER = ('username',)
 
 
 class ApiUser(AbstractUser):

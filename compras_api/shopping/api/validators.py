@@ -3,15 +3,15 @@ from re import findall, fullmatch
 from django.conf import settings
 from rest_framework.validators import ValidationError
 
-from api.constants import NOT_ALLOWED_SYMBOLS
-
-INVALID_EMAIL_ERROR = 'Email contains prohibited symbols: {}.'
-INVALID_EMAIL_STRUCTURE_ERROR = 'Enter a valid email.'
-PROHIBITED_EMAIL_SYMBOLS = r'[^a-z0-9@._]'
-PROHIBITED_EMAIL_STRUCTURE = r'^[a-z0-9]+[a-z0-9._]*@[a-z0-9]+\.[a-z]{2,}$'
-PROHIBITED_USERNAME = 'Invalid username: {}.'
-PROHIBITED_USERNAME_SYMBOLS = ('The username contains '
-                               'prohibited symbols: {}')
+from api.constants import (
+    INVALID_EMAIL_ERROR,
+    INVALID_EMAIL_STRUCTURE_ERROR,
+    NOT_ALLOWED_SYMBOLS,
+    PROHIBITED_EMAIL_STRUCTURE,
+    PROHIBITED_EMAIL_SYMBOLS,
+    PROHIBITED_USERNAME,
+    PROHIBITED_USERNAME_SYMBOLS
+)
 
 
 def prohibited_usernames(username):

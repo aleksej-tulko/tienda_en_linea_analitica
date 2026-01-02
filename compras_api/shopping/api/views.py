@@ -33,6 +33,8 @@ User = get_user_model()
 
 class UsersViewSet(viewsets.ModelViewSet):
 
+    permission_classes = (IsAuthenticatedOrReadOnlyOrCreateUser,)
+
     def get_serializer_class(self) -> type[Serializer]:
         """Selects the appropriate serializer class."""
 

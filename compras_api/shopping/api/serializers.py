@@ -115,9 +115,10 @@ class TagSerializer(serializers.ModelSerializer):
 class CompraResponseSerializer(serializers.ModelSerializer):
     """Serializer for displaying recipes."""
 
-    titular = ReadUserSerializer(read_only=True)
     products = serializers.SerializerMethodField()
     tags = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+    brand = serializers.SerializerMethodField()
 
     def get_products(self, obj: Compra) -> List[dict]:
         """Returns a list of ingredients for the recipe."""
@@ -135,6 +136,16 @@ class CompraResponseSerializer(serializers.ModelSerializer):
         """Returns a list of tags for the recipe."""
 
         return TagSerializer(obj.tags.all(), many=True).data
+
+    def get_category(self, obj: Compra) -> List[dict]:
+        """Returns a list of tags for the recipe."""
+
+        return CategorySerializer(obj.category).data
+
+    def get_brand(self, obj: Compra) -> List[dict]:
+        """Returns a list of tags for the recipe."""
+
+        return BrandSerializer(obj.brand).data
 
     class Meta:
         model = Compra
@@ -155,8 +166,6 @@ class CompraProductsCreateSerializer(serializers.Serializer):
 
 class CompraSerializer(serializers.ModelSerializer):
 
-    titular = ReadUserSerializer(read_only=True)
-    name = serializers.CharField(required=True)
     description = serializers.CharField(required=True)
     price = serializers.FloatField(required=True)
     brand = serializers.PrimaryKeyRelatedField(
@@ -176,23 +185,13 @@ class CompraSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Compra
-        fields = (
-            'titular',
-            'name',
-            'description',
-            'price',
-            'brand',
-            'category',
-            'products',
-            'tags',
-        )
+        fields = '__all__'
 
     def create(self, validated_data: dict) -> Compra:
         """Creates and saves a new recipe."""
 
         products_data = validated_data.pop('products')
         tags_data = validated_data.pop('tags')
-        validated_data['titular'] = self.context['request'].user
         compra = Compra.objects.create(**validated_data)
         self._create_products(products_data, compra)
         compra.tags.set(tags_data)

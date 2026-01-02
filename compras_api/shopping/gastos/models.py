@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -8,8 +7,6 @@ from gastos.constants import (
     NAME_LENGTH,
     TEXT_LENGHT
 )
-
-User = get_user_model()
 
 
 class AbstractNameModel(models.Model):
@@ -79,18 +76,6 @@ class Product(AbstractNameModel):
 
 class Compra(models.Model):
 
-    titular = models.ForeignKey(
-        User,
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-        verbose_name='Titular')
-    name = models.CharField(
-        max_length=NAME_LENGTH,
-        null=False,
-        blank=False,
-        help_text='Up to 20 symbols',
-        verbose_name='Compra')
     description = models.TextField(
         max_length=TEXT_LENGHT,
         null=False,
@@ -142,7 +127,7 @@ class Compra(models.Model):
         ordering = ('-ingressed_at',)
 
     def __str__(self):
-        return self.name
+        return self.brand
 
 
 class CompraProduct(models.Model):
@@ -166,4 +151,5 @@ class CompraProduct(models.Model):
 
     def __str__(self):
         return (f'{self.amount} '
-                f'{self.product.name} for {self.compra.name}')
+                f'{self.product.name} for {self.compra.name}'
+                )

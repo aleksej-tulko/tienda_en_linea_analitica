@@ -108,11 +108,13 @@ class TagsViewSet(BaseReadOnlyViewSet):
 
 class ComprasViewSet(viewsets.ModelViewSet):
 
-    def get_compra(self) -> Compra:
-        return get_object_or_404(Compra, id=self.kwargs['pk'])
-
-    queryset = Compra.objects.all().select_related(
-        'titular').prefetch_related('goods', 'tags')
+    queryset = Compra.objects.all().prefetch_related('products', 'tags')
     serializer_class = CompraSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
     search_fields = ('name',)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return super().create(request, *args, **kwargs)

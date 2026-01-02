@@ -40,18 +40,11 @@ class CategoryAdmin(admin.ModelAdmin):
 class CompraAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        # 'titular',
-        # 'name',
         'description',
-        'price',
         'category',
         'brand',
         'ingressed_at',
     )
-    # list_editable = ('name',)
-    # list_filter = ('name',)
-    # search_fields = ('name',)
-    # ordering = ('name',)
 
 
 @admin.register(Tag)

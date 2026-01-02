@@ -24,6 +24,7 @@ class Category(AbstractNameModel):
         blank=False,
         null=False,
         max_length=NAME_LENGTH,
+        unique=True,
         help_text='Up to 20 symbols',
         verbose_name='Category'
     )
@@ -38,6 +39,7 @@ class Brand(AbstractNameModel):
         blank=False,
         null=False,
         max_length=NAME_LENGTH,
+        unique=True,
         help_text='Up to 20 symbols',
         verbose_name='Brand'
     )
@@ -53,6 +55,7 @@ class Tag(AbstractNameModel):
         null=False,
         max_length=NAME_LENGTH,
         unique=True,
+        help_text='Up to 20 symbols',
         verbose_name='Tag')
     slug = models.SlugField(
         unique=True,
@@ -66,8 +69,11 @@ class Tag(AbstractNameModel):
 class Product(AbstractNameModel):
 
     name = models.CharField(
+        blank=False,
+        null=False,
         max_length=NAME_LENGTH,
         unique=True,
+        help_text='Up to 20 symbols',
         verbose_name='Product')
 
     class Meta(AbstractNameModel.Meta):
@@ -81,15 +87,7 @@ class Compra(models.Model):
         null=False,
         blank=False,
         help_text='Up to 200 symbols',
-        verbose_name='Description'
-    )
-    price = models.FloatField(
-        null=False,
-        blank=False,
-        verbose_name='Price',
-        help_text='Positive float value',
-        validators=[MaxValueValidator(MAX_PRICE),
-                    MinValueValidator(MIN_PRICE)]
+        verbose_name='Description',
     )
     category = models.ForeignKey(
         Category,
@@ -143,6 +141,12 @@ class CompraProduct(models.Model):
     amount = models.FloatField(
         verbose_name='Amount',
         validators=[MinValueValidator(MIN_PRICE)]
+    )
+    price = models.FloatField(
+        verbose_name='Price',
+        help_text='Positive float value',
+        validators=[MaxValueValidator(MAX_PRICE),
+                    MinValueValidator(MIN_PRICE)]
     )
 
     class Meta:

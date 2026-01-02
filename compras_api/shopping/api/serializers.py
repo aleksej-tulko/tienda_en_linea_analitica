@@ -1,6 +1,7 @@
 from typing import List
 
 from django.contrib.auth import get_user_model
+from django.db.models import F, Sum
 from rest_framework import serializers
 
 from api.constants import (
@@ -119,6 +120,7 @@ class CompraResponseSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
     brand = serializers.SerializerMethodField()
+    compra_total = serializers.SerializerMethodField()
 
     def get_products(self, obj: Compra) -> List[dict]:
         """Returns a list of ingredients for the recipe."""
@@ -130,22 +132,29 @@ class CompraResponseSerializer(serializers.ModelSerializer):
                 'id': item.product.id,
                 'name': item.product.name,
                 'amount': item.amount,
+                'price': item.price
             } for item in products]
 
     def get_tags(self, obj: Compra) -> List[dict]:
         """Returns a list of tags for the recipe."""
-
-        return TagSerializer(obj.tags.all(), many=True).data
+        return [
+            tag['name'] for tag in TagSerializer(
+                obj.tags.all(), many=True
+            ).data]
 
     def get_category(self, obj: Compra) -> List[dict]:
         """Returns a list of tags for the recipe."""
 
-        return CategorySerializer(obj.category).data
+        return CategorySerializer(obj.category).data['name']
 
     def get_brand(self, obj: Compra) -> List[dict]:
         """Returns a list of tags for the recipe."""
 
-        return BrandSerializer(obj.brand).data
+        return BrandSerializer(obj.brand).data['name']
+
+    def get_compra_total(self, obj):
+        return CompraProduct.objects.filter(compra=obj).aggregate(
+            total=Sum(F('price') * F('amount')))['total']
 
     class Meta:
         model = Compra
@@ -162,12 +171,14 @@ class CompraProductsCreateSerializer(serializers.Serializer):
     amount = serializers.IntegerField(
         min_value=1, error_messages={'min_value': MIN_AMOUNT_ERROR}
     )
+    price = serializers.FloatField(
+        min_value=0.1, error_messages={'min_value': MIN_AMOUNT_ERROR}
+    )
 
 
 class CompraSerializer(serializers.ModelSerializer):
 
     description = serializers.CharField(required=True)
-    price = serializers.FloatField(required=True)
     brand = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all()
     )
@@ -176,9 +187,8 @@ class CompraSerializer(serializers.ModelSerializer):
     )
     products = CompraProductsCreateSerializer(many=True, write_only=True)
     tags = serializers.ListField(
-        child=serializers.SlugRelatedField(
+        child=serializers.PrimaryKeyRelatedField(
             queryset=Tag.objects.all(),
-            slug_field='slug',
             write_only=True
         )
     )
@@ -214,7 +224,8 @@ class CompraSerializer(serializers.ModelSerializer):
             CompraProduct(
                 compra=compra,
                 product=product_data['product'],
-                amount=product_data['amount']
+                amount=product_data['amount'],
+                price=product_data['price']
             )
             for product_data in products_data
         ]

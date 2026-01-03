@@ -183,9 +183,8 @@ def create_message(producer: avro.AvroProducer) -> None:
 def producer_infinite_loop(producer: avro.AvroProducer) -> None:
     """Запуска цикла для генерации сообщения."""
     try:
-        while True:
-            create_message(producer=producer)
-            producer.flush()
+        create_message(producer=producer)
+        producer.flush()
     except (Exception):
         raise
     finally:

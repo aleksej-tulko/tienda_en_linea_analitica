@@ -43,7 +43,10 @@ logger.addHandler(handler)
 
 class Product(faust.Record):
 
-    products: list
+    id: int
+    name: str
+    amount: int
+    price: float
 
 
 class LoggerMsg:
@@ -62,16 +65,16 @@ class ProhibitedProducts(faust.Record):
 class SchemaKey(faust.Record):
     _schema = {
         "namespace": "key",
-        "name": "product",
+        "name": "date",
         "type": "record",
         "fields": [
             {
-                "name": "name",
+                "name": "date",
                 "type": "string"
             }
         ]
     }
-    name: str
+    date: str
 
 
 class SchemaValue(faust.Record, serializer='json'):
@@ -85,16 +88,16 @@ class SchemaValue(faust.Record, serializer='json'):
                 "name": "products",
                 "type": {
                     "type": "array",
-                    "items": {
-                    "type": "record",
-                    "name": "product",
-                    "fields": [
-                        { "name": "id", "type": "int" },
-                        { "name": "name", "type": "string" },
-                        { "name": "amount", "type": "int" },
-                        { "name": "price", "type": "double" }
-                    ]
-                    }
+                        "items": {
+                            "type": "record",
+                            "name": "product",
+                            "fields": [
+                                {"name": "id", "type": "int"},
+                                {"name": "name", "type": "string"},
+                                {"name": "amount", "type": "int"},
+                                {"name": "price", "type": "double"}
+                            ]
+                        }
                 }
             },
             {"name": "description", "type": "string"},
@@ -106,7 +109,7 @@ class SchemaValue(faust.Record, serializer='json'):
         ]
     }
     id: int
-    products: Product
+    products: list[Product]
     description: str
     category: str
     brand: str
@@ -213,7 +216,7 @@ async def filter_prohibited_products(prohibited_products):
         yield filter_table['prohibited']
 
 
-@app.agent(goods_topic, sink=[log_price])
+@app.agent(goods_topic)
 async def add_filtered_record(products):
     processed_products = app.stream(products)
     print(processed_products)
@@ -227,4 +230,4 @@ async def add_filtered_record(products):
             key=product.brand,
             value=product.asdict()
         )
-        yield (product.brand, product.compra_total)
+        # yield (product.brand, product.compra_total)

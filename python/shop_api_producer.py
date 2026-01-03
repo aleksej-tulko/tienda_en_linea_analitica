@@ -6,6 +6,7 @@ from datetime import datetime
 
 from confluent_kafka import avro
 from confluent_kafka.schema_registry import SchemaRegistryClient
+from django.core.management.base import BaseCommand
 from dotenv import load_dotenv
 
 
@@ -30,11 +31,11 @@ AUTH_MECHANISM = 'PLAIN'
 KEY_SCHEMA_STR = """
 {
     "namespace": "key",
-    "name": "product",
+    "name": "date",
     "type": "record",
     "fields": [
         {
-            "name": "name",
+            "name": "date",
             "type": "string"
         }
     ]
@@ -46,50 +47,58 @@ VALUE_SCHEMA_STR = """
     "name": "product_details",
     "type": "record",
     "fields": [
-        {"name": "product_id", "type": "int"},
-        {"name": "amount", "type": "int"},
-        {"name": "name", "type": "string"},
+        {"name": "id", "type": "int"},
+        {
+            "name": "products",
+            "type": {
+                "type": "array",
+                "items": {
+                "type": "record",
+                "name": "product",
+                "fields": [
+                    { "name": "id", "type": "int" },
+                    { "name": "name", "type": "string" },
+                    { "name": "amount", "type": "int" },
+                    { "name": "price", "type": "double" }
+                ]
+                }
+            }
+        },
         {"name": "description", "type": "string"},
-        {"name": "price", "type": "double"},
         {"name": "category", "type": "string"},
         {"name": "brand", "type": "string"},
         {"name": "tags", "type": {"type": "array", "items": "string"}},
+        {"name": "compra_total", "type": "double"},
         {"name": "ingressed_at", "type": "string"}
     ]
 }
 """
 PRODUCT_VALUES = [{
-    "product_id": 1,
-    "amount": 1,
-    "name": "Watch",
-    "description": "Top",
-    "price": 4999.99,
-    "category": "Electronics",
-    "brand": "Luch",
-    "tags": ["smart watch", "gadgets"],
-    "ingressed_at": "2023-10-10T15:30:00Z"
-}, {
-    "product_id": 2,
-    "amount": 2,
-    "name": "Compas",
-    "description": "Useful",
-    "price": 4998.99,
-    "category": "Mechanic",
-    "brand": "XYZ",
-    "tags": ["portable"],
-    "ingressed_at": "2023-10-10T15:30:00Z"
-}, {
-    "product_id": 3,
-    "amount": 1,
-    "name": "Waffles",
-    "description": "Tasty",
-    "price": 4997.99,
-    "category": "Food",
-    "brand": "Vitba",
-    "tags": ["postre"],
-    "ingressed_at": "2023-10-10T15:30:00Z"
-}
-]
+    "id": 99,
+    "products": [
+        {
+            "id": 1,
+            "name": "Bbva Plan Megatendencias Tecnologia",
+            "amount": 3,
+            "price": 100.0
+        },
+        {
+            "id": 4,
+            "name": "CdS",
+            "amount": 4,
+            "price": 1000.0
+        }
+    ],
+    "tags": [
+        "Mensual",
+        "Obligatorio"
+    ],
+    "category": "Inversion",
+    "brand": "BBVA",
+    "compra_total": 4300.0,
+    "description": "Investment for home",
+    "ingressed_at": "2026-01-03 10:03"
+}]
 
 key_schema = avro.loads(KEY_SCHEMA_STR)
 value_schema = avro.loads(VALUE_SCHEMA_STR)
@@ -162,7 +171,7 @@ schema_registry_client = SchemaRegistryClient(
 def create_message(producer: avro.AvroProducer) -> None:
     """Отправка сообщения в брокер."""
     for value in PRODUCT_VALUES:
-        key = {'name': value['name']}
+        key = {'date': value['ingressed_at']}
         producer.produce(
             topic=SHOP_UNSORTED_TOPIC,
             key=key,

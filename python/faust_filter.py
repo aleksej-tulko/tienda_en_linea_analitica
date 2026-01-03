@@ -41,6 +41,11 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
+class Product(faust.Record):
+
+    products: list
+
+
 class LoggerMsg:
     """Сообщения для логгирования."""
 
@@ -75,25 +80,38 @@ class SchemaValue(faust.Record, serializer='json'):
         "name": "product_details",
         "type": "record",
         "fields": [
-            {"name": "product_id", "type": "int"},
-            {"name": "amount", "type": "int"},
-            {"name": "name", "type": "string"},
+            {"name": "id", "type": "int"},
+            {
+                "name": "products",
+                "type": {
+                    "type": "array",
+                    "items": {
+                    "type": "record",
+                    "name": "product",
+                    "fields": [
+                        { "name": "id", "type": "int" },
+                        { "name": "name", "type": "string" },
+                        { "name": "amount", "type": "int" },
+                        { "name": "price", "type": "double" }
+                    ]
+                    }
+                }
+            },
             {"name": "description", "type": "string"},
-            {"name": "price", "type": "double"},
             {"name": "category", "type": "string"},
             {"name": "brand", "type": "string"},
             {"name": "tags", "type": {"type": "array", "items": "string"}},
+            {"name": "compra_total", "type": "double"},
             {"name": "ingressed_at", "type": "string"}
         ]
     }
-    product_id: str
-    amount: int
-    name: str
+    id: int
+    products: Product
     description: str
-    price: float
     category: str
     brand: str
     tags: list[str]
+    compra_total: float
     ingressed_at: str
 
 
@@ -198,14 +216,15 @@ async def filter_prohibited_products(prohibited_products):
 @app.agent(goods_topic, sink=[log_price])
 async def add_filtered_record(products):
     processed_products = app.stream(products)
+    print(processed_products)
     async for product in processed_products:
         if not re.match(re_pattern, product.category):
             continue
         if 'prohibited' in filter_table:
-            if product.name in filter_table['prohibited'].products:
+            if product.brand in filter_table['prohibited'].products:
                 continue
         await sorted_goods_topic.send(
-            key=product.name,
+            key=product.brand,
             value=product.asdict()
         )
-        yield (product.name, product.price)
+        yield (product.brand, product.compra_total)

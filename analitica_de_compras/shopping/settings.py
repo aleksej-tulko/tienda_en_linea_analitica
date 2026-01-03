@@ -26,7 +26,7 @@ COMPRESSION_TYPE = os.getenv('COMPRESSION_TYPE', 'lz4')
 PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
 SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',

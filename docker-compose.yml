@@ -705,22 +705,22 @@ services:
     depends_on:
       - prometheus
 
-  shop_api_producer:
-    <<: *app-base
-    build:
-      context: ./python
-      dockerfile: Dockerfile_producer
-    container_name: shop_api_producer
-    hostname: shop_api_producer
-    volumes:
-      - vault_certs:/opt/certs
-    env_file:
-      - .env
-    depends_on:
-      - kafka-replica-1
-      - kafka-replica-2
-      - kafka-replica-3
-    command: ["python", "shop_api_producer.py"]
+  # shop_api_producer:
+  #   <<: *app-base
+  #   build:
+  #     context: ./python
+  #     dockerfile: Dockerfile_producer
+  #   container_name: shop_api_producer
+  #   hostname: shop_api_producer
+  #   volumes:
+  #     - vault_certs:/opt/certs
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - kafka-replica-1
+  #     - kafka-replica-2
+  #     - kafka-replica-3
+  #   command: ["python", "shop_api_producer.py"]
   
   # faust_filter:
   #   <<: *app-base

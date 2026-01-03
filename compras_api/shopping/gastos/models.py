@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -115,7 +117,7 @@ class Compra(models.Model):
         verbose_name='Теги'
     )
     ingressed_at = models.DateTimeField(
-        auto_now_add=True,
+        default=datetime.now().strftime('%Y-%m-%d %H:%M'),
         verbose_name='Created'
     )
 
@@ -138,7 +140,7 @@ class CompraProduct(models.Model):
         Product,
         on_delete=models.CASCADE,
         verbose_name='Product')
-    amount = models.FloatField(
+    amount = models.PositiveIntegerField(
         verbose_name='Amount',
         validators=[MinValueValidator(MIN_PRICE)]
     )

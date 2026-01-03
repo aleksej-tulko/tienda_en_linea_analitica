@@ -719,6 +719,8 @@ services:
       - kafka-replica-1
       - kafka-replica-2
       - kafka-replica-3
+    ports:
+      - 8000:8000
   
   # faust_filter:
   #   <<: *app-base

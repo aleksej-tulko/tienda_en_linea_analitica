@@ -716,11 +716,15 @@ services:
     env_file:
       - .env
     depends_on:
-      - kafka-replica-1
-      - kafka-replica-2
-      - kafka-replica-3
+      - db
     ports:
       - 8000:8000
+
+  db:
+    image: postgres:13
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/pg/data
   
   # faust_filter:
   #   <<: *app-base

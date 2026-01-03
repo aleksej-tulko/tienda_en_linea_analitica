@@ -723,6 +723,8 @@ services:
   db:
     <<: *app-base
     image: postgres:13
+    container_name: postgres
+    hostname: postgres
     env_file: .env
     volumes:
       - pg_data:/var/lib/pg/data

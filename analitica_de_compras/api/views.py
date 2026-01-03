@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
 from django.shortcuts import get_object_or_404
@@ -27,6 +29,7 @@ from api.serializers import (
 )
 from api.validators import regex_email
 from gastos.models import Brand, Category, Compra, Product, Tag
+from gastos.management.commands import gastos_producer
 
 User = get_user_model()
 
@@ -117,4 +120,6 @@ class ComprasViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return super().create(request, *args, **kwargs)
+        super().create(request, *args, **kwargs)
+        gastos_producer.produce_message(message=serializer.data)
+        return Response(data=serializer.data, status=HTTPStatus.OK)

@@ -12,6 +12,20 @@ SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
+BOOTSTRAP_SERVERS = os.getenv('BOOTSTRAP_SERVERS', 'localhost:9092')
+PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
+PRODUCER_PASSWORD = os.getenv('PRODUCER_PASSWORD', '')
+SCHEMA_REGISTRY_URL = os.getenv('SCHEMA_REGISTRY_URL', 'http://localost:8081')
+CA_PATH = os.getenv('CA_PATH', './client_fullchain.pem')
+CERT_PATH = os.getenv('CERT_PATH', './client.crt')
+CERT_KEY_PATH = os.getenv('CERT_KEY_PATH', './client.key')
+ACKS_LEVEL = os.getenv('ACKS_LEVEL', 'all')
+RETRIES = os.getenv('RETRIES', '3')
+LINGER_MS = os.getenv('LINGER_MS', 5)
+COMPRESSION_TYPE = os.getenv('COMPRESSION_TYPE', 'lz4')
+PRODUCER_USERNAME = os.getenv('PRODUCER_USERNAME', 'producer')
+SHOP_UNSORTED_TOPIC = os.getenv('SHOP_UNSORTED_TOPIC', 'topic')
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [

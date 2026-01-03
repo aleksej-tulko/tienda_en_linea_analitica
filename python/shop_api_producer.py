@@ -6,7 +6,6 @@ from datetime import datetime
 
 from confluent_kafka import avro
 from confluent_kafka.schema_registry import SchemaRegistryClient
-from django.core.management.base import BaseCommand
 from dotenv import load_dotenv
 
 
@@ -53,14 +52,14 @@ VALUE_SCHEMA_STR = """
             "type": {
                 "type": "array",
                 "items": {
-                "type": "record",
-                "name": "product",
-                "fields": [
-                    { "name": "id", "type": "int" },
-                    { "name": "name", "type": "string" },
-                    { "name": "amount", "type": "int" },
-                    { "name": "price", "type": "double" }
-                ]
+                    "type": "record",
+                    "name": "product",
+                    "fields": [
+                        {"name": "id", "type": "int"},
+                        {"name": "name", "type": "string"},
+                        {"name": "amount", "type": "int"},
+                        {"name": "price", "type": "double"}
+                    ]
                 }
             }
         },
@@ -73,32 +72,6 @@ VALUE_SCHEMA_STR = """
     ]
 }
 """
-PRODUCT_VALUES = [{
-    "id": 99,
-    "products": [
-        {
-            "id": 1,
-            "name": "Bbva Plan Megatendencias Tecnologia",
-            "amount": 3,
-            "price": 100.0
-        },
-        {
-            "id": 4,
-            "name": "CdS",
-            "amount": 4,
-            "price": 1000.0
-        }
-    ],
-    "tags": [
-        "Mensual",
-        "Obligatorio"
-    ],
-    "category": "Inversion",
-    "brand": "BBVA",
-    "compra_total": 4300.0,
-    "description": "Investment for home",
-    "ingressed_at": "2026-01-03 10:03"
-}]
 
 key_schema = avro.loads(KEY_SCHEMA_STR)
 value_schema = avro.loads(VALUE_SCHEMA_STR)
@@ -168,30 +141,18 @@ schema_registry_client = SchemaRegistryClient(
 )
 
 
-def create_message(producer: avro.AvroProducer) -> None:
+def produce_message(producer: avro.AvroProducer, message: dict) -> None:
     """Отправка сообщения в брокер."""
-    for value in PRODUCT_VALUES:
-        key = {'date': value['ingressed_at']}
+    try:
+        key = {'date': message['ingressed_at']}
         producer.produce(
             topic=SHOP_UNSORTED_TOPIC,
             key=key,
-            value=value,
+            value=message,
             headers={'datetime': datetime.now().strftime('%Y-%m-%d %H:%M')}
         )
-
-
-def producer_infinite_loop(producer: avro.AvroProducer) -> None:
-    """Запуска цикла для генерации сообщения."""
-    try:
-        create_message(producer=producer)
         producer.flush()
     except (Exception):
         raise
     finally:
         producer.flush()
-
-
-if __name__ == '__main__':
-    """Запуск программы."""
-
-    producer_infinite_loop(producer=producer)

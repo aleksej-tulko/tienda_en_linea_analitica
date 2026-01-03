@@ -705,13 +705,12 @@ services:
     depends_on:
       - prometheus
 
-  shop_api_producer:
+  django:
     <<: *app-base
     build:
-      context: ./python
-      dockerfile: Dockerfile_producer
-    container_name: shop_api_producer
-    hostname: shop_api_producer
+      context: ./analitica_de_compras
+    container_name: django_producer
+    hostname: django_producer
     volumes:
       - vault_certs:/opt/certs
     env_file:

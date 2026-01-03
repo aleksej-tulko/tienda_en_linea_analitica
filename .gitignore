@@ -208,6 +208,6 @@ __marimo__/
 
 
 .env
-*.key
-*.crt
-*.pem
+# *.key
+# *.crt
+# *.pem

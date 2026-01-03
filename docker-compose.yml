@@ -721,6 +721,7 @@ services:
       - 8000:8000
 
   db:
+    <<: *app-base
     image: postgres:13
     env_file: .env
     volumes:
@@ -780,6 +781,7 @@ volumes:
   nifi-3_provenance_repository:
   nifi-3_state:
   nifi-3_logs:
+  pg_data:
 
 
 networks:

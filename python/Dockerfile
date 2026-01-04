@@ -2,6 +2,8 @@ FROM python:3.12.3
 
 WORKDIR /app
 
+RUN pip install aiokafka
+
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt --no-cache-dir

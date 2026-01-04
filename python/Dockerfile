@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY faust_requirements.txt .
 
-RUN pip install -r faust_requirements.txt --no-cache-dir
+RUN pip install -r requirements.txt --no-cache-dir
 
-COPY ./faust_filter.py .
+COPY ./filter.py .
 
 RUN mkdir /opt/certs && chmod 777 /opt/certs

@@ -151,7 +151,7 @@ app = faust.App(
         password=PRODUCER_PASSWORD,
         ssl_context=ca_ctx
     ),
-    # store='rocksdb://'
+    store='rocksdb://'
 )
 
 filter_table = app.Table(
@@ -224,7 +224,7 @@ async def add_filtered_record(products):
             if product.brand in filter_table['prohibited'].brands:
                 continue
         await sorted_goods_topic.send(
-            key=product.ingressed_at + str(product.compra_total),
+            key=f'{product.ingressed_at}-{str(product.compra_total)}',
             value=product.asdict()
         )
         yield (product.ingressed_at, product.compra_total)

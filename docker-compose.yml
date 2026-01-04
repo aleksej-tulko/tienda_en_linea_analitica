@@ -729,18 +729,18 @@ services:
     volumes:
       - pg_data:/var/lib/pg/data
   
-  # faust_filter:
-  #   <<: *app-base
-  #   build:
-  #     context: ./python
-  #     dockerfile: Dockerfile_faust
-  #   container_name: faust_filter
-  #   hostname: faust_filter
-  #   volumes:
-  #     - vault_certs:/opt/certs
-  #   env_file:
-  #     - .env
-  #   command: ["faust", "-A", "faust_filter", "worker", "-l", "INFO"]
+  faust_filter:
+    <<: *app-base
+    build:
+      context: ./python
+      dockerfile: Dockerfile_faust
+    container_name: faust_filter
+    hostname: faust_filter
+    volumes:
+      - vault_certs:/opt/certs
+    env_file:
+      - .env
+    command: ["faust", "-A", "faust_filter", "worker", "-l", "INFO"]
 
 volumes:
   vault_config:

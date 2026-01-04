@@ -471,7 +471,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:faust \
   --operation Create --operation Write --operation Read \
-  --topic 'faust_filter.filter_prohibited_goods-prohibited_goods-grouped-repartition' \
+  --topic 'faust_filter.filter_prohibited_brands-prohibited_brands-grouped-repartition' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
@@ -491,7 +491,7 @@ kafka-topics --bootstrap-server kafka-1:9093 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-topics --bootstrap-server kafka-1:9093 \
-  --create --topic 'prohibited_goods' --partitions 1 \
+  --create --topic 'prohibited_brands' --partitions 1 \
   --replication-factor 3 \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
@@ -621,7 +621,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 
 kafka-acls --bootstrap-server kafka-1:9093 \
   --add --allow-principal User:faust \
-  --operation Read --topic 'raw_items' --topic 'prohibited_goods' \
+  --operation Read --topic 'raw_items' --topic 'prohibited_brands' \
   --command-config /etc/kafka/secrets/adminclient-configs.conf
 
 kafka-acls --bootstrap-server kafka-1:9093 \
@@ -663,7 +663,7 @@ sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 \
 bash -lc 'kafka-console-producer \
   --bootstrap-server kafka-1:9093 \
   --producer.config /etc/kafka/secrets/adminclient-configs.conf \
-  --topic prohibited_goods \
+  --topic prohibited_brands \
   --property parse.key=true \
   --property key.separator=:'
 >item:{"item": ["her"]}
@@ -671,9 +671,9 @@ bash -lc 'kafka-console-producer \
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc 'kafka-console-producer \
   --bootstrap-server kafka-1:9093 \
   --producer.config /etc/kafka/secrets/adminclient-configs.conf \
-  --topic prohibited_goods'
->"products": ["Умные часы XYZ"]
->{"products": ["Умные часы XYZ"]}
+  --topic prohibited_brands'
+>"brands": ["Умные часы XYZ"]
+>{"brands": ["Умные часы XYZ"]}
 
 sudo docker compose down && sudo docker volume rm $(sudo docker volume ls -q) && sudo docker system prune -af && rm -rf python/goods_filter-data && git pull
 faust -A faust_filter  worker -l INFO

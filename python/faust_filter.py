@@ -50,16 +50,14 @@ class Product(faust.Record):
 
 
 class LoggerMsg:
-    """Сообщения для логгирования."""
 
-    PRICE_EQUALS = 'Цена {product}: {price}.'
-    PRODUCTS_PROHIBITED = 'Запрещенные товары: {products}.'
+    DATE_SPENT = 'On {ingressed_at} spent total is {total_spent}.'
+    BRANDS_PROHIBITED = 'Prohibited brands: {brands}.'
 
 
-class ProhibitedProducts(faust.Record):
-    """Модель запрещенных товаров."""
+class ProhibitedBrands(faust.Record):
 
-    products: list[str]
+    brands: list[str]
 
 
 class SchemaKey(faust.Record):
@@ -159,10 +157,10 @@ app = faust.App(
 filter_table = app.Table(
     FILTER_TABLE,
     partitions=1,
-    default=ProhibitedProducts(products=list[str]),
+    default=ProhibitedBrands(brands=list[str]),
     changelog_topic=app.topic(
         FILTER_TABLE_CHANGELOG_TOPIC,
-        value_type=ProhibitedProducts(products=list[str]),
+        value_type=ProhibitedBrands(brands=list[str]),
         partitions=1,
         replicas=3
     )
@@ -185,49 +183,48 @@ sorted_goods_topic = app.topic(
 prohibited_goods_topic = app.topic(
     SHOP_BLOCKED_GOODS_TOPIC,
     key_type=str,
-    value_type=ProhibitedProducts,
+    value_type=ProhibitedBrands,
     acks=True
 )
 
 
-def log_prohibited_products(products: ProhibitedProducts) -> None:
+def log_prohibited_products(brands: ProhibitedBrands) -> None:
     logger.info(
-        msg=LoggerMsg.PRODUCTS_PROHIBITED.format(
-            products=products
+        msg=LoggerMsg.BRANDS_PROHIBITED.format(
+            brands=brands.brands
         )
     )
 
 
-def log_price(product: tuple) -> None:
-    name, price = product
+def log_spent(data: tuple) -> None:
+    ingressed_at, total_spent = data
     logger.info(
-        msg=LoggerMsg.PRICE_EQUALS.format(
-            product=name, price=price
+        msg=LoggerMsg.DATE_SPENT.format(
+            ingressed_at=ingressed_at, total_spent=total_spent
         )
     )
 
 
 @app.agent(prohibited_goods_topic, sink=[log_prohibited_products])
-async def filter_prohibited_products(prohibited_products):
-    async for products in prohibited_products:
-        filter_table['prohibited'] = ProhibitedProducts(
-            products=products.products
+async def filter_prohibited_products(prohibited_brands):
+    async for brand in prohibited_brands:
+        filter_table['prohibited'] = ProhibitedBrands(
+            brands=brand.brands
         )
         yield filter_table['prohibited']
 
 
-@app.agent(goods_topic)
+@app.agent(goods_topic, sink=[log_spent])
 async def add_filtered_record(products):
     processed_products = app.stream(products)
-    print(processed_products)
     async for product in processed_products:
         if not re.match(re_pattern, product.category):
             continue
         if 'prohibited' in filter_table:
-            if product.brand in filter_table['prohibited'].products:
+            if product.brand in filter_table['prohibited'].brands:
                 continue
         await sorted_goods_topic.send(
-            key=product.brand,
+            key=product.ingressed_at + str(product.compra_total),
             value=product.asdict()
         )
-        # yield (product.brand, product.compra_total)
+        yield (product.ingressed_at, product.compra_total)

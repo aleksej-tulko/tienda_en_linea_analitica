@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -117,7 +115,7 @@ class Compra(models.Model):
         verbose_name='Теги'
     )
     ingressed_at = models.DateTimeField(
-        default=datetime.now().strftime('%Y-%m-%d %H:%M'),
+        auto_now_add=True,
         verbose_name='Created'
     )
 

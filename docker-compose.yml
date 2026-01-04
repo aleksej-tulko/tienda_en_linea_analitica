@@ -441,8 +441,6 @@ services:
       - kafka-1
       - kafka-2
       - kafka-3
-    ports:
-      - 8080:8080
 
   kafka-connect:
     <<: *app-base

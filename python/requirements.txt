@@ -9,3 +9,4 @@ referencing==0.36.2
 Authlib==1.6.0
 cachetools==6.1.0
 faust-streaming-rocksdb==0.9.3
+aiokafka==0.12.0

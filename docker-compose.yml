@@ -721,7 +721,7 @@ services:
   filter:
     <<: *app-base
     build:
-      context: ./python
+      context: ./faust
       dockerfile: Dockerfile
     container_name: filter
     hostname: filter

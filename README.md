@@ -81,7 +81,7 @@ vault write int-ca/roles/zookeeper \
 vault write -format=json int-ca/issue/zookeeper \
   common_name="zookeeper-1" \
   alt_names="localhost" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/zookeeper-1.json
 
 jq -r ".data.private_key"  /vault/certs/zookeeper-1.json > /vault/certs/zookeeper-1.key
@@ -101,7 +101,7 @@ chmod 644 /vault/certs/zookeeper-1.p12
 vault write -format=json int-ca/issue/zookeeper \
   common_name="zookeeper-2" \
   alt_names="localhost" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/zookeeper-2.json
 
 jq -r ".data.private_key"  /vault/certs/zookeeper-2.json > /vault/certs/zookeeper-2.key
@@ -121,7 +121,7 @@ chmod 644 /vault/certs/zookeeper-2.p12
 vault write -format=json int-ca/issue/zookeeper \
   common_name="zookeeper-3" \
   alt_names="localhost" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/zookeeper-3.json
 
 jq -r ".data.private_key"  /vault/certs/zookeeper-3.json > /vault/certs/zookeeper-3.key
@@ -151,7 +151,7 @@ vault write int-ca/roles/client \
 vault write -format=json int-ca/issue/client \
   common_name="client" \
   alt_names="localhost,client,ui,zoonavigator,kafka_connect,kafka-connect" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/client.json
 
 jq -r ".data.private_key"   /vault/certs/client.json > /vault/certs/client.key
@@ -182,7 +182,7 @@ vault write int-ca/roles/zoonavigator \
 vault write -format=json int-ca/issue/zoonavigator \
   common_name="zoonavigator" \
   alt_names="localhost" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/zoonavigator.json
 
 jq -r ".data.private_key"   /vault/certs/zoonavigator.json > /vault/certs/zoonavigator.key
@@ -212,7 +212,7 @@ vault write int-ca/roles/kafka-broker \
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-1" \
   alt_names="localhost,kafka-1" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/kafka-1.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-1.json > /vault/certs/kafka-1.key
@@ -232,7 +232,7 @@ chmod 644 /vault/secrets/kafka-1.p12
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-1" \
   alt_names="localhost,kafka-replica-1" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/kafka-replica-1.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-replica-1.json > /vault/certs/kafka-replica-1.key
@@ -252,7 +252,7 @@ chmod 644 /vault/secrets/kafka-replica-1.p12
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-2" \
   alt_names="localhost,kafka-2" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/kafka-2.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-2.json > /vault/certs/kafka-2.key
@@ -272,7 +272,7 @@ chmod 644 /vault/secrets/kafka-2.p12
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-2" \
   alt_names="localhost,kafka-replica-2" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/kafka-replica-2.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-replica-2.json > /vault/certs/kafka-replica-2.key
@@ -292,7 +292,7 @@ chmod 644 /vault/secrets/kafka-replica-2.p12
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-3" \
   alt_names="localhost,kafka-3" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/kafka-3.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-3.json > /vault/certs/kafka-3.key
@@ -312,7 +312,7 @@ chmod 644 /vault/secrets/kafka-3.p12
 vault write -format=json int-ca/issue/kafka-broker \
   common_name="kafka-replica-3" \
   alt_names="localhost,kafka-replica-3" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/kafka-replica-3.json
 
 jq -r ".data.private_key"  /vault/certs/kafka-replica-3.json > /vault/certs/kafka-replica-3.key
@@ -342,7 +342,7 @@ vault write int-ca/roles/nifi \
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-1" \
   alt_names="localhost,nifi-1" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/nifi-1.json
 
 jq -r ".data.private_key"  /vault/certs/nifi-1.json > /vault/certs/nifi-1.key
@@ -362,7 +362,7 @@ chmod 644 /vault/certs/nifi-1.p12
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-2" \
   alt_names="localhost,nifi-2" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/nifi-2.json
 
 jq -r ".data.private_key"  /vault/certs/nifi-2.json > /vault/certs/nifi-2.key
@@ -382,7 +382,7 @@ chmod 644 /vault/certs/nifi-2.p12
 vault write -format=json int-ca/issue/nifi \
   common_name="nifi-3" \
   alt_names="localhost,nifi-3" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/nifi-3.json
 
 jq -r ".data.private_key"  /vault/certs/nifi-3.json > /vault/certs/nifi-3.key
@@ -412,7 +412,7 @@ vault write int-ca/roles/schema-registry \
 vault write -format=json int-ca/issue/schema-registry \
   common_name="schema-registry" \
   alt_names="localhost,schema-registry" \
-  ip_sans="127.0.0.1,100.110.29.24" \
+  ip_sans="127.0.0.1" \
   > /vault/certs/schema-registry.json
 
 jq -r ".data.private_key"  /vault/certs/schema-registry.json > /vault/certs/schema-registry.key

@@ -210,8 +210,8 @@ services:
       - kafka_1:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./kafka-configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka-configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
@@ -234,8 +234,8 @@ services:
       - kafka_replica_1:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./kafka-configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka-configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
@@ -258,8 +258,8 @@ services:
       - kafka_2:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./kafka-configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka-configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
@@ -282,8 +282,8 @@ services:
       - kafka_replica_2:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./kafka-configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka-configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
@@ -306,8 +306,8 @@ services:
       - kafka_3:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./kafka-configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka-configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
@@ -330,8 +330,8 @@ services:
       - kafka_replica_3:/var/lib/kafka/data
       - vault_certs:/etc/kafka/certs
       - vault_secrets:/etc/kafka/secrets
-      - ./kafka/configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
-      - ./kafka/configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
+      - ./kafka-configs/kafka_server_jaas.conf:/etc/kafka/secrets/kafka_server_jaas.conf
+      - ./kafka-configs/adminclient-configs.conf:/etc/kafka/secrets/adminclient-configs.conf
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/config_kafka.yml:/etc/kafka/config_kafka.yml
     environment:
@@ -389,7 +389,7 @@ services:
     hostname: ui
     volumes:
       - vault_certs:/etc/ui/certs
-      - ./kafka/configs/config.yml:/etc/ui/config.yml
+      - ./kafka-configs/ui-config.yml:/etc/ui/config.yml
     environment:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /etc/ui/config.yml
     depends_on:
@@ -400,9 +400,6 @@ services:
   kafka-connect:
     <<: *app-base
     image: confluentinc/cp-kafka-connect:7.7.1
-    # build:
-    #   context: ./kafka-connect
-      # dockerfile: Dockerfile
     container_name: kafka_connect
     hostname: kafka_connect
     volumes:
@@ -410,8 +407,8 @@ services:
       - ./confluent-hub-components/:/etc/kafka-connect/jars
       - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./etc/jmx_exporter/kafka-connect.yml:/opt/kafka-connect.yml
-      - ./kafka-connect/connectors/mirroring.json:/etc/kafka/connect.json
-      - ./kafka-connect/connectors/hdfs-sync.json:/etc/kafka/hdfs-sync.json
+      - ./kafka-connect-connectors/mirroring.json:/etc/kafka/connect.json
+      - ./kafka-connect-connectors/hdfs-sync.json:/etc/kafka/hdfs-sync.json
     environment:
       CONNECT_PLUGIN_PATH: /usr/share/java,/etc/kafka-connect/jars
       CONNECT_BOOTSTRAP_SERVERS: kafka-1:9093,kafka-2:9093,kafka-3:9093

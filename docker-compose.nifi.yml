@@ -444,6 +444,7 @@ services:
     volumes:
       - vault_certs:/etc/kafka/certs
       - ./confluent-hub-components/:/etc/kafka-connect/jars
+      - ./etc/jmx_exporter/jmx_prometheus_javaagent-0.15.0.jar:/opt/jmx_prometheus_javaagent.jar
       - ./kafka-connect/connectors/mirroring.json:/etc/kafka/connect.json
       - ./kafka-connect/connectors/hdfs-sync.json:/etc/kafka/hdfs-sync.json
     environment:

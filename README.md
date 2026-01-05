@@ -646,20 +646,61 @@ sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/
 sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/hdfs-sync/status | jq
 ```
 
-9. (Опционально) Удалить коннекторы.
+9. (Опционально) Удалить коннекторы:
 ```bash
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/mirror_connector
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/hdfs-sync
 ```
 
-10. (Опционально) Достать клиентский сертификат.
+10. Накатить миграции и импортировать коллекции:
+```bash
+sudo docker compose exec django python manage.py migrate
+sudo docker compose exec django python manage.py import_json
+```
+
+11. Отправить тестовые данные:
+```json
+{
+  "email": "vpupkin@yandex.ru",
+  "username": "vasya.pupkin",
+  "first_name": "Vas",
+  "last_name": "Pup",
+  "password": "Qwerty123"
+}
+
+{
+  "products": [
+    {
+      "id": 1,
+      "amount": 3,
+      "price": 100
+    },
+    {
+      "id": 4,
+      "amount": 4,
+      "price": 1000
+    }
+  ],
+  "tags": [
+    3,
+    4
+  ],
+  "name": "2026-01-02",
+  "description": "Investment for home",
+  "price": 100,
+  "brand": 4,
+  "category": 2
+}
+```
+
+12. (Опционально) Достать клиентский сертификат:
 ```bash
 sudo docker compose exec vault cat /vault/certs/int-ca.pem
 sudo docker compose exec vault cat /vault/certs/client.crt
 sudo docker compose exec vault cat /vault/certs/client.key
 ```
 
-10. (Опционально) Добавить запрещенный бренд.
+13. (Опционально) Добавить запрещенный бренд:
 ```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 \
 bash -lc 'kafka-console-producer \
@@ -669,7 +710,7 @@ bash -lc 'kafka-console-producer \
 >{"brands": ["BBVA"]}
 ```
 
-10. (Опционально) Переподнять все.
+14. (Опционально) Переподнять все:
 ```bash
 sudo docker compose down && sudo docker volume rm $(sudo docker volume ls -q) && sudo docker system prune -af && rm -rf python/goods_filter-data && git pull
 ```

@@ -428,8 +428,6 @@ openssl pkcs12 -export \
   -passout pass:changeit \
   -out /vault/certs/schema-registry.p12
 chmod 644 /vault/certs/schema-registry.p12
-
-cat /vault/certs/client.crt /vault/certs/int-ca.pem > /vault/certs/client_fullchain.crt
 ```
 
 4. Скачать коннекторы для Kafka Connect:
@@ -636,7 +634,7 @@ kafka-acls --bootstrap-server kafka-1:9093 \
 sudo docker compose up -d
 ```
 
-8. Создать коннектор, проверить статус.
+8. Создать коннекторы, проверить статус.
 ```bash
 sudo docker compose exec -it kafka-connect bash -lc "
 curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/connect.json http://localhost:8083/connectors
@@ -646,37 +644,34 @@ curl -X POST -H 'Content-Type: application/json' --data @/etc/kafka/hdfs-sync.js
 "
 sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/mirror_connector/status | jq
 sudo docker compose exec kafka-connect curl -s http://localhost:8083/connectors/hdfs-sync/status | jq
-sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc "
-kafka-console-producer \
-  --bootstrap-server kafka-1:9093 \
-  --producer.config /etc/kafka/secrets/adminclient-configs.conf \
-  --topic mirroring 
-"
+```
+
+9. (Опционально) Удалить коннекторы.
+```bash
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/mirror_connector
 sudo docker compose exec kafka-connect curl -s -X DELETE http://localhost:8083/connectors/hdfs-sync
-sudo docker compose exec kafka-connect curl -s -X PUT -H 'Content-Type: application/json' -d '{"connector.class":"io.confluent.connect.hdfs3.Hdfs3SinkConnector"}' http://localhost:8083/connector-plugins/io.confluent.connect.hdfs3.Hdfs3SinkConnector/config/validate | jq -r '.configs[].definition | select(.name == "flush.size")'
+```
 
+10. (Опционально) Достать клиентский сертификат.
+```bash
 sudo docker compose exec vault cat /vault/certs/int-ca.pem
 sudo docker compose exec vault cat /vault/certs/client.crt
 sudo docker compose exec vault cat /vault/certs/client.key
+```
+
+10. (Опционально) Добавить запрещенный бренд.
+```bash
 sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 \
 bash -lc 'kafka-console-producer \
   --bootstrap-server kafka-1:9093 \
   --producer.config /etc/kafka/secrets/adminclient-configs.conf \
-  --topic prohibited_brands \
-  --property parse.key=true \
-  --property key.separator=:'
->item:{"item": ["her"]}
-
-sudo docker compose exec -e KAFKA_OPTS="" -e KAFKA_JMX_OPTS="" -it kafka-1 bash -lc 'kafka-console-producer \
-  --bootstrap-server kafka-1:9093 \
-  --producer.config /etc/kafka/secrets/adminclient-configs.conf \
   --topic prohibited_brands'
->"brands": ["Умные часы XYZ"]
->{"brands": ["Умные часы XYZ"]}
+>{"brands": ["BBVA"]}
+```
 
+10. (Опционально) Переподнять все.
+```bash
 sudo docker compose down && sudo docker volume rm $(sudo docker volume ls -q) && sudo docker system prune -af && rm -rf python/goods_filter-data && git pull
-faust -A faust_filter  worker -l INFO
 ```
 
 

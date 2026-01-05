@@ -470,8 +470,6 @@ services:
       - ./hadoop/namenode_entrypoint.sh:/namenode_entrypoint.sh
     entrypoint: ["/bin/bash", "/namenode_entrypoint.sh"]
     command: ["hdfs", "namenode"]
-    ports:
-      - 9000:9000
 
   hadoop-datanode-1:
     <<: *datanode-base
